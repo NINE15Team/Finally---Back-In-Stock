@@ -28,9 +28,43 @@ const findByProductAndVariantId = async (productId: any, variantId: any) => {
     });
 };
 
+const addProductInfo = async (req: any) => {
+    return await prisma.productInfo.upsert({
+        where: {
+            productId_variantId: {
+                productId: req.productId,
+                variantId: req.variantId
+            }
+        },
+        update: {
+            productTitle: req.productTitle,
+            variantTitle: req.variantTitle,
+            status: true,
+            inStock: false,
+            updatedAt: new Date(),
+            isActive: true,
+        },
+        create: {
+            productId: req.productId,
+            productTitle: req.productTitle,
+            variantId: req.variantId,
+            variantTitle: req.variantTitle,
+            status: true,
+            inStock: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isActive: true,
+            store: {
+                connect: {
+                    id: 1
+                }
+            }
 
-const addOutOfStockProduct = async (req: any) => {
-    console.log(req);
+        }
+    });
+}
+
+const addProductIfOutOfStock = async (req: any) => {
     let prodcutInfos = [] as any[];
     req.variants.forEach((elm: any) => {
         if (elm.inventory_policy == 'deny' && elm.inventory_quantity == 0)
@@ -51,6 +85,7 @@ const addOutOfStockProduct = async (req: any) => {
                 }
             })
     });
+    console.log(prodcutInfos);
     prodcutInfos.forEach(async elm => {
         return await prisma.productInfo.upsert({
             where: {
@@ -84,45 +119,10 @@ const addOutOfStockProduct = async (req: any) => {
                 }
 
             }
-        })
+        });
+
     })
-    return prodcutInfos
+    return prodcutInfos;
 };
 
-const addOutOfStockProductBySubscriber = async (req: any) => {
-    return await prisma.productInfo.upsert({
-        where: {
-            productId_variantId: {
-                productId: req.productId,
-                variantId: req.variantId
-            }
-        },
-        update: {
-            productTitle: req.productTitle,
-            variantTitle: req.variantTitle,
-            status: true,
-            inStock: false,
-            updatedAt: new Date(),
-            isActive: true,
-        },
-        create: {
-            productId: req.productId,
-            productTitle: req.productTitle,
-            variantId: req.variantId,
-            variantTitle: req.variantTitle,
-            status: true,
-            inStock: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            isActive: true,
-            store: {
-                connect: {
-                    id: 1
-                }
-            }
-
-        }
-    })
-}
-
-export { findAll, addOutOfStockProduct, addOutOfStockProductBySubscriber, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }
+export { findAll, addProductIfOutOfStock, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }

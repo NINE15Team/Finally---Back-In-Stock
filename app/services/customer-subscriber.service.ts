@@ -1,8 +1,11 @@
 import { CustomerSubscription } from "@prisma/client";
 import prisma from "~/db.server";
 
-const findAll = async () => {
+const findAll = async (params: any = {}) => {
     return await prisma.customerSubscription.findMany({
+        where: {
+            isNotified: params?.isNotified
+        },
         include: {
             productInfo: true,
         },

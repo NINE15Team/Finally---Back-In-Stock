@@ -1,21 +1,15 @@
-import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
 import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator } from "@remix-run/react";
 import {
   Page,
   Layout,
   Text,
   Card,
-  Button,
   BlockStack,
-  Box,
-  List,
   Link,
   InlineStack,
   DataTable
 } from "@shopify/polaris";
-import React from 'react';
 import { authenticate } from "../shopify.server";
 import { findAll } from "~/services/customer-subscriber.service";
 
@@ -87,6 +81,19 @@ export default function Index() {
   const refreshData = async () => {
     revalidate();
   }
+
+  const onNotifyCustomer = async () => {
+    console.log('notify start');
+    const response = await fetch(`/api/notify`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    });
+    console.log(response);
+  }
+
   return (
     <Page>
       <ui-title-bar title="Back In Stock">
@@ -155,6 +162,9 @@ export default function Index() {
                         200
                       </Link>
                     </InlineStack>
+                    <button variant="primary" onClick={onNotifyCustomer}>
+                      Notify Customers
+                    </button>
                   </BlockStack>
                 </BlockStack>
               </Card>

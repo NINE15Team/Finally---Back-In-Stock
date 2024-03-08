@@ -1,3 +1,9 @@
+<style>
+  .none {
+    display: none;
+  }
+</style>
+
 {% assign out_of_stock = true %}
 {% assign blockSettings = block.settings %}
 {% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
@@ -17,12 +23,19 @@
       <p>{{ blockSettings.description }}</p>
       <label for="email">Email</label>
       <div class="wrapper">
-        <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}"/>
+        <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}">
         <button style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
           {{ blockSettings.button_text }}
         </button>
       </div>
-      <p class="message"></p>
+      <p class="message">
+        <span class="success none">
+          {{ blockSettings.success_message }}
+        </span>
+        <span class="error none">
+          {{ blockSettings.error_message }}
+        </span>
+      </p>
     </form>
   </back-in-stock>
 {% endif %}
