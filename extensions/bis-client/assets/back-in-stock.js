@@ -1,7 +1,6 @@
 class BackInStock extends HTMLElement {
   constructor() {
     super();
-
     this.form = this.querySelector(".out-of-stock");
     this.storeId = this.dataset.store;
     this.productId = this.dataset.productId;
@@ -13,19 +12,21 @@ class BackInStock extends HTMLElement {
   }
 
   initializeListeners() {
+    document.querySelector(".js.product-form__input").addEventListener('change', function () {
+      console.log(document.querySelector(".out-of-stock"));
+      let isDisabled = this.querySelector(":checked").classList.contains('disabled');
+      if (isDisabled) {
+        document.querySelector(".out-of-stock").classList.remove('none');
+      } else {
+        document.querySelector(".out-of-stock").classList.add('none');
+      }
+    });
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      document.querySelector(".out-of-stock .message *").classList.add("none");
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
-      console.log({
-        storeId: this.storeId,
-        productId: this.productId,
-        productTitle: this.productTitle,
-        variantId: variantId,
-        variantTitle: document.querySelector(".js.product-form__input :checked").value,
-        email: formData.get("email")
-      });
       if (!this.isValidEmail(formData.get("email"))) {
         alert('Invalid Email');
         return false;
@@ -40,7 +41,7 @@ class BackInStock extends HTMLElement {
           storeId: this.storeId,
           productId: this.productId,
           productTitle: this.productTitle,
-          variantId: this.variantId,
+          variantId: variantId,
           variantTitle: document.querySelector(".js.product-form__input :checked").value,
           email: formData.get("email")
         }),
@@ -55,17 +56,20 @@ class BackInStock extends HTMLElement {
   }
 
   showMessage(type) {
-    document.querySelector(".out-of-stock .message *").classList.add("none");
     if (type == 'info') {
       document.querySelector(".out-of-stock .message .success").classList.remove("none");
     } else if (type == 'error') {
       document.querySelector(".out-of-stock .message .error").classList.remove("none");
     }
-
   }
+
   isValidEmail(email) {
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return regex.test(email);
+  }
+
+  hasClass(elm, className) {
+    return elm.classList.contains(className);
   }
 }
 
