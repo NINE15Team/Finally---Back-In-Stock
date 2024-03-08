@@ -7,20 +7,22 @@ class BackInStock extends HTMLElement {
     this.productTitle = this.dataset.productTitle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
+    this.productJSON = JSON.parse(document.querySelector("#bis-product-json").textContent);
     this.initializeListeners();
-    console.log(this.dataset)
   }
 
   initializeListeners() {
-    document.querySelector(".js.product-form__input").addEventListener('change', function () {
-      console.log(document.querySelector(".out-of-stock"));
-      let isDisabled = this.querySelector(":checked").classList.contains('disabled');
-      if (isDisabled) {
-        document.querySelector(".out-of-stock").classList.remove('none');
-      } else {
-        document.querySelector(".out-of-stock").classList.add('none');
-      }
-    });
+    console.log(this.productJSON);
+    if (this.hasVariantSelectElm()) {
+      document.querySelector("product-info variant-selects").addEventListener('change', function () {
+        let isDisabled = this.querySelector(":checked").classList.contains('disabled');
+        if (isDisabled) {
+          document.querySelector(".out-of-stock").classList.remove('none');
+        } else {
+          document.querySelector(".out-of-stock").classList.add('none');
+        }
+      });
+    }
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
       document.querySelector(".out-of-stock .message *").classList.add("none");
@@ -31,6 +33,15 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
+      console.log({
+        storeId: this.storeId,
+        productId: this.productId,
+        productTitle: this.productTitle,
+        variantId: variantId,
+        variantTitle: this.getVariantTitle(variantId),
+        email: formData.get("email")
+      });
+
       const API_URL = "https://encounter-yale-weight-longer.trycloudflare.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
@@ -42,7 +53,7 @@ class BackInStock extends HTMLElement {
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
-          variantTitle: document.querySelector(".js.product-form__input :checked").value,
+          variantTitle: this.getVariantTitle(variantId),
           email: formData.get("email")
         }),
       });
@@ -61,6 +72,14 @@ class BackInStock extends HTMLElement {
     } else if (type == 'error') {
       document.querySelector(".out-of-stock .message .error").classList.remove("none");
     }
+  }
+
+  getVariantTitle(variantId) {
+    return this.productJSON.variants.find(d => d.id == variantId).title;
+  }
+
+  hasVariantSelectElm() {
+    return document.querySelector("product-info variant-selects") != null;
   }
 
   isValidEmail(email) {

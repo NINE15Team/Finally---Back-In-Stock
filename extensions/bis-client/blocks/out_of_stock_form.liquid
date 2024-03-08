@@ -10,6 +10,9 @@
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
 <script src="{{ 'back-in-stock.js' | asset_url}}" async></script>
+<script type="application/json" id="bis-product-json">
+  {{ product | json }} 
+</script>
 <back-in-stock
   data-store="{{ shop.domain }}"
   data-product-id="{{ product.id }}"
