@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Session {
+  id          String    @id
+  shop        String
+  state       String
+  isOnline    Boolean   @default(false)
+  scope       String?
+  expires     DateTime?
+  accessToken String
+  userId      String?
+}
+
+model ShopifyStoreInfo {
+  id          Int           @id @default(autoincrement())
+  storeId     String        @map("store_id")
+  storeName   String        @map("store_name")
+  shopifyURL  String        @map("shopify_url")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at")
+  isActive    Boolean       @default(true) @map("is_active")
+  productInfo ProductInfo[]
+
+  @@unique([storeName])
+  @@map("store_info")
+}
+
+model ProductInfo {
+  id                   Int                    @id @default(autoincrement())
+  storeId              Int                    @map("store_id")
+  store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id]) // This establishes the relationship
+  productId            String                 @map("product_id")
+  productTitle         String                 @default("Default Product") @map("product_title")
+  variantId            String                 @map("variant_id")
+  variantTitle         String                 @default("Default Variant") @map("variant_title")
+  status               Boolean                @default(false)
+  inStock              Boolean                @default(false)
+  createdAt            DateTime               @default(now()) @map("created_at")
+  updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
+  isActive             Boolean                @default(true)
+  CustomerSubscription CustomerSubscription[]
+
+  @@unique([productId, variantId])
+  @@map("product_info")
+}
+
+model CustomerSubscription {
+  id            Int         @id @default(autoincrement())
+  productInfoId Int         @map("product_info_id")
+  productInfo   ProductInfo @relation(fields: [productInfoId], references: [id]) // This establishes the relationship
+  customerEmail String      @default("Default Email") @map("customer_email")
+  status        Boolean     @default(false) @map("status")
+  isNotified    Boolean     @default(false) @map("is_notified")
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
+  isActive      Boolean     @default(true)
+
+  @@unique([customerEmail, productInfoId])
+  @@map("customer_subscription")
+}
