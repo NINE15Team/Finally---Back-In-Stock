@@ -22,8 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       break;
     case "PRODUCTS_UPDATE":
       console.log("_______________-PRODUCTS_UPDATE______________");
-      // console.log('^^^^^^^^^^^^^^^^^^^^^^^6');
-      // let result = await addOutOfStockProduct(payload);
+      let result = await addOutOfStockProduct(payload);
       break;
     case "INVENTORY_ITEMS_UPDATE":
       console.log("INVENTORY_ITEMS_UPDATE", payload);

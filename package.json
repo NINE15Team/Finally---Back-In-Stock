@@ -1,5 +1,5 @@
 {
-  "name": "remix-back-in-stock",
+  "name": "finally-back-in-stock",
   "private": true,
   "scripts": {
     "build": "vite build && vite build --ssr",

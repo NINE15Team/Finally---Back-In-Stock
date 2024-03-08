@@ -4,6 +4,21 @@ const findAll = async () => {
     return await prisma.productInfo.findMany();
 };
 
+const isProductAlreadyAdded = async (productId: any, variantId: any) => {
+    let count = await countProductAndVariantId(productId, variantId);
+    return count > 0;
+};
+
+const countProductAndVariantId = async (productId: any, variantId: any) => {
+    return await prisma.productInfo.count({
+        where: {
+            productId: productId,
+            variantId: variantId
+        }
+    });
+};
+
+
 const findByProductAndVariantId = async (productId: any, variantId: any) => {
     return await prisma.productInfo.findFirst({
         where: {
@@ -74,5 +89,40 @@ const addOutOfStockProduct = async (req: any) => {
     return prodcutInfos
 };
 
+const addOutOfStockProductBySubscriber = async (req: any) => {
+    return await prisma.productInfo.upsert({
+        where: {
+            productId_variantId: {
+                productId: req.productId,
+                variantId: req.variantId
+            }
+        },
+        update: {
+            productTitle: req.productTitle,
+            variantTitle: req.variantTitle,
+            status: true,
+            inStock: false,
+            updatedAt: new Date(),
+            isActive: true,
+        },
+        create: {
+            productId: req.productId,
+            productTitle: req.productTitle,
+            variantId: req.variantId,
+            variantTitle: req.variantTitle,
+            status: true,
+            inStock: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            isActive: true,
+            store: {
+                connect: {
+                    id: 1
+                }
+            }
 
-export { findAll, addOutOfStockProduct, findByProductAndVariantId }
+        }
+    })
+}
+
+export { findAll, addOutOfStockProduct, addOutOfStockProductBySubscriber, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }

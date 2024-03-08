@@ -70,14 +70,14 @@ const shopify = shopifyApp({
     afterAuth: async ({ session }) => {
 
       shopify.registerWebhooks({ session });
-      // let storeInfo = await saveStoreInfo({
-      //   storeId: '12345',
-      //   storeName: session.shop,
-      //   shopifyURL: session.shop,
-      //   createdAt: new Date(),
-      //   updatedAt: new Date(),
-      //   isActive: true
-      // });
+      let storeInfo = await saveStoreInfo({
+        storeId: '12345',
+        storeName: session.shop,
+        shopifyURL: session.shop,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        isActive: true
+      });
 
       console.log("***********************APP Initilized**************************************")
     },

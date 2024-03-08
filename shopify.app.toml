@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "72a63a557f1b001566a1a73c21584434"
-name = "remix-nine15-backinstock"
-application_url = "https://ports-compliant-reporter-engineers.trycloudflare.com"
+name = "finally-back-in-stock"
+application_url = "https://nowhere-people-outdoors-tales.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_customers,write_inventory,write_orders,write_prod
 
 [auth]
 redirect_urls = [
-  "https://ports-compliant-reporter-engineers.trycloudflare.com/auth/callback",
-  "https://ports-compliant-reporter-engineers.trycloudflare.com/auth/shopify/callback",
-  "https://ports-compliant-reporter-engineers.trycloudflare.com/api/auth/callback"
+  "https://nowhere-people-outdoors-tales.trycloudflare.com/auth/callback",
+  "https://nowhere-people-outdoors-tales.trycloudflare.com/auth/shopify/callback",
+  "https://nowhere-people-outdoors-tales.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

@@ -1,12 +1,13 @@
 {% assign out_of_stock = true %}
 {% assign blockSettings = block.settings %}
-
 {% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
   <script src="{{ 'back-in-stock.js' | asset_url}}" async></script>
   <back-in-stock
-    data-store="{{ shop.id }}"
-    data-product="{{ product.id }}"
-    data-variant="{{ product.selected_or_first_available_variant.id }}"
+    data-store="{{ shop.domain }}"
+    data-product-id="{{ product.id }}"
+    data-product-title="{{ product.title }}"
+    data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    data-variant-title="{{ product.selected_or_first_available_variant.title }}"
   >
     <form
       class="out-of-stock"

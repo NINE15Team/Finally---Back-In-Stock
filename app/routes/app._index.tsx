@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit, useLoaderData } from "@remix-run/react";
+import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -22,7 +22,7 @@ import { findAll } from "~/services/customer-subscriber.service";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   await authenticate.admin(request);
   const data = await findAll();
-  let rows = [];;
+  let rows = [];
   for (let i = 0; i < data.length; i++) {
     const subscription = data[i];
     rows.push([
@@ -82,8 +82,10 @@ export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData<typeof action>();
   let rows = useLoaderData<typeof loader>();
-  const refreshData = () => {
-    rows = useLoaderData<typeof loader>();
+  let { revalidate } = useRevalidator();
+
+  const refreshData = async () => {
+    revalidate();
   }
   return (
     <Page>

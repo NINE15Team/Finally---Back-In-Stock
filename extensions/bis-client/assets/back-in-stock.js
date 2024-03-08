@@ -4,9 +4,12 @@ class BackInStock extends HTMLElement {
 
     this.form = this.querySelector(".out-of-stock");
     this.storeId = this.dataset.store;
-    this.productId = this.dataset.product;
-    this.defaultVariantId = this.dataset.variant;
+    this.productId = this.dataset.productId;
+    this.productTitle = this.dataset.productTitle;
+    this.variantId = this.dataset.variantId;
+    this.variantTitle = this.dataset.variantTitle;
     this.initializeListeners();
+    console.log(this.dataset)
   }
 
   initializeListeners() {
@@ -14,10 +17,17 @@ class BackInStock extends HTMLElement {
       e.preventDefault();
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
-
-      const variant = urlParams.get("variant") ?? this.defaultVariantId;
-
-      const response = await fetch("https://earn-come-preferred-dim.trycloudflare.com/api/subscriber", {
+      console.log({
+        storeId: this.storeId,
+        productId: this.productId,
+        productTitle: this.productTitle,
+        variantId: this.variantId,
+        variantTitle: this.variantTitle,
+        email: formData.get("email")
+      })
+      // const variant = urlParams.get("variant") ?? this.defaultVariantId;
+      const API_URL = "https://nowhere-people-outdoors-tales.trycloudflare.com";
+      const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,7 +35,9 @@ class BackInStock extends HTMLElement {
         body: JSON.stringify({
           storeId: this.storeId,
           productId: this.productId,
-          variantId: variant,
+          productTitle: this.productTitle,
+          variantId: this.variantId,
+          variantTitle: this.variantTitle,
           email: formData.get("email")
         }),
       });
