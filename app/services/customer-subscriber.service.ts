@@ -38,5 +38,20 @@ const subscribeProduct = async (subscribeItem: any) => {
     })
 };
 
+const setCustomerNotified = async (email: string, productInfoId: number) => {
+    return await prisma.customerSubscription.update({
+        where: {
+            customerEmail_productInfoId: {
+                customerEmail: email,
+                productInfoId: productInfoId
+            }
+        },
+        data: {
+            isNotified: true,
+            updatedAt: new Date(),
+        },
+    })
+};
 
-export { findAll, subscribeProduct }
+
+export { findAll, subscribeProduct, setCustomerNotified }

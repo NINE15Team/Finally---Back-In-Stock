@@ -2,7 +2,7 @@
 
 client_id = "72a63a557f1b001566a1a73c21584434"
 name = "finally-back-in-stock"
-application_url = "https://encounter-yale-weight-longer.trycloudflare.com"
+application_url = "https://florists-undertaken-shipping-jvc.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_customers,write_inventory,write_orders,write_prod
 
 [auth]
 redirect_urls = [
-  "https://encounter-yale-weight-longer.trycloudflare.com/auth/callback",
-  "https://encounter-yale-weight-longer.trycloudflare.com/auth/shopify/callback",
-  "https://encounter-yale-weight-longer.trycloudflare.com/api/auth/callback"
+  "https://florists-undertaken-shipping-jvc.trycloudflare.com/auth/callback",
+  "https://florists-undertaken-shipping-jvc.trycloudflare.com/auth/shopify/callback",
+  "https://florists-undertaken-shipping-jvc.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
