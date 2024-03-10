@@ -39,6 +39,7 @@ model ProductInfo {
   store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id]) // This establishes the relationship
   productId            String                 @map("product_id")
   productTitle         String                 @default("Default Product") @map("product_title")
+  productHandle        String                 @default("DefaultHandle") @map("product_handle")
   variantId            String                 @map("variant_id")
   variantTitle         String                 @default("Default Variant") @map("variant_title")
   status               Boolean                @default(false)

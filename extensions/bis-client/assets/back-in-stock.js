@@ -5,6 +5,7 @@ class BackInStock extends HTMLElement {
     this.storeId = this.dataset.store;
     this.productId = this.dataset.productId;
     this.productTitle = this.dataset.productTitle;
+    this.productHandle = this.dataset.productHandle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
     this.productJSON = JSON.parse(document.querySelector("#bis-product-json").textContent);
@@ -33,16 +34,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      console.log({
-        storeId: this.storeId,
-        productId: this.productId,
-        productTitle: this.productTitle,
-        variantId: variantId,
-        variantTitle: this.getVariantTitle(variantId),
-        email: formData.get("email")
-      });
-
-      const API_URL = "https://encounter-yale-weight-longer.trycloudflare.com";
+      const API_URL = "https://feeding-ministers-substances-answering.trycloudflare.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         headers: {
@@ -52,6 +44,7 @@ class BackInStock extends HTMLElement {
           storeId: this.storeId,
           productId: this.productId,
           productTitle: this.productTitle,
+          productHandle: this.productHandle,
           variantId: variantId,
           variantTitle: this.getVariantTitle(variantId),
           email: formData.get("email")

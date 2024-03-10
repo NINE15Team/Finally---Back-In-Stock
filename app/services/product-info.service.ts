@@ -47,6 +47,7 @@ const addProductInfo = async (req: any) => {
         create: {
             productId: req.productId,
             productTitle: req.productTitle,
+            productHandle: req.productHandle,
             variantId: req.variantId,
             variantTitle: req.variantTitle,
             status: true,
@@ -64,17 +65,18 @@ const addProductInfo = async (req: any) => {
     });
 }
 
-const addProductIfOutOfStock = async (req: any) => {
+const upsertProduct = async (req: any) => {
     let prodcutInfos = [] as any[];
     req.variants.forEach((elm: any) => {
-        if (elm.inventory_policy == 'deny' && elm.inventory_quantity == 0)
+        if (elm.inventory_policy == 'deny')
             prodcutInfos.push({
                 productId: elm.product_id + "",
                 productTitle: req.title,
+                productHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
                 status: true,
-                inStock: false,
+                inStock: elm.inventory_quantity > 0 ? true : false,
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 isActive: req.status == 'active' ? true : false,
@@ -98,7 +100,7 @@ const addProductIfOutOfStock = async (req: any) => {
                 productTitle: elm.productTitle,
                 variantTitle: elm.variantTitle,
                 status: true,
-                inStock: false,
+                inStock: elm.inStock,
                 updatedAt: new Date(),
                 isActive: true,
             },
@@ -125,4 +127,4 @@ const addProductIfOutOfStock = async (req: any) => {
     return prodcutInfos;
 };
 
-export { findAll, addProductIfOutOfStock, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }
+export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }

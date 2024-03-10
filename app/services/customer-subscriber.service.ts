@@ -7,7 +7,11 @@ const findAll = async (params: any = {}) => {
             isNotified: params?.isNotified
         },
         include: {
-            productInfo: true,
+            productInfo: {
+                include: {
+                    store: true
+                }
+            },
         },
     });
 };

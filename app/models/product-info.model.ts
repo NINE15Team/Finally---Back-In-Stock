@@ -5,6 +5,7 @@ export class ProductInfo {
     store: ShopifyStoreInfo;
     productId: number;
     productTitle: String;
+    productHandle: String;
     variantId: number;
     variantTitle: String;
     status: boolean;
@@ -18,6 +19,7 @@ export class ProductInfo {
         store: ShopifyStoreInfo,
         productId: number,
         productTitle: String,
+        productHandle: String,
         variantId: number,
         variantTitle: String,
         status: boolean,
@@ -30,6 +32,7 @@ export class ProductInfo {
         this.store = store;
         this.productId = productId;
         this.productTitle = productTitle;
+        this.productHandle = productHandle;
         this.variantId = variantId;
         this.variantTitle = variantTitle;
         this.status = status;
