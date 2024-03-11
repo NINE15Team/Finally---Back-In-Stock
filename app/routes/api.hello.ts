@@ -1,21 +1,22 @@
 import { ActionFunction, json } from "@remix-run/node"; // or cloudflare/deno
 import { setCustomerNotified, findAll, subscribeProduct } from "~/services/customer-subscriber.service";
-import { sendEmail } from "~/services/email.service";
 import { authenticate } from "~/shopify.server";
 
-export const loader = async () => {
-    return json(
-        { hello: "world" },
-        {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-        }
+function withCors(request: any) {
+    request.headers.append('Access-Control-Allow-Origin', '*');
+
+    request.headers.append(
+        'Access-Control-Allow-Headers',
+        'Origin, X-Requested-With, Content-Type, Accept, referer-path'
     );
-};
+}
 
 export const action: ActionFunction = async ({ request }) => {
-    const { session } = await authenticate.public.appProxy(request);
-    console.log(session);
-    return json({ todayDate: new Date() });
+    withCors(request);
+    return new Response(null, {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, HEAD, POST, PUT, DELETE',
+        },
+    });
 };
