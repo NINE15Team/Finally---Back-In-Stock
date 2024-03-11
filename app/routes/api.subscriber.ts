@@ -13,6 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
         let requstBody = await request.json();
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
         if (!isProductExist) {
+            console.log("Request Body For API Subscription", requstBody);
             let result = await addProductInfo(requstBody);
             console.log(`New Product ${requstBody.productTitle} - ${requstBody.variantTitle} aded`)
         }
