@@ -52,7 +52,6 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             productTitle: prodInfo.productTitle,
             variantId: prodInfo.variantId,
             variantTitle: prodInfo.variantTitle,
-            prodHandle: prodInfo.prodHandle,
             status: true,
             inStock: false,
             createdAt: new Date(),
@@ -75,7 +74,6 @@ const upsertProduct = async (req: any, store: string) => {
             prodcutInfos.push({
                 productId: elm.product_id + "",
                 productTitle: req.title,
-                prodHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
                 status: true,
@@ -98,7 +96,6 @@ const upsertProduct = async (req: any, store: string) => {
             update: {
                 productTitle: elm.productTitle,
                 variantTitle: elm.variantTitle,
-                prodHandle: elm.prodHandle,
                 status: true,
                 inStock: elm.inStock,
                 updatedAt: new Date(),
@@ -107,7 +104,6 @@ const upsertProduct = async (req: any, store: string) => {
             create: {
                 productId: elm.productId,
                 productTitle: elm.productTitle,
-                prodHandle: elm.prodHandle,
                 variantId: elm.variantId,
                 variantTitle: elm.variantTitle,
                 status: true,

@@ -64,7 +64,7 @@ const loadEmailTemplate = (productInfo: ProductInfo) => {
             <div class="content">
                 <p>Dear Customer</p>
                 <p>The product you've been waiting for is back in stock!</p>
-                <a href="${store.shopifyURL}/products/${productInfo.prodHandle}" class="button">Shop Now</a>
+                <a href="${store.shopifyURL}/products/${productInfo.productId}" class="button">Shop Now</a>
                 <p>Don't miss out this time.</p>
             </div>
             <div class="footer">

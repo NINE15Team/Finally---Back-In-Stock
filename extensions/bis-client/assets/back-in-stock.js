@@ -45,7 +45,6 @@ class BackInStock extends HTMLElement {
           storeName: this.storeId,
           productId: this.productId,
           productTitle: this.productTitle,
-          prodHandle: this.productHandle,
           variantId: variantId,
           variantTitle: this.getVariantTitle(variantId),
           email: formData.get("email")
