@@ -34,7 +34,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://mite-perfect-narwhal.ngrok-free.app";
+      const API_URL = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         headers: {
