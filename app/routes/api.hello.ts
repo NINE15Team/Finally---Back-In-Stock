@@ -3,6 +3,17 @@ import { setCustomerNotified, findAll, subscribeProduct } from "~/services/custo
 import { sendEmail } from "~/services/email.service";
 import { authenticate } from "~/shopify.server";
 
+export const loader = async () => {
+    return json(
+        { hello: "world" },
+        {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+        }
+    );
+};
+
 export const action: ActionFunction = async ({ request }) => {
     const { session } = await authenticate.public.appProxy(request);
     console.log(session);
