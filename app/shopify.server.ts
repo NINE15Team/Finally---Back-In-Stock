@@ -68,7 +68,6 @@ const shopify = shopifyApp({
   },
   hooks: {
     afterAuth: async ({ session }) => {
-
       shopify.registerWebhooks({ session });
       let storeInfo = await saveStoreInfo({
         storeId: '12345',

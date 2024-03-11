@@ -34,7 +34,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://feeding-ministers-substances-answering.trycloudflare.com";
+      const API_URL = "https://mite-perfect-narwhal.ngrok-free.app";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         headers: {
@@ -42,6 +42,7 @@ class BackInStock extends HTMLElement {
         },
         body: JSON.stringify({
           storeId: this.storeId,
+          storeName: this.storeId,
           productId: this.productId,
           productTitle: this.productTitle,
           productHandle: this.productHandle,

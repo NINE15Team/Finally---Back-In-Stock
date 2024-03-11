@@ -13,9 +13,12 @@ import {
 import { authenticate } from "../shopify.server";
 import { findAll } from "~/services/customer-subscriber.service";
 
+
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
-  const data = await findAll();
+  let authObj = await authenticate.admin(request);
+  console.log(authObj.session.shop, "____________________________________");
+  const data = await findAll({ storeName: authObj.session.shop });
   let rows = [];
   for (let i = 0; i < data.length; i++) {
     const subscription = data[i];

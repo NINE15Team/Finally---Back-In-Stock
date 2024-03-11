@@ -21,5 +21,12 @@ const saveStoreInfo = async (data: any) => {
     });
 };
 
+const findStoreByName = async (name: string) => {
+    return await prisma.shopifyStoreInfo.findFirst({
+        where: {
+            storeName: name
+        }
+    });
+};
 
-export { saveStoreInfo }
+export { saveStoreInfo, findStoreByName }

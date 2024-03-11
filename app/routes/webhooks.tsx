@@ -22,7 +22,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       break;
     case "PRODUCTS_UPDATE":
       console.log("_______________-PRODUCTS_UPDATE______________");
-      let result = await upsertProduct(payload);
+      let result = await upsertProduct(payload, shop);
       break;
     case "INVENTORY_ITEMS_UPDATE":
       // console.log("INVENTORY_ITEMS_UPDATE", payload);
@@ -40,7 +40,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       // console.log("INVENTORY_LEVELS_DISCONNECT", payload);
       break;
     case "INVENTORY_LEVELS_UPDATE":
-      console.log("INVENTORY_LEVELS_UPDATE", payload);
+      // console.log("INVENTORY_LEVELS_UPDATE", payload);
       break;
     case "CUSTOMERS_DATA_REQUEST":
       console.log("CUSTOMERS_DATA_REQUEST", payload);

@@ -4,6 +4,8 @@
   "scripts": {
     "build": "vite build && vite build --ssr",
     "dev": "shopify app dev",
+    "dev-tunnel": "npm run dev -- --reset --tunnel-url  https://mite-perfect-narwhal.ngrok-free.app:3000",
+    "dev-tunnel-reset": "npm run dev -- --tunnel-url   https://mite-perfect-narwhal.ngrok-free.app:3000",
     "config:link": "shopify app config link",
     "generate": "shopify app generate",
     "deploy": "shopify app deploy",
