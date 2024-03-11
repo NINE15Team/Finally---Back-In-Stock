@@ -6,6 +6,7 @@ const findAll = async (params: any = {}) => {
         where: {
             isNotified: params?.isNotifiedm,
             productInfo: {
+                inStock: false,
                 store: {
                     storeName: params.storeName
                 }

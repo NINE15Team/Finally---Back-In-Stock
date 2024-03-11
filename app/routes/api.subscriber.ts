@@ -1,8 +1,11 @@
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
+import { authenticate } from "~/shopify.server";
 
 export const action: ActionFunction = async ({ request }) => {
+    const { session } = await authenticate.public.appProxy(request);
+    console.log(session);
     if (request.method == 'POST') {
         let requstBody = await request.json();
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
