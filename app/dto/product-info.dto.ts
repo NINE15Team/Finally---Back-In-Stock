@@ -4,7 +4,7 @@ export interface ProductInfoDTO {
     storeName: string;
     productId: string;
     productTitle: string;
-    productHandle: string;
+    prodHandle: string;
     variantId: string;
     variantTitle: string;
     status: boolean;
