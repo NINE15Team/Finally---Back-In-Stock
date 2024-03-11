@@ -4,5 +4,5 @@ import { authenticate } from "~/shopify.server";
 
 export const action: ActionFunction = async ({ request }) => {
     const { cors } = await import("remix-utils/cors");
-    return json({ nice: "jokess" });
+    await cors(request, json({ nice: "test" }));
 };
