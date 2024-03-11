@@ -51,7 +51,7 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
         create: {
             productId: prodInfo.productId,
             productTitle: prodInfo.productTitle,
-            productHandle: prodInfo?.productHandle,
+            productHandle: prodInfo.productHandle,
             variantId: prodInfo.variantId,
             variantTitle: prodInfo.variantTitle,
             status: true,

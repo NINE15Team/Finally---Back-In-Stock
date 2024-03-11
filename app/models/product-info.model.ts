@@ -5,7 +5,7 @@ export class ProductInfo {
     store: ShopifyStoreInfo;
     productId: number;
     productTitle: String;
-    productHandle?: String;
+    productHandle: String;
     variantId: number;
     variantTitle: String;
     status: boolean;
