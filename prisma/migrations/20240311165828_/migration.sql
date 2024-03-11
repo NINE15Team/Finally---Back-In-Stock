@@ -31,6 +31,7 @@ CREATE TABLE "product_info" (
     "store_id" INTEGER NOT NULL,
     "product_id" TEXT NOT NULL,
     "product_title" TEXT NOT NULL DEFAULT 'Default Product',
+    "product_handle" TEXT NOT NULL DEFAULT 'DefaultHandle',
     "variant_id" TEXT NOT NULL,
     "variant_title" TEXT NOT NULL DEFAULT 'Default Variant',
     "status" BOOLEAN NOT NULL DEFAULT false,
@@ -55,6 +56,9 @@ CREATE TABLE "customer_subscription" (
 
     CONSTRAINT "customer_subscription_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "store_info_store_name_key" ON "store_info"("store_name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "product_info_product_id_variant_id_key" ON "product_info"("product_id", "variant_id");
