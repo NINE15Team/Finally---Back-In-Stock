@@ -42,7 +42,6 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
         update: {
             productTitle: prodInfo.productTitle,
             variantTitle: prodInfo.variantTitle,
-            prodHandle: prodInfo.prodHandle,
             status: true,
             inStock: false,
             updatedAt: new Date(),
@@ -51,9 +50,9 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
         create: {
             productId: prodInfo.productId,
             productTitle: prodInfo.productTitle,
-            prodHandle: prodInfo.prodHandle,
             variantId: prodInfo.variantId,
             variantTitle: prodInfo.variantTitle,
+            prodHandle: prodInfo.prodHandle,
             status: true,
             inStock: false,
             createdAt: new Date(),
