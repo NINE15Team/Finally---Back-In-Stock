@@ -1,11 +1,14 @@
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
-import { authenticate } from "~/shopify.server";
+import { cors } from "remix-utils/cors";
+
+export const loader: LoaderFunction = async ({ request }) => {
+    return await cors(request, json({}));
+};
+
 
 export const action: ActionFunction = async ({ request }) => {
-    const { session } = await authenticate.public.appProxy(request);
-    console.log(session);
     if (request.method == 'POST') {
         let requstBody = await request.json();
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
@@ -29,7 +32,7 @@ export const action: ActionFunction = async ({ request }) => {
 
         }
         let result = await subscribeProduct(subscribeItem)
-        console.log(result);
+        return await cors(request, json({ data: result }, 200));
     }
-    return json({ nice: "jokess" });
+    return await cors(request, json({ status: "success" }, 200));
 };
