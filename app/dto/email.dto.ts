@@ -6,4 +6,16 @@ export interface EmailDTO {
     title: String,
     html: String,
     productInfo: ProductInfo
+    id: number;
+    storeId: number;
+    storeName: string;
+    senderName: string;
+    senderEmail: string;
+    isEmailVerified: boolean;
+    headerContent: string;
+    bodyContent: string;
+    footerContent: string;
+    createdAt: Date;
+    updatedAt: Date;
+
 }

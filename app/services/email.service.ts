@@ -1,5 +1,8 @@
-import { EmailDTO } from "~/dto/email.dto";
-import { ProductInfo } from "~/models/product-info.model";
+import prisma from "../db.server";
+
+import { findStoreByName } from "../services/store-info.service";
+import { EmailDTO } from "../dto/email.dto";
+import { ProductInfo } from "../models/product-info.model";
 
 const loadConfig = () => {
     let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -122,5 +125,72 @@ const sendEmail = async (email: EmailDTO) => {
 };
 
 
+const save = async (email: EmailDTO) => {
+    const storeInfo = await findStoreByName(email.storeName)
+    return prisma.emailConfiguartion.upsert({
+        where: {
+            storeId: storeInfo?.id
+        },
+        create: {
+            senderEmail: email.senderEmail,
+            isEmailVerified: false,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            store: {
+                connect: {
+                    id: storeInfo?.id
+                }
+            }
 
-export { sendEmail }
+        },
+        update: {
+            senderName: email.senderName,
+            headerContent: email.headerContent,
+            bodyContent: email.bodyContent,
+            footerContent: email.footerContent,
+            updatedAt: new Date(),
+            store: {
+                connect: {
+                    id: storeInfo?.id
+                }
+            }
+
+        }
+    })
+}
+
+const updateEmail = async (email: EmailDTO) => {
+    const storeInfo = await findStoreByName(email.storeName)
+    return prisma.emailConfiguartion.update({
+        where: {
+            storeId: storeInfo?.id
+        },
+        data: {
+            senderEmail: email.senderEmail,
+            updatedAt: new Date(),
+        }
+    })
+}
+
+
+const findByStoreName = async (storeName: any) => {
+    const storeInfo = await findStoreByName(storeName)
+    prisma.emailConfiguartion.findFirst({
+        where: {
+            storeId: storeInfo?.id
+        },
+    })
+}
+
+const isEmailVerified = async (storeName: string) => {
+    const storeInfo = await findStoreByName(storeName)
+    let count = await prisma.emailConfiguartion.count({
+        where: {
+            storeId: storeInfo?.id,
+            isEmailVerified: true
+        },
+    });
+    return count > 0;
+}
+
+export { sendEmail, save, findByStoreName, updateEmail, isEmailVerified }

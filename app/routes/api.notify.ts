@@ -2,7 +2,8 @@ import { ActionFunction, json } from "@remix-run/node"; // or cloudflare/deno
 import { ShopifyUtils } from "@shopify/shopify-api/lib/utils";
 import { ProductInfo } from "~/models/product-info.model";
 import { setCustomerNotified, findAll, subscribeProduct } from "~/services/customer-subscriber.service";
-import { sendEmail } from "~/services/email.service";
+import { sendEmail } from "../services/email.service";
+import { EmailDTO } from "~/dto/email.dto";
 
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {

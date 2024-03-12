@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator } from "@remix-run/react";
+import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -11,14 +11,17 @@ import {
   DataTable
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { findAll } from "~/services/customer-subscriber.service";
+import { findAll } from "../services/customer-subscriber.service";
+import { isEmailVerified, updateEmail } from "../services/email.service";
+import { EmailDTO } from "../dto/email.dto";
 
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let authObj = await authenticate.admin(request);
-  console.log(authObj.session.shop, "____________________________________");
   const data = await findAll({ storeName: authObj.session.shop });
+  const em = await isEmailVerified(authObj.session.shop);
+  console.log(em)
   let rows = [];
   for (let i = 0; i < data.length; i++) {
     const subscription = data[i];
@@ -29,7 +32,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       subscription.isNotified + ""
     ]);
   }
-  return rows;
+  return { rows, storeName: authObj.session.shop };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -78,10 +81,21 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData<typeof action>();
-  let rows = useLoaderData<typeof loader>();
+  let { rows, storeName } = useLoaderData<typeof loader>();
   let { revalidate } = useRevalidator();
 
   const refreshData = async () => {
+    console.log('storeName', storeName);
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    };
+    let resp = await fetch('/api/email/update-email', {})
+      .then(response => response.json())
+    console.log(resp)
     revalidate();
   }
 

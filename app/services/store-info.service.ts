@@ -1,4 +1,4 @@
-import prisma from "~/db.server";
+import prisma from "../db.server";
 
 const saveStoreInfo = async (data: any) => {
     return await prisma.shopifyStoreInfo.upsert({
@@ -22,7 +22,8 @@ const saveStoreInfo = async (data: any) => {
 };
 
 const findStoreByName = async (name: string) => {
-    return await prisma.shopifyStoreInfo.findFirst({
+    console.log(name, "_______________________--");
+    return await prisma.shopifyStoreInfo.findUnique({
         where: {
             storeName: name
         }

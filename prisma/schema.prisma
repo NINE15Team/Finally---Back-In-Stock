@@ -21,14 +21,15 @@ model Session {
 }
 
 model ShopifyStoreInfo {
-  id          Int           @id @default(autoincrement())
-  storeId     String        @map("store_id")
-  storeName   String        @map("store_name")
-  shopifyURL  String        @map("shopify_url")
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @default(now()) @updatedAt @map("updated_at")
-  isActive    Boolean       @default(true) @map("is_active")
-  productInfo ProductInfo[]
+  id                 Int                 @id @default(autoincrement())
+  storeId            String              @map("store_id")
+  storeName          String              @map("store_name")
+  shopifyURL         String              @map("shopify_url")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at")
+  isActive           Boolean             @default(true) @map("is_active")
+  productInfo        ProductInfo[]
+  EmailConfiguartion EmailConfiguartion?
 
   @@unique([storeName])
   @@map("store_info")
@@ -66,4 +67,30 @@ model CustomerSubscription {
 
   @@unique([customerEmail, productInfoId])
   @@map("customer_subscription")
+}
+
+model EmailConfiguartion {
+  id               Int              @id @default(autoincrement())
+  storeId          Int              @map("store_id")
+  store            ShopifyStoreInfo @relation(fields: [storeId], references: [id]) // This establishes the relationship
+  senderName       String           @default("") @map("sender_name")
+  senderEmail      String           @default("") @map("sender_email")
+  isEmailVerified  Boolean          @default(false) @map("email_verified")
+  headerContent    String           @default("") @map("header_content")
+  headerFontFamily String           @default("") @map("header_font_family")
+  headerFontSize   String           @default("") @map("header_font_size")
+  headerBgColor    String           @default("") @map("header_bg_color")
+  bodyContent      String           @default("") @map("body_content")
+  bodyFontFamily   String           @default("") @map("body_font_family")
+  bodyFontSize     String           @default("") @map("body_font_size")
+  bodyBgColor      String           @default("") @map("body_bg_color")
+  footerContent    String           @default("") @map("footer_content")
+  footerFontFamily String           @default("") @map("footer_font_family")
+  footerFontSize   String           @default("") @map("footer_font_size")
+  footerBgColor    String           @default("") @map("footer_bg_color")
+  createdAt        DateTime         @default(now()) @map("created_at")
+  updatedAt        DateTime         @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([storeId])
+  @@map("email_configuartion")
 }

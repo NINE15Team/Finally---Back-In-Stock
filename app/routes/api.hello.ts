@@ -1,13 +1,19 @@
 import { ActionFunction, LoaderFunction, json } from "@remix-run/node"; // or cloudflare/deno
 import { setCustomerNotified, findAll, subscribeProduct } from "~/services/customer-subscriber.service";
 import { authenticate } from "~/shopify.server";
-import { cors } from "remix-utils/cors";
+import { save, sendEmail, updateEmail, isEmailVerified } from "../services/email.service";
+import { EmailDTO } from "~/dto/email.dto";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    return await cors(request, json({}));
+    return await json({});
 };
 
 
 export const action: ActionFunction = async ({ request }) => {
-    return await cors(request, json({ nice: "test" }, 200));
+    let resp;
+    if (request.method == "POST") {
+        resp = await isEmailVerified("app-bis2.myshopify.com");
+    }
+    console.log("hello")
+    return await json(resp, 200);
 };
