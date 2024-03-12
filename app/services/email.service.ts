@@ -3,6 +3,7 @@ import prisma from "../db.server";
 import { findStoreByName } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
 import { ProductInfo } from "../models/product-info.model";
+import { ShopifyStoreInfo } from "~/models/shopify-store-info.model";
 
 const loadConfig = () => {
     let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -13,6 +14,22 @@ const loadConfig = () => {
         throw new Error('Email API URL is missing in .env flie');
     }
     return { EMAIL_API_URL, EMAIL_API_KEY };
+}
+
+const sendGridAdapter = async (uri: string, data: any) => {
+    let { EMAIL_API_URL, EMAIL_API_KEY } = loadConfig();
+    const requestOptions = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${EMAIL_API_KEY}`
+        },
+        body: JSON.stringify(data),
+    };
+
+    return await fetch(`${EMAIL_API_URL}/${uri}`, requestOptions)
+        .then((response) => response.text())
+        .catch((response) => response.text())
 }
 
 const loadEmailTemplate = (productInfo: ProductInfo) => {
@@ -81,8 +98,6 @@ const loadEmailTemplate = (productInfo: ProductInfo) => {
 
 
 const sendEmail = async (email: EmailDTO) => {
-    let { EMAIL_API_URL, EMAIL_API_KEY } = loadConfig();
-    console.log(email);
     const data = {
         "personalizations": [
             {
@@ -111,18 +126,27 @@ const sendEmail = async (email: EmailDTO) => {
         }
     };
 
-    const requestOptions = {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${EMAIL_API_KEY}`
-        },
-        body: JSON.stringify(data),
+    return sendGridAdapter('mail/send', data);
+};
+
+const sendVerificationEmail = async (email: EmailDTO, storeInfo: ShopifyStoreInfo) => {
+    const data = {
+        "nickname": email.senderName,
+        "from_email": email.senderEmail,
+        "from_name": email.senderName,
+        "reply_to": email.senderEmail,
+        "reply_to_name": email.senderName,
+        "address": "CA",
+        "state": "CA",
+        "city": "San Francisco",
+        "country": "USA",
+        "zip": "94105"
     };
 
-    return await fetch(EMAIL_API_URL, requestOptions)
-        .then((response) => response.text())
-};
+    console.log('Sender data', data);
+
+    return sendGridAdapter('verified_senders', data);
+}
 
 
 const save = async (email: EmailDTO) => {
@@ -161,7 +185,7 @@ const save = async (email: EmailDTO) => {
 
 const updateEmail = async (email: EmailDTO) => {
     const storeInfo = await findStoreByName(email.storeName)
-    return prisma.emailConfiguartion.update({
+    let emailInfo = await prisma.emailConfiguartion.update({
         where: {
             storeId: storeInfo?.id
         },
@@ -169,7 +193,10 @@ const updateEmail = async (email: EmailDTO) => {
             senderEmail: email.senderEmail,
             updatedAt: new Date(),
         }
-    })
+    });
+    let emailVerification = await sendVerificationEmail(emailInfo as unknown as EmailDTO, storeInfo as ShopifyStoreInfo);
+    console.log('Verification Email Sent to :', emailVerification);
+    return emailInfo;
 }
 
 

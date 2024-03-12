@@ -1,6 +1,7 @@
+import { Prisma } from "@prisma/client";
 import { ShopifyStoreInfo } from "./shopify-store-info.model";
 
-class EmailConfiguration {
+export class EmailConfiguration {
     id: number = 0;
     store: ShopifyStoreInfo = {} as ShopifyStoreInfo;
     senderName: string = '';
