@@ -11,7 +11,7 @@
     "generate": "shopify app generate",
     "deploy": "shopify app deploy",
     "env": "shopify app env",
-    "start": "npm run build && remix-serve ./build/server/index.js",
+    "start": "npx prisma generate && npx prisma migrate dev &&  npm run build && remix-serve ./build/server/index.js",
     "docker-start": "npm run setup && npm run start",
     "setup": "prisma generate && prisma migrate deploy",
     "migrate:dev": "npx prisma migrate dev",
