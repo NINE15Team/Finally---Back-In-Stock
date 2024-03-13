@@ -8,12 +8,12 @@ class BackInStock extends HTMLElement {
     this.productHandle = this.dataset.productHandle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
-    this.productJSON = JSON.parse(document.querySelector("#bis-product-json").textContent);
+    this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
     this.initializeListeners();
   }
 
   initializeListeners() {
-    console.log(this.productJSON);
+    console.log(this.productInstance);
     if (this.hasVariantSelectElm()) {
       document.querySelector("product-info variant-selects").addEventListener('change', function () {
         let isDisabled = this.querySelector(":checked").classList.contains('disabled');
@@ -69,7 +69,7 @@ class BackInStock extends HTMLElement {
   }
 
   getVariantTitle(variantId) {
-    return this.productJSON.variants.find(d => d.id == variantId).title;
+    return this.productInstance.variants.find(d => d.id == variantId).title;
   }
 
   hasVariantSelectElm() {

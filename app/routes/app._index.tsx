@@ -83,17 +83,6 @@ export default function Index() {
   let { revalidate } = useRevalidator();
 
   const refreshData = async () => {
-    console.log('storeName', storeName);
-    const options = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({})
-    };
-    let resp = await fetch('/api/email/update-email', {})
-      .then(response => response.json())
-    console.log(resp)
     revalidate();
   }
 
