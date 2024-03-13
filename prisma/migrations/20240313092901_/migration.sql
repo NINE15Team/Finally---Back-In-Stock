@@ -29,9 +29,9 @@ CREATE TABLE "store_info" (
 CREATE TABLE "product_info" (
     "id" SERIAL NOT NULL,
     "store_id" INTEGER NOT NULL,
+    "product_uri" TEXT NOT NULL,
     "product_id" TEXT NOT NULL,
     "product_title" TEXT NOT NULL DEFAULT 'Default Product',
-    "product_handle" TEXT NOT NULL DEFAULT 'DefaultHandle',
     "variant_id" TEXT NOT NULL,
     "variant_title" TEXT NOT NULL DEFAULT 'Default Variant',
     "status" BOOLEAN NOT NULL DEFAULT false,
@@ -57,6 +57,31 @@ CREATE TABLE "customer_subscription" (
     CONSTRAINT "customer_subscription_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "email_configuartion" (
+    "id" SERIAL NOT NULL,
+    "store_id" INTEGER NOT NULL,
+    "sender_name" TEXT NOT NULL DEFAULT '',
+    "sender_email" TEXT NOT NULL DEFAULT '',
+    "email_verified" BOOLEAN NOT NULL DEFAULT false,
+    "header_content" TEXT NOT NULL DEFAULT '',
+    "header_font_family" TEXT NOT NULL DEFAULT '',
+    "header_font_size" TEXT NOT NULL DEFAULT '',
+    "header_bg_color" TEXT NOT NULL DEFAULT '',
+    "body_content" TEXT NOT NULL DEFAULT '',
+    "body_font_family" TEXT NOT NULL DEFAULT '',
+    "body_font_size" TEXT NOT NULL DEFAULT '',
+    "body_bg_color" TEXT NOT NULL DEFAULT '',
+    "footer_content" TEXT NOT NULL DEFAULT '',
+    "footer_font_family" TEXT NOT NULL DEFAULT '',
+    "footer_font_size" TEXT NOT NULL DEFAULT '',
+    "footer_bg_color" TEXT NOT NULL DEFAULT '',
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "email_configuartion_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "store_info_store_name_key" ON "store_info"("store_name");
 
@@ -66,8 +91,14 @@ CREATE UNIQUE INDEX "product_info_product_id_variant_id_key" ON "product_info"("
 -- CreateIndex
 CREATE UNIQUE INDEX "customer_subscription_customer_email_product_info_id_key" ON "customer_subscription"("customer_email", "product_info_id");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "email_configuartion_store_id_key" ON "email_configuartion"("store_id");
+
 -- AddForeignKey
 ALTER TABLE "product_info" ADD CONSTRAINT "product_info_store_id_fkey" FOREIGN KEY ("store_id") REFERENCES "store_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "customer_subscription" ADD CONSTRAINT "customer_subscription_product_info_id_fkey" FOREIGN KEY ("product_info_id") REFERENCES "product_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "email_configuartion" ADD CONSTRAINT "email_configuartion_store_id_fkey" FOREIGN KEY ("store_id") REFERENCES "store_info"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

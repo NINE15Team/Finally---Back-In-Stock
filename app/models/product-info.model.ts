@@ -3,10 +3,11 @@ import { ShopifyStoreInfo } from "./shopify-store-info.model";
 export class ProductInfo {
     id: number;
     store: ShopifyStoreInfo;
+    productURI: string;
     productId: number;
-    productTitle: String;
+    productTitle: string;
     variantId: number;
-    variantTitle: String;
+    variantTitle: string;
     status: boolean;
     inStock: boolean;
     createdAt: Date;
@@ -16,10 +17,11 @@ export class ProductInfo {
     constructor(
         id: number,
         store: ShopifyStoreInfo,
+        productURI: string,
         productId: number,
-        productTitle: String,
+        productTitle: string,
         variantId: number,
-        variantTitle: String,
+        variantTitle: string,
         status: boolean,
         inStock: boolean,
         createdAt: Date,
@@ -28,6 +30,7 @@ export class ProductInfo {
     ) {
         this.id = id;
         this.store = store;
+        this.productURI = productURI;
         this.productId = productId;
         this.productTitle = productTitle;
         this.variantId = variantId;
