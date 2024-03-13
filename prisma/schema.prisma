@@ -39,7 +39,7 @@ model ProductInfo {
   id                   Int                    @id @default(autoincrement())
   storeId              Int                    @map("store_id")
   store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id]) // This establishes the relationship
-  productURI           String                 @map("product_uri")
+  productHandle        String                 @map("product_handle")
   productId            String                 @map("product_id")
   productTitle         String                 @default("Default Product") @map("product_title")
   variantId            String                 @map("variant_id")

@@ -43,7 +43,7 @@ class BackInStock extends HTMLElement {
         body: JSON.stringify({
           storeId: this.storeId,
           storeName: this.storeId,
-          productURI: this.productHandle,
+          productHandle: this.productHandle,
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
