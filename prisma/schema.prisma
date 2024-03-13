@@ -77,6 +77,7 @@ model EmailConfiguartion {
   senderName       String           @default("") @map("sender_name")
   senderEmail      String           @default("") @map("sender_email")
   isEmailVerified  Boolean          @default(false) @map("email_verified")
+  senderId         String           @default("") @map("sender_id")
   headerContent    String           @default("") @map("header_content")
   headerFontFamily String           @default("") @map("header_font_family")
   headerFontSize   String           @default("") @map("header_font_size")

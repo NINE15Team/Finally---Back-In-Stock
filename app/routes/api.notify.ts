@@ -14,10 +14,9 @@ export const action: ActionFunction = async ({ request }) => {
             let resp = await sendEmail({
                 title: `Product Restock ${sub.productInfo.productTitle}`,
                 email: sub.customerEmail,
-                name: 'Nine15',
-                html: "<h2>Hello i am sending </h2>",
+                name: "Finally Back in Stock",
                 productInfo: prodInfo
-            })
+            } as unknown as EmailDTO)
             setCustomerNotified(sub.customerEmail, sub.productInfo.id);
             console.log(`Notified to ${sub.customerEmail}`, resp);
         })

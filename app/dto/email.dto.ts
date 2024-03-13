@@ -12,9 +12,20 @@ export interface EmailDTO {
     senderName: string;
     senderEmail: string;
     isEmailVerified: boolean;
+    senderId: string;
     headerContent: string;
+    headerFontFamily: string;
+    headerFontSize: string;
+    headerBgColor: string;
     bodyContent: string;
+    bodyFontFamily: string;
+    bodyFontSize: string;
+    bodyBgColor: string;
     footerContent: string;
+    footerFontFamily: string;
+    footerFontSize: string;
+    footerBgColor: string;
+
     createdAt: Date;
     updatedAt: Date;
 
