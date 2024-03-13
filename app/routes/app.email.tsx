@@ -27,9 +27,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let requestBody = await request.formData();
-  let flag = await isEmailVerified('app-bis2.myshopify.com');
-  console.log('______________________', flag)
+  let formData = await request.formData();
+  let value = Object.fromEntries(formData);
+  console.log(value);
   return redirect(`/app/email`);
 };
 
@@ -45,18 +45,18 @@ export default function EmailConfiguration() {
     <Page>
       <FormLayout>
         <Form method="post">
-          <TextField label="Sender Name" value={config.senderName} onChange={() => { }} autoComplete="off" />
+          <TextField label="Sender Name" name="senderName" value={config.senderName} onChange={() => { }} autoComplete="off" />
           <FormLayout.Group>
-            <TextField label="Header Content" value={config.headerContent} onChange={() => { }} autoComplete="off" />
+            <TextField label="Header Content" name="headerContent" value={config.headerContent} onChange={() => { }} autoComplete="off" />
           </FormLayout.Group>
 
           <FormLayout.Group>
-            <TextField label="Body Content" value={config.bodyContent} onChange={() => { }} autoComplete="off" />
+            <TextField label="Body Content" name="bodyContent" value={config.bodyContent} onChange={() => { }} autoComplete="off" />
           </FormLayout.Group>
 
 
           <FormLayout.Group>
-            <TextField label="Footer Content" value={config.footerContent} onChange={() => { }} autoComplete="off" />
+            <TextField label="Footer Content" name="footerContent" value={config.footerContent} onChange={() => { }} autoComplete="off" />
           </FormLayout.Group>
           <TextField
             type="email"
