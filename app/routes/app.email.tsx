@@ -11,7 +11,7 @@ import {
   TextField,
 } from "@shopify/polaris";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json } from "@remix-run/react";
+import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json, redirect } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { findAll } from "../services/customer-subscriber.service";
 import { isEmailVerified, updateEmail } from "../services/email.service";
@@ -20,6 +20,7 @@ import { useState } from "react";
 import { Form } from "@remix-run/react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  console.log(" i am loaded");
   let authObj = await authenticate.admin(request);
   const data = await isEmailVerified(authObj.session.shop);
   return data;
@@ -27,10 +28,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let requestBody = await request.formData();
-  console.log(JSON.stringify(requestBody))
-  return json({
-    product: 'hello',
-  });
+  let flag = await isEmailVerified('app-bis2.myshopify.com');
+  console.log('______________________', flag)
+  return redirect(`/app/email`);
 };
 
 export default function EmailConfiguration() {
