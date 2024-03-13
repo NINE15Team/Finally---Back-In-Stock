@@ -20,8 +20,6 @@ import { EmailDTO } from "../dto/email.dto";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let authObj = await authenticate.admin(request);
   const data = await findAll({ storeName: authObj.session.shop });
-  const em = await isEmailVerified(authObj.session.shop);
-  console.log(em)
   let rows = [];
   for (let i = 0; i < data.length; i++) {
     const subscription = data[i];
