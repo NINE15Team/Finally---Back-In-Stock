@@ -6,7 +6,7 @@ application_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = true
+automatically_update_urls_on_dev = false
 dev_store_url = "app-bis2.myshopify.com"
 include_config_on_deploy = true
 

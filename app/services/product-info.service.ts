@@ -75,7 +75,7 @@ const upsertProduct = async (req: any, store: string) => {
             prodcutInfos.push({
                 productId: elm.product_id + "",
                 productTitle: req.title,
-                productURI: elm.handle,
+                productURI: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
                 status: true,
