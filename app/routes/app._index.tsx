@@ -1,5 +1,13 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json, Form } from "@remix-run/react";
+import {
+  useActionData,
+  useNavigation,
+  useSubmit,
+  useLoaderData,
+  useRevalidator,
+  json,
+  Form,
+} from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -8,20 +16,23 @@ import {
   BlockStack,
   Link,
   InlineStack,
-  DataTable
+  DataTable,
+  Box,
+  FormLayout,
+  TextField,
+  Button,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { findAll } from "../services/customer-subscriber.service";
 import { isEmailVerified, save, updateEmail } from "../services/email.service";
 import { EmailDTO } from "../dto/email.dto";
-
-
+import { useRef, useEffect, useState, useCallback } from "react";
+import styles from "../utils/styles.module.css";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let authObj = await authenticate.admin(request);
   const data = await findAll({ storeName: authObj.session.shop });
-  const verification = await isEmailVerified(authObj.session.shop);
-  console.log(verification);
+  const emailVerified = await isEmailVerified(authObj.session.shop);
   let rows = [];
   for (let i = 0; i < data.length; i++) {
     const subscription = data[i];
@@ -29,30 +40,42 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       subscription.customerEmail,
       subscription.productInfo?.productTitle,
       subscription.productInfo?.variantTitle,
-      subscription.isNotified + ""
+      subscription.isNotified + "",
     ]);
   }
-  return { rows, storeName: authObj.session.shop };
+  return { rows, storeName: authObj.session.shop, emailVerified };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { session } = await authenticate.admin(request);
-  console.log(session.shop,"_______________")
-  return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
+  console.log(session.shop, "_______________");
+  return await updateEmail({
+    senderEmail: "khair.naqvi@gmail.com",
+    storeName: session.shop,
+    senderName: "BIS 2 ",
+  });
 };
 
 export default function Index() {
   const nav = useNavigation();
+  const modalRef = useRef();
   const actionData = useActionData<typeof action>();
-  let { rows, storeName } = useLoaderData<typeof loader>();
+  let { rows, storeName, emailVerified } = useLoaderData<typeof loader>();
   let { revalidate } = useRevalidator();
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = useCallback(() => {
+    setEmail("");
+  }, []);
+
+  const handleEmailChange = useCallback((value: string) => setEmail(value), []);
 
   const refreshData = async () => {
     revalidate();
-  }
+  };
 
   const onNotifyCustomer = async () => {
-    console.log('notify start');
+    console.log("notify start");
     const response = await fetch(`/api/notify`, {
       method: "POST",
       headers: {
@@ -61,7 +84,16 @@ export default function Index() {
       body: JSON.stringify({}),
     });
     console.log(response);
-  }
+  };
+
+
+  useEffect(() => {
+    if (!emailVerified) {
+      const el = document.querySelector("#email-verification-modal")
+      el!.show()
+      el!.addEventListener('hide',()=>location.reload())
+    }
+  }, []);
 
   return (
     <Page>
@@ -70,31 +102,40 @@ export default function Index() {
           Reload Data
         </button>
       </ui-title-bar>
+      <div className={styles.wrapper}>
+        <ui-modal id="email-verification-modal">
+          <Box padding="400">
+            <Form onSubmit={handleSubmit}>
+              <FormLayout>
+                <TextField
+                  value={email}
+                  onChange={handleEmailChange}
+                  label="Email"
+                  type="email"
+                  autoComplete="email"
+                />
+              </FormLayout>
+            </Form>
+          </Box>
+          <ui-title-bar title="Please Verify Your Email">
+            <button variant="primary">Verify Email</button>
+          </ui-title-bar>
+        </ui-modal>
+      </div>
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>
             <Card>
               <BlockStack gap="200">
                 <DataTable
-                  columnContentTypes={[
-                    'text',
-                    'text',
-                    'text',
-                    'text',
-                  ]}
-                  headings={[
-                    'Customer',
-                    'Product',
-                    'Variant',
-                    'Is Notified',
-                  ]}
+                  columnContentTypes={["text", "text", "text", "text"]}
+                  headings={["Customer", "Product", "Variant", "Is Notified"]}
                   rows={rows}
                   pagination={{
                     hasNext: true,
-                    onNext: () => { },
+                    onNext: () => {},
                   }}
                 />
-
               </BlockStack>
             </Card>
           </Layout.Section>
