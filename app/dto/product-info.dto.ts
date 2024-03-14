@@ -7,6 +7,8 @@ export interface ProductInfoDTO {
     productTitle: string;
     variantId: string;
     variantTitle: string;
+    price: string;
+    imageURL: string;
     status: boolean;
     inStock: boolean;
     createdAt: Date;

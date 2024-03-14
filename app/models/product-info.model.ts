@@ -8,6 +8,8 @@ export class ProductInfo {
     productTitle: string;
     variantId: number;
     variantTitle: string;
+    price: string;
+    imageURL: string;
     status: boolean;
     inStock: boolean;
     createdAt: Date;
@@ -22,6 +24,8 @@ export class ProductInfo {
         productTitle: string,
         variantId: number,
         variantTitle: string,
+        price: string,
+        imageURL: string,
         status: boolean,
         inStock: boolean,
         createdAt: Date,
@@ -35,6 +39,8 @@ export class ProductInfo {
         this.productTitle = productTitle;
         this.variantId = variantId;
         this.variantTitle = variantTitle;
+        this.price = price;
+        this.imageURL = imageURL;
         this.status = status;
         this.inStock = inStock;
         this.createdAt = createdAt;

@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "72a63a557f1b001566a1a73c21584434"
-name = "finally-back-in-stock"
-application_url = "https://skilled-republican-contractor-indirect.trycloudflare.com"
+name = "finally-bis"
+application_url = "https://seed-ones-stevens-fee.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,21 +16,21 @@ scopes = "read_customers,write_customers,write_inventory,write_orders,write_prod
 
 [auth]
 redirect_urls = [
-  "https://skilled-republican-contractor-indirect.trycloudflare.com/auth/callback",
-  "https://skilled-republican-contractor-indirect.trycloudflare.com/auth/shopify/callback",
-  "https://skilled-republican-contractor-indirect.trycloudflare.com/api/auth/callback"
+  "https://seed-ones-stevens-fee.trycloudflare.com/auth/callback",
+  "https://seed-ones-stevens-fee.trycloudflare.com/auth/shopify/callback",
+  "https://seed-ones-stevens-fee.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-01"
 
   [webhooks.privacy_compliance]
-  customer_deletion_url = "https://elegant-regional-statutes-informal.trycloudflare.com/api/compliance"
-  customer_data_request_url = "https://elegant-regional-statutes-informal.trycloudflare.com/api/compliance"
-  shop_deletion_url = "https://elegant-regional-statutes-informal.trycloudflare.com/api/compliance"
+  customer_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
+  customer_data_request_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
+  shop_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
 
 [app_proxy]
-url = "https://skilled-republican-contractor-indirect.trycloudflare.com/api/hello"
+url = "https://seed-ones-stevens-fee.trycloudflare.com/api/hello"
 subpath = "bis-api"
 prefix = "apps"
 

@@ -12,8 +12,9 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { findAll } from "../services/customer-subscriber.service";
-import { isEmailVerified, save, updateEmail } from "../services/email.service";
+import { isEmailVerified, saveOrUpdate, updateEmail } from "../services/email.service";
 import { EmailDTO } from "../dto/email.dto";
+import { createAdminApiClient } from '@shopify/admin-api-client';
 
 
 
@@ -37,8 +38,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { session } = await authenticate.admin(request);
-  console.log(session.shop,"_______________")
-  return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
+  return true;
+  // return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
 };
 
 export default function Index() {
