@@ -12,7 +12,7 @@ export interface EmailDTO {
     senderName: string;
     senderEmail: string;
     isEmailVerified: boolean;
-    senderId: string;
+    senderId: number;
     headerContent: string;
     headerFontFamily: string;
     headerFontSize: string;

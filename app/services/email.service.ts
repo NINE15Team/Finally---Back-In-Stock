@@ -16,10 +16,10 @@ const loadConfig = () => {
   return { EMAIL_API_URL, EMAIL_API_KEY };
 }
 
-const sendGridAdapter = async (uri: string, data: any, responseType = "text") => {
+const sendGridAdapter = async (uri: string, { data = {}, responseType = 'json', method = 'POST' } = {}) => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = loadConfig();
   const requestOptions = {
-    method: "POST",
+    method: method,
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${EMAIL_API_KEY}`
@@ -454,7 +454,7 @@ const sendEmail = async (email: EmailDTO) => {
     }
   };
 
-  return sendGridAdapter('mail/send', data, "text");
+  return sendGridAdapter('mail/send', { data, responseType: "text" });
 };
 
 const sendVerificationEmail = async (email: EmailDTO, storeInfo: ShopifyStoreInfo) => {
@@ -473,11 +473,11 @@ const sendVerificationEmail = async (email: EmailDTO, storeInfo: ShopifyStoreInf
 
   console.log('Sender data', data);
 
-  return await sendGridAdapter('verified_senders', data, "json");
+  return await sendGridAdapter('verified_senders', { data: data, responseType: "json" });
 }
 
 
-const save = async (email: Partial<EmailDTO>) => {
+const saveOrUpdate = async (email: Partial<EmailDTO>) => {
   let storeInfo: any = {};
   if (!email.storeId) {
     storeInfo = await findStoreByName(email.storeName)
@@ -582,13 +582,20 @@ const findByStoreName = async (storeName: any) => {
 
 const isEmailVerified = async (storeName: string) => {
   const storeInfo = await findStoreByName(storeName)
-  let count = await prisma.emailConfiguartion.count({
+  let data = await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
       isEmailVerified: true
     },
   });
-  return count > 0;
+  if (data && data?.id && !data.isEmailVerified) {
+    let verifiedSender = await sendGridAdapter(`verified_senders?id=${5681512}`, { responseType: "json", method: "GET" })
+    if (verifiedSender.verified) {
+      data.isEmailVerified = verifiedSender.verified;
+      await saveOrUpdate(data);
+    }
+  }
+  return data?.isEmailVerified;
 }
 
 const getStoreInfo = async (email: Partial<EmailDTO>) => {
@@ -601,4 +608,4 @@ const getStoreInfo = async (email: Partial<EmailDTO>) => {
   }
 }
 
-export { sendEmail, save, findByStoreName, updateEmail, isEmailVerified }
+export { sendEmail, saveOrUpdate, findByStoreName, updateEmail, isEmailVerified }
