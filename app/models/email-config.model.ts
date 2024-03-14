@@ -7,7 +7,7 @@ export class EmailConfiguration {
     senderName: string = '';
     senderEmail: string = '';
     isEmailVerified: boolean = false;
-    senderId: string = '';
+    senderId: number = 0;
     headerContent: string = '';
     headerFontFamily: string = '';
     headerFontSize: string = '';

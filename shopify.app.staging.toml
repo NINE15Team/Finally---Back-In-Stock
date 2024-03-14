@@ -2,7 +2,7 @@
 
 client_id = "72a63a557f1b001566a1a73c21584434"
 name = "finally-back-in-stock"
-application_url = "https://mite-perfect-narwhal.ngrok-free.app"
+application_url = "https://rachel-necklace-necessity-tropical.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_customers,write_inventory,write_orders,write_prod
 
 [auth]
 redirect_urls = [
-  "https://mite-perfect-narwhal.ngrok-free.app/auth/callback",
-  "https://mite-perfect-narwhal.ngrok-free.app/auth/shopify/callback",
-  "https://mite-perfect-narwhal.ngrok-free.app/api/auth/callback"
+  "https://rachel-necklace-necessity-tropical.trycloudflare.com/auth/callback",
+  "https://rachel-necklace-necessity-tropical.trycloudflare.com/auth/shopify/callback",
+  "https://rachel-necklace-necessity-tropical.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -30,7 +30,7 @@ api_version = "2024-01"
   shop_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
 
 [app_proxy]
-url = "https://mite-perfect-narwhal.ngrok-free.app/api/hello"
+url = "https://rachel-necklace-necessity-tropical.trycloudflare.com/api/hello"
 subpath = "bis-api"
 prefix = "apps"
 

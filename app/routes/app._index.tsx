@@ -37,6 +37,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { session } = await authenticate.admin(request);
+  console.log(session.shop,"_______________")
   return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
 };
 

@@ -2,7 +2,7 @@
 
 client_id = "72a63a557f1b001566a1a73c21584434"
 name = "finally-back-in-stock"
-application_url = "https://activated-tries-ak-freebsd.trycloudflare.com"
+application_url = "https://skilled-republican-contractor-indirect.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_customers,write_inventory,write_orders,write_prod
 
 [auth]
 redirect_urls = [
-  "https://activated-tries-ak-freebsd.trycloudflare.com/auth/callback",
-  "https://activated-tries-ak-freebsd.trycloudflare.com/auth/shopify/callback",
-  "https://activated-tries-ak-freebsd.trycloudflare.com/api/auth/callback"
+  "https://skilled-republican-contractor-indirect.trycloudflare.com/auth/callback",
+  "https://skilled-republican-contractor-indirect.trycloudflare.com/auth/shopify/callback",
+  "https://skilled-republican-contractor-indirect.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -30,7 +30,7 @@ api_version = "2024-01"
   shop_deletion_url = "https://elegant-regional-statutes-informal.trycloudflare.com/api/compliance"
 
 [app_proxy]
-url = "https://activated-tries-ak-freebsd.trycloudflare.com/api/hello"
+url = "https://skilled-republican-contractor-indirect.trycloudflare.com/api/hello"
 subpath = "bis-api"
 prefix = "apps"
 
