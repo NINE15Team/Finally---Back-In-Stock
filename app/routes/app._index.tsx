@@ -24,10 +24,13 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { findAll } from "../services/customer-subscriber.service";
-import { isEmailVerified, save, updateEmail } from "../services/email.service";
+import {
+  isEmailVerified,
+  saveOrUpdate,
+  updateEmail,
+} from "../services/email.service";
 import { EmailDTO } from "../dto/email.dto";
 import { useRef, useEffect, useState, useCallback } from "react";
-import styles from "../utils/styles.module.css";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let authObj = await authenticate.admin(request);
@@ -48,12 +51,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { session } = await authenticate.admin(request);
-  console.log(session.shop, "_______________");
-  return await updateEmail({
-    senderEmail: "khair.naqvi@gmail.com",
-    storeName: session.shop,
-    senderName: "BIS 2 ",
-  });
+  return true;
+  // return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
 };
 
 export default function Index() {
@@ -86,12 +85,11 @@ export default function Index() {
     console.log(response);
   };
 
-
   useEffect(() => {
     if (!emailVerified) {
-      const el = document.querySelector("#email-verification-modal")
-      el!.show()
-      el!.addEventListener('hide',()=>location.reload())
+      const el = document.querySelector("#email-verification-modal");
+      el!.show();
+      el!.addEventListener("hide", () => location.reload());
     }
   }, []);
 
@@ -102,26 +100,25 @@ export default function Index() {
           Reload Data
         </button>
       </ui-title-bar>
-      <div className={styles.wrapper}>
-        <ui-modal id="email-verification-modal">
-          <Box padding="400">
-            <Form onSubmit={handleSubmit}>
-              <FormLayout>
-                <TextField
-                  value={email}
-                  onChange={handleEmailChange}
-                  label="Email"
-                  type="email"
-                  autoComplete="email"
-                />
-              </FormLayout>
-            </Form>
-          </Box>
-          <ui-title-bar title="Please Verify Your Email">
-            <button variant="primary">Verify Email</button>
-          </ui-title-bar>
-        </ui-modal>
-      </div>
+      <ui-modal id="email-verification-modal">
+        <Box padding="400">
+          <Form onSubmit={handleSubmit}>
+            <FormLayout>
+              <TextField
+                value={email}
+                onChange={handleEmailChange}
+                label="Email"
+                type="email"
+                autoComplete="email"
+              />
+            </FormLayout>
+          </Form>
+        </Box>
+        <ui-title-bar title="Please Verify Your Email">
+          <button variant="primary">Verify Email</button>
+        </ui-title-bar>
+      </ui-modal>
+
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>
