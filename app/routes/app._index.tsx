@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json } from "@remix-run/react";
+import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json, Form } from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -12,7 +12,7 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { findAll } from "../services/customer-subscriber.service";
-import { isEmailVerified, updateEmail } from "../services/email.service";
+import { isEmailVerified, save, updateEmail } from "../services/email.service";
 import { EmailDTO } from "../dto/email.dto";
 
 
@@ -20,6 +20,8 @@ import { EmailDTO } from "../dto/email.dto";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let authObj = await authenticate.admin(request);
   const data = await findAll({ storeName: authObj.session.shop });
+  const verification = await isEmailVerified(authObj.session.shop);
+  console.log(verification);
   let rows = [];
   for (let i = 0; i < data.length; i++) {
     const subscription = data[i];
@@ -34,46 +36,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($input: ProductInput!) {
-        productCreate(input: $input) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          title: `${color} Snowboard`,
-          variants: [{ price: Math.random() * 100 }],
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-
-  return json({
-    product: responseJson.data?.productCreate?.product,
-  });
+  let { session } = await authenticate.admin(request);
+  return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
 };
 
 export default function Index() {
@@ -169,6 +133,11 @@ export default function Index() {
                     <button variant="primary" onClick={onNotifyCustomer}>
                       Notify Customers
                     </button>
+                    <Form method="POST">
+                      <button variant="primary" type="submit">
+                        Perform Action
+                      </button>
+                    </Form>
                   </BlockStack>
                 </BlockStack>
               </Card>

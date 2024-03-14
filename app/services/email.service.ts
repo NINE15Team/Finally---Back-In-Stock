@@ -471,14 +471,13 @@ const sendVerificationEmail = async (email: EmailDTO, storeInfo: ShopifyStoreInf
 }
 
 
-const save = async (email: EmailDTO) => {
+const save = async (email: Partial<EmailDTO>) => {
   const storeInfo = await findStoreByName(email.storeName)
   return prisma.emailConfiguartion.upsert({
     where: {
       storeId: storeInfo?.id
     },
     create: {
-      senderEmail: email.senderEmail,
       isEmailVerified: false,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -490,7 +489,6 @@ const save = async (email: EmailDTO) => {
 
     },
     update: {
-      senderName: email.senderName,
       senderId: email.senderId,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
@@ -501,22 +499,39 @@ const save = async (email: EmailDTO) => {
           id: storeInfo?.id
         }
       }
-
     }
   })
 }
 
-const updateEmail = async (email: EmailDTO) => {
+const updateEmail = async (email: Partial<EmailDTO>) => {
   const storeInfo = await findStoreByName(email.storeName)
-  let emailInfo = await prisma.emailConfiguartion.update({
+  let emailInfo = await prisma.emailConfiguartion.upsert({
     where: {
       storeId: storeInfo?.id
     },
-    data: {
+    create: {
       senderEmail: email.senderEmail,
+      createdAt: new Date(),
       updatedAt: new Date(),
+      store: {
+        connect: {
+          id: storeInfo?.id
+        }
+      }
+
+    },
+    update: {
+      senderName: email.senderName,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      store: {
+        connect: {
+          id: storeInfo?.id
+        }
+      }
     }
   });
+
   let emailVerification = await sendVerificationEmail(emailInfo as unknown as EmailDTO, storeInfo as ShopifyStoreInfo);
   console.log('Verification Email Sent to :', emailVerification);
   save(emailInfo as unknown as EmailDTO);

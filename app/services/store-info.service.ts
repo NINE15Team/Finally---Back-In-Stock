@@ -21,7 +21,7 @@ const saveStoreInfo = async (data: any) => {
     });
 };
 
-const findStoreByName = async (name: string) => {
+const findStoreByName = async (name: string = "") => {
     console.log(name, "_______________________--");
     return await prisma.shopifyStoreInfo.findUnique({
         where: {
