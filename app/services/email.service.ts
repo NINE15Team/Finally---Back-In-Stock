@@ -5,44 +5,68 @@ import { EmailDTO } from "../dto/email.dto";
 import { ProductInfo } from "../models/product-info.model";
 import { ShopifyStoreInfo } from "~/models/shopify-store-info.model";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
+import { readFile } from "fs/promises";
+import path from "path";
+import Handlebars from "handlebars";
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
   if (EMAIL_API_KEY == undefined) {
-    throw new Error('Email API Key is missing in .env flie');
+    throw new Error("Email API Key is missing in .env flie");
   }
   if (EMAIL_API_URL == undefined) {
-    throw new Error('Email API URL is missing in .env flie');
+    throw new Error("Email API URL is missing in .env flie");
   }
   return { EMAIL_API_URL, EMAIL_API_KEY };
-}
+};
 
-const sendGridAdapter = async (uri: string, { data = {}, responseType = 'json', method = 'POST' } = {}) => {
+const sendGridAdapter = async (
+  uri: string,
+  { data = {}, responseType = "json", method = "POST" } = {},
+) => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = loadConfig();
   const requestOptions = {
     method: method,
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${EMAIL_API_KEY}`
+      Authorization: `Bearer ${EMAIL_API_KEY}`,
     },
     body: JSON.stringify(data),
   };
 
   return await fetch(`${EMAIL_API_URL}/${uri}`, requestOptions)
     .then((response) => {
-      if (responseType == 'text') {
-        return response.text()
+      if (responseType == "text") {
+        return response.text();
       } else {
-        return response.json()
+        return response.json();
       }
     })
     .catch((response) => {
-      return response
-    })
-}
+      return response;
+    });
+};
 
-const loadEmailTemplate = (email: EmailDTO) => {
-  let { store } = email.productInfo;
+const loadEmailTemplate = async (email: EmailDTO) => {
+  let { store, imageURL, productTitle, price, productHandle } =
+    email.productInfo;
+  const emailPath = path.join("..", "utils", "email-template.hbs");
+  const file = (await readFile(emailPath)).toString();
+
+  const template = Handlebars.compile(file);
+
+  const populatedTemplate = template({
+    shop: store.storeName,
+    product: {
+      image: imageURL,
+      name: productTitle,
+      price,
+      url: `${store.shopifyURL}/products/${productHandle}`,
+    },
+  });
+
+  return populatedTemplate
+
   return `<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
     <head>
@@ -425,79 +449,83 @@ const loadEmailTemplate = (email: EmailDTO) => {
     </body>
     
     </html>`;
-}
-
+};
 
 const sendEmail = async (email: EmailDTO) => {
   const data = {
-    "personalizations": [
+    personalizations: [
       {
-        "to": [
+        to: [
           {
-            "email": email.email,
-            "name": "Finally Back in Stock"
-          }
+            email: email.email,
+            name: "Finally Back in Stock",
+          },
         ],
-        "cc": [
+        cc: [
           {
-            "email": email.senderEmail,
-            "name": "Finall Back In Stock"
-          }
+            email: email.senderEmail,
+            name: "Finall Back In Stock",
+          },
         ],
-        "subject": "Finally Back in Stock"
-      }
+        subject: "Finally Back in Stock",
+      },
     ],
-    "content": [
+    content: [
       {
-        "type": "text/html",
-        "value": loadEmailTemplate(email)
-      }
+        type: "text/html",
+        value: loadEmailTemplate(email),
+      },
     ],
-    "from": {
-      "email": "access@nine15.com",
-      "name": "Finally Back in Stock"
+    from: {
+      email: "access@nine15.com",
+      name: "Finally Back in Stock",
     },
-    "reply_to": {
-      "email": email.senderEmail,
-      "name": "Support"
-    }
+    reply_to: {
+      email: email.senderEmail,
+      name: "Support",
+    },
   };
 
-  return sendGridAdapter('mail/send', { data, responseType: "text" });
+  return sendGridAdapter("mail/send", { data, responseType: "text" });
 };
 
-const sendVerificationEmail = async (email: EmailDTO, storeInfo: ShopifyStoreInfo) => {
+const sendVerificationEmail = async (
+  email: EmailDTO,
+  storeInfo: ShopifyStoreInfo,
+) => {
   const data = {
-    "nickname": email.senderName,
-    "from_email": email.senderEmail,
-    "from_name": email.senderName,
-    "reply_to": email.senderEmail,
-    "reply_to_name": email.senderName,
-    "address": "CA",
-    "state": "CA",
-    "city": "San Francisco",
-    "country": "USA",
-    "zip": "94105"
+    nickname: email.senderName,
+    from_email: email.senderEmail,
+    from_name: email.senderName,
+    reply_to: email.senderEmail,
+    reply_to_name: email.senderName,
+    address: "CA",
+    state: "CA",
+    city: "San Francisco",
+    country: "USA",
+    zip: "94105",
   };
 
-  console.log('Sender data', data);
+  console.log("Sender data", data);
 
-  return await sendGridAdapter('verified_senders', { data: data, responseType: "json" });
-}
-
+  return await sendGridAdapter("verified_senders", {
+    data: data,
+    responseType: "json",
+  });
+};
 
 const saveOrUpdate = async (email: Partial<EmailDTO>) => {
   let storeInfo: any = {};
   if (!email.storeId) {
-    storeInfo = await findStoreByName(email.storeName)
+    storeInfo = await findStoreByName(email.storeName);
   } else {
     storeInfo = {
-      id: email.storeId
-    }
+      id: email.storeId,
+    };
   }
   return prisma.emailConfiguartion.upsert({
     where: {
-      storeId: storeInfo?.id
+      storeId: storeInfo?.id,
     },
     create: {
       isEmailVerified: EmailVerificationStatus.PENDING,
@@ -505,10 +533,9 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       updatedAt: new Date(),
       store: {
         connect: {
-          id: storeInfo?.id
-        }
-      }
-
+          id: storeInfo?.id,
+        },
+      },
     },
     update: {
       senderId: email.senderId,
@@ -519,33 +546,32 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       updatedAt: new Date(),
       store: {
         connect: {
-          id: storeInfo?.id
-        }
-      }
-    }
-  })
-}
+          id: storeInfo?.id,
+        },
+      },
+    },
+  });
+};
 
 const updateSender = async (storeId: any, senderId: any) => {
   console.log("updateSender", { storeId, senderId });
   return await prisma.emailConfiguartion.update({
     where: {
-      storeId: storeId
+      storeId: storeId,
     },
     data: {
       senderId: senderId,
       isEmailVerified: EmailVerificationStatus.PENDING,
       updatedAt: new Date(),
-    }
+    },
   });
-}
-
+};
 
 const updateEmail = async (email: Partial<EmailDTO>) => {
-  const storeInfo = await findStoreByName(email.storeName)
+  const storeInfo = await findStoreByName(email.storeName);
   let emailInfo = await prisma.emailConfiguartion.upsert({
     where: {
-      storeId: storeInfo?.id
+      storeId: storeInfo?.id,
     },
     create: {
       senderEmail: email.senderEmail,
@@ -555,10 +581,9 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
       updatedAt: new Date(),
       store: {
         connect: {
-          id: storeInfo?.id
-        }
-      }
-
+          id: storeInfo?.id,
+        },
+      },
     },
     update: {
       senderName: email.senderName,
@@ -567,34 +592,34 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
       updatedAt: new Date(),
       store: {
         connect: {
-          id: storeInfo?.id
-        }
-      }
-    }
+          id: storeInfo?.id,
+        },
+      },
+    },
   });
 
   try {
     // let emailVerification = await sendVerificationEmail(emailInfo as unknown as EmailDTO, storeInfo as ShopifyStoreInfo);
     // console.log('Verification Email Sent to :', emailVerification.id);
     // emailInfo = await updateSender(storeInfo?.id, emailVerification.id);
-    console.log('Email Updated : ', emailInfo);
+    console.log("Email Updated : ", emailInfo);
     return emailInfo;
   } catch (err) {
-    console.log("Error Cautght", err)
+    console.log("Error Cautght", err);
   }
-}
+};
 
 const findByStoreName = async (storeName: any) => {
-  const storeInfo = await findStoreByName(storeName)
+  const storeInfo = await findStoreByName(storeName);
   return await prisma.emailConfiguartion.findFirst({
     where: {
-      storeId: storeInfo?.id
+      storeId: storeInfo?.id,
     },
-  })
-}
+  });
+};
 
 const isEmailVerified = async (storeName: string) => {
-  const storeInfo = await findStoreByName(storeName)
+  const storeInfo = await findStoreByName(storeName);
   let data = await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
@@ -610,16 +635,22 @@ const isEmailVerified = async (storeName: string) => {
   //   }
   // }
   return data?.isEmailVerified;
-}
+};
 
 const getStoreInfo = async (email: Partial<EmailDTO>) => {
   if (!email.storeId) {
-    return await findStoreByName(email.storeName)
+    return await findStoreByName(email.storeName);
   } else {
     return {
-      id: email.storeId
-    }
+      id: email.storeId,
+    };
   }
-}
+};
 
-export { sendEmail, saveOrUpdate, findByStoreName, updateEmail, isEmailVerified }
+export {
+  sendEmail,
+  saveOrUpdate,
+  findByStoreName,
+  updateEmail,
+  isEmailVerified,
+};
