@@ -11,6 +11,7 @@ if (
 module.exports = {
   ignoredRouteFiles: ["**/.*"],
   appDirectory: "app",
+  publicPath: `${basePath}/build/`,
   serverModuleFormat: "cjs",
   future: {
     v2_errorBoundary: true,

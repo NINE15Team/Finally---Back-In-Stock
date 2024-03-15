@@ -43,3 +43,4 @@ export const action: ActionFunction = async ({ request }) => {
     }
     return await cors(request, json({ status: "success" }, 200));
 };
+
