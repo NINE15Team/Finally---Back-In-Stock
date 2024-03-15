@@ -21,7 +21,7 @@ let hmrConfig;
 if (host === "localhost") {
   hmrConfig = {
     protocol: "ws",
-    host: "localhost",
+    host: "https://app-bis2.myshopify.com/",
     port: 64999,
     clientPort: 64999,
   };
