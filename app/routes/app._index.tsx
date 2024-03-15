@@ -50,7 +50,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   let { session } = await authenticate.admin(request);
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
-  // return json({ msg: "Please Verify your Email" });
   return await updateEmail({ senderEmail: obj.email, storeName: session.shop, senderName: session.shop })
 };
 
@@ -81,6 +80,7 @@ export default function Index() {
 
   return (
     <Page>
+    Hello
       {(emailVerified == undefined || emailVerified == 'NO') &&
         (
           <Card padding="400">
