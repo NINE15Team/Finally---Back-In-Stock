@@ -5,5 +5,5 @@ export const action: ActionFunction = async ({ request }) => {
         let requstBody = await request.json();
         console.log(requstBody);
     }
-    return json({ nice: "jokess" });
+    return json({ data: "removed" });
 };

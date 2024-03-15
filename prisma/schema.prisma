@@ -38,7 +38,7 @@ model ShopifyStoreInfo {
 model ProductInfo {
   id                   Int                    @id @default(autoincrement())
   storeId              Int                    @map("store_id")
-  store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id]) // This establishes the relationship
+  store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id],onDelete: Cascade) // This establishes the relationship
   productHandle        String                 @map("product_handle")
   productId            String                 @map("product_id")
   productTitle         String                 @default("Default Product") @map("product_title")
@@ -60,7 +60,7 @@ model ProductInfo {
 model CustomerSubscription {
   id            Int         @id @default(autoincrement())
   productInfoId Int         @map("product_info_id")
-  productInfo   ProductInfo @relation(fields: [productInfoId], references: [id]) // This establishes the relationship
+  productInfo   ProductInfo @relation(fields: [productInfoId], references: [id],onDelete: Cascade) // This establishes the relationship
   customerEmail String      @default("Default Email") @map("customer_email")
   status        Boolean     @default(false) @map("status")
   isNotified    Boolean     @default(false) @map("is_notified")
@@ -75,7 +75,7 @@ model CustomerSubscription {
 model EmailConfiguartion {
   id               Int              @id @default(autoincrement())
   storeId          Int              @map("store_id")
-  store            ShopifyStoreInfo @relation(fields: [storeId], references: [id]) // This establishes the relationship
+  store            ShopifyStoreInfo @relation(fields: [storeId], references: [id],onDelete: Cascade) // This establishes the relationship
   senderName       String           @default("") @map("sender_name")
   senderEmail      String           @default("") @map("sender_email")
   isEmailVerified  String           @default("NO") @map("email_verified")

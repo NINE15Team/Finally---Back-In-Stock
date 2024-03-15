@@ -9,6 +9,7 @@ class BackInStock extends HTMLElement {
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
+    console.log(this.productInstance);
     this.initializeListeners();
   }
 
@@ -34,7 +35,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com";
+      const API_URL = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         headers: {
@@ -47,7 +48,7 @@ class BackInStock extends HTMLElement {
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
-          imageURL: this.productInstance.image.src,
+          imageURL: this.productInstance.feature_image,
           price: this.getVariant(variantId).price,
           variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")

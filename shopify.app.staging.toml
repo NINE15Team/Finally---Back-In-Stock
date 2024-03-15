@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "72a63a557f1b001566a1a73c21584434"
-name = "finally-back-in-stock"
-application_url = "https://rachel-necklace-necessity-tropical.trycloudflare.com"
+name = "finally-back-in-stock-staging"
+application_url = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/"
 embedded = true
 
 [build]
@@ -12,13 +12,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_customers,write_customers,write_inventory,write_orders,write_products"
+scopes = "read_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://rachel-necklace-necessity-tropical.trycloudflare.com/auth/callback",
-  "https://rachel-necklace-necessity-tropical.trycloudflare.com/auth/shopify/callback",
-  "https://rachel-necklace-necessity-tropical.trycloudflare.com/api/auth/callback"
+  "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/auth/callback",
+  "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/auth/shopify/callback",
+  "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/api/auth/callback"
 ]
 
 [webhooks]
@@ -30,7 +30,7 @@ api_version = "2024-01"
   shop_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
 
 [app_proxy]
-url = "https://rachel-necklace-necessity-tropical.trycloudflare.com/api/hello"
+url = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/api/hello"
 subpath = "bis-api"
 prefix = "apps"
 
