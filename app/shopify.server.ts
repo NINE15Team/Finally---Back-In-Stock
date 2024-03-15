@@ -28,30 +28,6 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
-    INVENTORY_ITEMS_UPDATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_ITEMS_CREATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_ITEMS_DELETE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_LEVELS_CONNECT: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_LEVELS_DISCONNECT: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_LEVELS_UPDATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
     CUSTOMERS_DATA_REQUEST: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
