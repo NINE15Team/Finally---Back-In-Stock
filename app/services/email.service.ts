@@ -50,7 +50,7 @@ const sendGridAdapter = async (
 const loadEmailTemplate = async (email: EmailDTO) => {
   let { store, imageURL, productTitle, price, productHandle } =
     email.productInfo;
-  const emailPath = path.join("..", "utils", "email-template.hbs");
+  const emailPath = path.join(__dirname, "..", "utils", "email-template.hbs");
   const file = (await readFile(emailPath)).toString();
 
   const template = Handlebars.compile(file);
