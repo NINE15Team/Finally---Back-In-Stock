@@ -38,9 +38,6 @@ export default defineConfig({
   server: {
     port: Number(process.env.PORT || 3000),
     hmr: hmrConfig,
-    proxy: {
-      '/api': 'https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com'
-    }
   },
   plugins: [
     remix({
