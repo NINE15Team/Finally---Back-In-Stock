@@ -2,7 +2,7 @@ import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import { ProductInfo } from "~/models/product-info.model";
 
 export interface EmailDTO {
-    email: String;
+    toEmail: String;
     name: String;
     title: String;
     html: String;
