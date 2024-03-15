@@ -79,9 +79,11 @@ export default function Index() {
     console.log(response);
   };
 
+  console.log(emailVerified)
+
   return (
     <Page>
-      {(emailVerified == undefined || emailVerified == 'NO') &&
+      {(emailVerified == undefined || emailVerified == false) &&
         (
           <Card padding="400">
             <Form method="POST">
@@ -103,7 +105,7 @@ export default function Index() {
             </Form>
           </Card>
         )}
-      {emailVerified == "YES" &&
+      {emailVerified == true &&
         (<div >
           <ui-title-bar title="Back In Stock">
             <button variant="primary" onClick={refreshData}>
