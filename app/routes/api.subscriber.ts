@@ -16,6 +16,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json();
+        console.log("****************Subscribe to Product", requstBody);
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
         if (!isProductExist) {
             console.log("Request Body For API Subscription", requstBody);
