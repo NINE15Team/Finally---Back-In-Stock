@@ -435,10 +435,16 @@ const sendEmail = async (email: EmailDTO) => {
         "to": [
           {
             "email": email.email,
-            "name": email.name
+            "name": "Finally Back in Stock"
           }
         ],
-        "subject": email.title
+        "cc": [
+          {
+            "email": email.senderEmail,
+            "name": "Finall Back In Stock"
+          }
+        ],
+        "subject": "Finally Back in Stock"
       }
     ],
     "content": [
@@ -448,8 +454,8 @@ const sendEmail = async (email: EmailDTO) => {
       }
     ],
     "from": {
-      "email": email.senderEmail,
-      "name": "Product has been re-stocked"
+      "email": "access@nine15.com",
+      "name": "Finally Back in Stock"
     },
     "reply_to": {
       "email": email.senderEmail,
