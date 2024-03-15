@@ -4,7 +4,12 @@ import { subscribeProduct } from "~/services/customer-subscriber.service";
 import { cors } from "remix-utils/cors";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    return await cors(request, json({}));
+    return await cors(request, json({ hello: "world" },
+        {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+        }));
 };
 
 
