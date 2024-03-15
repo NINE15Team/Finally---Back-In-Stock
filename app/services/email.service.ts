@@ -4,6 +4,7 @@ import { findStoreByName } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
 import { ProductInfo } from "../models/product-info.model";
 import { ShopifyStoreInfo } from "~/models/shopify-store-info.model";
+import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -29,13 +30,15 @@ const sendGridAdapter = async (uri: string, { data = {}, responseType = 'json', 
 
   return await fetch(`${EMAIL_API_URL}/${uri}`, requestOptions)
     .then((response) => {
-      if (responseType == 'responseType') {
+      if (responseType == 'text') {
         return response.text()
       } else {
         return response.json()
       }
     })
-    .catch((response) => response.text())
+    .catch((response) => {
+      return response
+    })
 }
 
 const loadEmailTemplate = (email: EmailDTO) => {
@@ -491,7 +494,7 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       storeId: storeInfo?.id
     },
     create: {
-      isEmailVerified: false,
+      isEmailVerified: EmailVerificationStatus.PENDING,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -503,6 +506,7 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
     },
     update: {
       senderId: email.senderId,
+      isEmailVerified: email.isEmailVerified,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
@@ -524,6 +528,7 @@ const updateSender = async (storeId: any, senderId: any) => {
     },
     data: {
       senderId: senderId,
+      isEmailVerified: EmailVerificationStatus.PENDING,
       updatedAt: new Date(),
     }
   });
@@ -539,6 +544,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
     create: {
       senderEmail: email.senderEmail,
       senderName: email.senderName,
+      isEmailVerified: EmailVerificationStatus.NO,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -550,6 +556,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
     },
     update: {
       senderName: email.senderName,
+      isEmailVerified: EmailVerificationStatus.NO,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -585,13 +592,16 @@ const isEmailVerified = async (storeName: string) => {
   let data = await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
-      isEmailVerified: true
+      isEmailVerified: {
+        not: EmailVerificationStatus.YES
+      }
     },
   });
-  if (data && data?.id && !data.isEmailVerified) {
-    let verifiedSender = await sendGridAdapter(`verified_senders?id=${5681512}`, { responseType: "json", method: "GET" })
+
+  if (data && data?.id && data.isEmailVerified != EmailVerificationStatus.YES) {
+    let verifiedSender = await sendGridAdapter(`verified_senders?id=${data.senderId}`, { responseType: "json", method: "GET" })
     if (verifiedSender.verified) {
-      data.isEmailVerified = verifiedSender.verified;
+      data.isEmailVerified = EmailVerificationStatus.YES;
       await saveOrUpdate(data);
     }
   }

@@ -1,3 +1,4 @@
+import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import { ProductInfo } from "~/models/product-info.model";
 
 export interface EmailDTO {
@@ -11,7 +12,7 @@ export interface EmailDTO {
     storeName: string;
     senderName: string;
     senderEmail: string;
-    isEmailVerified: boolean;
+    isEmailVerified: EmailVerificationStatus | string;
     senderId: number;
     headerContent: string;
     headerFontFamily: string;

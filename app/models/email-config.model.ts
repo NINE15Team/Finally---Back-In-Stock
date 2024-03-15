@@ -1,12 +1,13 @@
 import { Prisma } from "@prisma/client";
 import { ShopifyStoreInfo } from "./shopify-store-info.model";
+import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 
 export class EmailConfiguration {
     id: number = 0;
     store: ShopifyStoreInfo = {} as ShopifyStoreInfo;
     senderName: string = '';
     senderEmail: string = '';
-    isEmailVerified: boolean = false;
+    isEmailVerified: EmailVerificationStatus = EmailVerificationStatus.NO;
     senderId: number = 0;
     headerContent: string = '';
     headerFontFamily: string = '';

@@ -78,7 +78,7 @@ model EmailConfiguartion {
   store            ShopifyStoreInfo @relation(fields: [storeId], references: [id]) // This establishes the relationship
   senderName       String           @default("") @map("sender_name")
   senderEmail      String           @default("") @map("sender_email")
-  isEmailVerified  Boolean          @default(false) @map("email_verified")
+  isEmailVerified  String           @default("NO") @map("email_verified")
   senderId         Int              @default(0) @map("sender_id")
   headerContent    String           @default("") @map("header_content")
   headerFontFamily String           @default("") @map("header_font_family")
