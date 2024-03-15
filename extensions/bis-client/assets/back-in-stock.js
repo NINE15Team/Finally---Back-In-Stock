@@ -9,7 +9,7 @@ class BackInStock extends HTMLElement {
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
-    console.log(this.productInstance);
+    console.log(this.productInstance.featured_image);
     this.initializeListeners();
   }
 
@@ -35,7 +35,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com";
+      const API_URL = "https://fixed-crash-for-breast.trycloudflare.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         headers: {
@@ -48,7 +48,7 @@ class BackInStock extends HTMLElement {
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
-          imageURL: this.productInstance.feature_image,
+          imageURL: this.productInstance.featured_image,
           price: this.getVariant(variantId).price,
           variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")
