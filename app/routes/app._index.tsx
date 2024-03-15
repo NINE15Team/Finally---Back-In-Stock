@@ -79,13 +79,9 @@ export default function Index() {
     console.log(response);
   };
 
-  console.log(actionData, "0000000000000000000000000000000000");
-
-
   return (
     <Page>
-      oyyis {emailVerified}
-      {(emailVerified == undefined || emailVerified == "NO") &&
+      {(emailVerified == undefined || emailVerified == 'NO') &&
         (
           <Card padding="400">
             <Form method="POST">
@@ -107,13 +103,6 @@ export default function Index() {
             </Form>
           </Card>
         )}
-
-      {emailVerified == "PENDING" &&
-        (
-          <div>Please Verify your email Address</div>
-        )}
-
-
       {emailVerified == "YES" &&
         (<div >
           <ui-title-bar title="Back In Stock">
@@ -143,42 +132,10 @@ export default function Index() {
                 <BlockStack gap="500">
                   <Card>
                     <BlockStack gap="200">
-                      <Text as="h2" variant="headingMd">
-                        Summary
-                      </Text>
                       <BlockStack gap="200">
-                        <InlineStack align="space-between">
-                          <Text as="span" variant="bodyMd">
-                            Customers
-                          </Text>
-                          <Link
-                            url="https://remix.run"
-                            target="_blank"
-                            removeUnderline
-                          >
-                            100
-                          </Link>
-                        </InlineStack>
-                        <InlineStack align="space-between">
-                          <Text as="span" variant="bodyMd">
-                            Out of Stock Items
-                          </Text>
-                          <Link
-                            url="https://www.prisma.io/"
-                            target="_blank"
-                            removeUnderline
-                          >
-                            200
-                          </Link>
-                        </InlineStack>
-                        <button variant="primary" onClick={onNotifyCustomer}>
+                        <Button variant="primary" onClick={onNotifyCustomer}>
                           Notify Customers
-                        </button>
-                        <Form method="POST">
-                          <button variant="primary" type="submit">
-                            Perform Action
-                          </button>
-                        </Form>
+                        </Button>
                       </BlockStack>
                     </BlockStack>
                   </Card>

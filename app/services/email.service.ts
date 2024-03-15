@@ -544,7 +544,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
     create: {
       senderEmail: email.senderEmail,
       senderName: email.senderName,
-      isEmailVerified: EmailVerificationStatus.NO,
+      isEmailVerified: EmailVerificationStatus.YES,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -556,7 +556,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
     },
     update: {
       senderName: email.senderName,
-      isEmailVerified: EmailVerificationStatus.NO,
+      isEmailVerified: EmailVerificationStatus.YES,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -568,10 +568,10 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
   });
 
   try {
-    let emailVerification = await sendVerificationEmail(emailInfo as unknown as EmailDTO, storeInfo as ShopifyStoreInfo);
-    console.log('Verification Email Sent to :', emailVerification.id);
-    emailInfo = await updateSender(storeInfo?.id, emailVerification.id);
-    console.log('Sender Id captured : ', emailInfo);
+    // let emailVerification = await sendVerificationEmail(emailInfo as unknown as EmailDTO, storeInfo as ShopifyStoreInfo);
+    // console.log('Verification Email Sent to :', emailVerification.id);
+    // emailInfo = await updateSender(storeInfo?.id, emailVerification.id);
+    console.log('Email Updated : ', emailInfo);
     return emailInfo;
   } catch (err) {
     console.log("Error Cautght", err)
@@ -592,19 +592,17 @@ const isEmailVerified = async (storeName: string) => {
   let data = await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
-      isEmailVerified: {
-        not: EmailVerificationStatus.YES
-      }
     },
   });
 
-  if (data && data?.id && data.isEmailVerified != EmailVerificationStatus.YES) {
-    let verifiedSender = await sendGridAdapter(`verified_senders?id=${data.senderId}`, { responseType: "json", method: "GET" })
-    if (verifiedSender.verified) {
-      data.isEmailVerified = EmailVerificationStatus.YES;
-      await saveOrUpdate(data);
-    }
-  }
+  // TODO later on un-comment when send verification will start working
+  // if (data && data?.id && data.isEmailVerified != EmailVerificationStatus.YES) {
+  //   let verifiedSender = await sendGridAdapter(`verified_senders?id=${data.senderId}`, { responseType: "json", method: "GET" })
+  //   if (verifiedSender.verified) {
+  //     data.isEmailVerified = EmailVerificationStatus.YES;
+  //     await saveOrUpdate(data);
+  //   }
+  // }
   return data?.isEmailVerified;
 }
 
