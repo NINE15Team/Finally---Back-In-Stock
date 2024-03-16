@@ -5,12 +5,11 @@ import { cors } from "remix-utils/cors";
 
 export const loader: LoaderFunction = async ({ request }) => {
     console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-    return await cors(request, json({ hello: "world" },
-        {
+    return await json({ hello: "world" },{
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
-        }));
+        });
 };
 
 
