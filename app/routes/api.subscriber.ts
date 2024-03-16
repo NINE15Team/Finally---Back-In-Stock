@@ -4,6 +4,7 @@ import { subscribeProduct } from "~/services/customer-subscriber.service";
 import { cors } from "remix-utils/cors";
 
 export const loader: LoaderFunction = async ({ request }) => {
+    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
     return await cors(request, json({ hello: "world" },
         {
             headers: {
@@ -14,6 +15,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 
 export const action: ActionFunction = async ({ request }) => {
+    console.log("****************Subscribe to Product__________________");
     if (request.method == 'POST') {
         let requstBody = await request.json();
         console.log("****************Subscribe to Product", requstBody);
