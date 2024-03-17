@@ -1,19 +1,30 @@
 // server/server.js
 const express = require('express');
 const cors = require('cors');
-const { createRequestHandler } = require('@remix-run/express');
+const remix = require("@remix-run/express");
 
 const app = express();
 
 // Configure CORS for a specific domain
 const corsOptions = {
-    origin: 'https://app-bis2.myshopify.com',
+    origin: '*',
 };
 
 app.use(cors(corsOptions));
 
 // Serve the Remix app
-app.all('*', createRequestHandler(/* Remix handler config */));
+app.all(
+    "*",
+    remix.createRequestHandler({
+        build: require("./build/server"),
+    })
+);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+app.get('/products', cors(), function (req, res, next) {
+    res.json({ msg: 'This is CORS-enabled for an allowed domain.' })
+})
+
+app.listen(80, function () {
+    console.log('CORS-enabled web server listening on port 80')
+})
