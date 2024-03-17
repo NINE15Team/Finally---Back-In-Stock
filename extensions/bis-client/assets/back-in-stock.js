@@ -38,9 +38,6 @@ class BackInStock extends HTMLElement {
       const API_URL = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
           storeId: this.storeId,
           storeName: this.storeId,
@@ -49,7 +46,7 @@ class BackInStock extends HTMLElement {
           productTitle: this.productTitle,
           variantId: variantId,
           imageURL: this.productInstance.featured_image,
-          price: this.getVariant(variantId).price,
+          price: this.getVariant(variantId).price + "",
           variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")
         }),
