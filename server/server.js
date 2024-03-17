@@ -7,6 +7,13 @@ const app = express();
 // and here your Remix app is "just a request handler"
 app.all("*", createRequestHandler({ build }));
 
+app.get('/products/', cors(), function (req, res, next) {
+    res.json({ msg: 'This is CORS-enabled for an allowed domain.' })
+});
+
+app.listen(80, function () {
+    console.log('CORS-enabled web server listening on port 80')
+})
 // This is pseudo code, but illustrates what adapters do:
 export function createRequestHandler({ build }) {
     console.log("%%%%%%%%%%%", build);
