@@ -13,6 +13,10 @@ app.use(cors());
 app.use(express.static("public"));
 
 
+app.get('/products/', function (req, res, next) {
+    res.json({ msg: 'This is CORS-enabled for all origins!' })
+})
+
 app.all(
     "*",
     createRequestHandler({
