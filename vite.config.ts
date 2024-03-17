@@ -38,7 +38,10 @@ export default defineConfig({
   server: {
     port: Number(process.env.PORT || 3000),
     hmr: hmrConfig,
-    cors: false
+    cors: {
+      preflightContinue: true,
+      origin: "*"
+    }
   },
   plugins: [
     remix({
