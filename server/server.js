@@ -10,8 +10,6 @@ const corsOptions = {
     origin: '*',
 };
 
-app.use(cors(corsOptions));
-
 // Serve the Remix app
 app.all(
     "*",
