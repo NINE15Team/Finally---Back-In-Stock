@@ -1,16 +1,15 @@
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
-import { cors } from "remix-utils/cors";
 
 export const loader: LoaderFunction = async ({ request }) => {
     console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-    return await cors(request, json({ hello: "world" },
+    return await json({ hello: "world" },
         {
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
-        }));
+        });
 };
 
 
@@ -41,8 +40,8 @@ export const action: ActionFunction = async ({ request }) => {
 
         }
         let result = await subscribeProduct(subscribeItem)
-        return await cors(request, json({ data: result }, 200));
+        return await json({ data: result }, 200);
     }
-    return await cors(request, json({ status: "success" }, 200));
+    return await json({ status: "success" }, 200);
 };
 
