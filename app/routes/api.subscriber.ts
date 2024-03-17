@@ -4,12 +4,7 @@ import { subscribeProduct } from "~/services/customer-subscriber.service";
 
 export const loader: LoaderFunction = async ({ request }) => {
     console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-    return await json({ hello: "world" },
-        {
-            headers: {
-                "Access-Control-Allow-Origin": "*",
-            },
-        });
+    return await json({ hello: "world" });
 };
 
 
