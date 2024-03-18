@@ -35,7 +35,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://lighter-stops-productive-wi.trycloudflare.com";
+      const API_URL = "https://finally-back-in-stock-dev-2db9466211f6.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({
