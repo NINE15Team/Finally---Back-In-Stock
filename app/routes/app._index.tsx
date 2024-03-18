@@ -28,6 +28,7 @@ import { findAll } from "../services/customer-subscriber.service";
 import { isEmailVerified, updateEmail } from "../services/email.service";
 import { EmailDTO } from "../dto/email.dto";
 import { useRef, useEffect, useState, useCallback } from "react";
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let authObj = await authenticate.admin(request);
@@ -57,6 +58,7 @@ export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData<typeof action>();
   let { rows, storeName, emailVerified } = useLoaderData<typeof loader>();
+  const shopifyBridge = useAppBridge();
   let { revalidate } = useRevalidator();
   const [email, setEmail] = useState("");
 
@@ -75,11 +77,13 @@ export default function Index() {
       },
       body: JSON.stringify({}),
     });
-    console.log(response);
+    shopifyBridge.modal.show('info-modal');
+    revalidate();
   };
 
   return (
     <Page>
+
       {(emailVerified == undefined || emailVerified == 'NO') &&
         (
           <Card padding="400">
@@ -94,11 +98,13 @@ export default function Index() {
                   autoComplete="email"
                 />
               </BlockStack>
-              <InlineStack align="end">
-                <ButtonGroup>
-                  <Button variant="primary" submit={true}>Verify Email</Button>
-                </ButtonGroup>
-              </InlineStack>
+              <div style={{ marginTop: "10px" }}>
+                <InlineStack align="end" >
+                  <ButtonGroup>
+                    <Button variant="primary" submit={true}>Verify Email</Button>
+                  </ButtonGroup>
+                </InlineStack>
+              </div>
             </Form>
           </Card>
         )}
@@ -109,7 +115,11 @@ export default function Index() {
               Reload Data
             </button>
           </ui-title-bar>
-          <BlockStack gap="500">
+          <Modal id="info-modal">
+            <p style={{ marginLeft: '5px' }}>Email notification has been processed </p>
+            <TitleBar title="Notification Message"></TitleBar>
+          </Modal>
+          <BlockStack gap="400">
             <Layout>
               <Layout.Section>
                 <Card>
