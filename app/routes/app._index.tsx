@@ -89,7 +89,7 @@ export default function Index() {
                   value={email}
                   onChange={handleEmailChange}
                   name="email"
-                  label="Email"
+                  label="Please Enter Sender Email"
                   type="email"
                   autoComplete="email"
                 />
