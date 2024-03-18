@@ -10,10 +10,8 @@ export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json();
         let subscribers = await findAll({ isNotified: false });
-        console.log("^^^^^^^^^^^^^^",subscribers);
         subscribers.forEach(async sub => {
             let emailInfo = await findByStoreId(sub.productInfo.storeId);
-            console.log("%%%%%%%%%%%%%%%",);
             let prodInfo: any = sub.productInfo;
             let resp = await sendEmail({
                 title: `Product Restock ${sub.productInfo.productTitle}`,

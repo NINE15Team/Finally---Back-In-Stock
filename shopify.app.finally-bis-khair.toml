@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://lighter-stops-productive-wi.trycloudflare.com"
+application_url = "https://elsewhere-glenn-coupled-problems.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://lighter-stops-productive-wi.trycloudflare.com/auth/callback",
-  "https://lighter-stops-productive-wi.trycloudflare.com/auth/shopify/callback",
-  "https://lighter-stops-productive-wi.trycloudflare.com/api/auth/callback"
+  "https://elsewhere-glenn-coupled-problems.trycloudflare.com/auth/callback",
+  "https://elsewhere-glenn-coupled-problems.trycloudflare.com/auth/shopify/callback",
+  "https://elsewhere-glenn-coupled-problems.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
