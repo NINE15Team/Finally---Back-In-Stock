@@ -80,7 +80,6 @@ export default function Index() {
 
   return (
     <Page>
-    Hello
       {(emailVerified == undefined || emailVerified == 'NO') &&
         (
           <Card padding="400">
