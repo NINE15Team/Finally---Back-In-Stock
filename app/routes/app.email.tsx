@@ -1,35 +1,14 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import {
-  useActionData,
-  useNavigation,
-  useSubmit,
-  useLoaderData,
-  useRevalidator,
-  json,
-  Form,
-} from "@remix-run/react";
+import { useNavigation } from "@remix-run/react";
 import {
   Page,
-  Layout,
   Text,
-  Card,
   BlockStack,
-  Link,
-  InlineStack,
-  DataTable,
   Box,
-  FormLayout,
   TextField,
   Button,
-  ButtonGroup,
-  RangeSlider,
-  ColorPicker,
 } from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
-import { findAll } from "../services/customer-subscriber.service";
-import { isEmailVerified, updateEmail } from "../services/email.service";
-import { EmailDTO } from "../dto/email.dto";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   return {};
@@ -40,42 +19,70 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const nav = useNavigation();
-  const [email, setEmail] = useState("");
   const [form, setForm] = useState({
     name: "",
-    email: "",
+    title: "",
     headerContent: "",
-    headerFontFamily: "",
-    headerFontSize: "",
-    headerBgColor: "",
     bodyContent: "",
-    bodyFontFamily: "",
-    bodyFontSize: "",
-    bodyBgColor: "",
     footerContent: "",
-    footerFontFamily: "",
-    footerFontSize: "",
-    footerBgColor: "",
+    buttonContent: "",
   });
 
-  const handleChange = (key, value) =>
+  const handleChange = (key: string, value: string) =>
     setForm((prev) => ({ ...prev, [key]: value }));
-
-  
 
   return (
     <Page>
-      <Text as="h1" fontWeight="bold" variant="heading2xl">
-        Email Configuration
-      </Text>
-      <TextField value={form.name} onChange={(val)=>handleChange(form.name,val)} label="Name" autoComplete="off" />
-      <TextField value={form.email} onChange={(val)=>handleChange(form.email,val)} label="Email" autoComplete="off" />
-      <TextField value={form.headerContent} onChange={(val)=>handleChange(form.headerContent,val)} label="Header Content" autoComplete="off" />
-      <TextField value={form.headerFontFamily} onChange={(val)=>handleChange(form.headerFontFamily,val)} label="Header Font Family" autoComplete="off" />
-      <RangeSlider value={+form.headerFontSize} label="Header Font Size" onChange={(val)=>handleChange(form.headerFontSize,val.toString())} min={1} max={30}/>
-      <ColorPicker/>
-      <TextField value={form.headerFontFamily} onChange={(val)=>handleChange(form.headerFontFamily,val)} label="Header Font Family" autoComplete="off" />
+      <Box paddingBlockEnd="400">
+        <Text as="h1" fontWeight="bold" variant="headingXl">
+          Email Configuration
+        </Text>
+      </Box>
+      <BlockStack gap="200">
+        <TextField
+          value={form.name}
+          onChange={(val) => handleChange("name", val)}
+          label="Name"
+          autoComplete="off"
+        />
+        <TextField
+          value={form.title}
+          onChange={(val) => handleChange("title", val)}
+          label="Email Title"
+          autoComplete="off"
+        />
+        <TextField
+          value={form.headerContent}
+          onChange={(val) => handleChange("headerContent", val)}
+          label="Header Content"
+          placeholder="Good News!"
+          autoComplete="off"
+        />
+        <TextField
+          value={form.bodyContent}
+          onChange={(val) => handleChange("bodyContent", val)}
+          label="Body Content"
+          placeholder="Your product is back in stock"
+          autoComplete="off"
+        />
+        <TextField
+          value={form.footerContent}
+          onChange={(val) => handleChange("footerContent", val)}
+          label="Footer Content"
+          placeholder="If you have any concerns,please email xyz"
+          autoComplete="off"
+        />
+        <TextField
+          value={form.buttonContent}
+          onChange={(val) => handleChange("buttonContent", val)}
+          label="Button Content"
+          placeholder="Checkout Now!"
+          autoComplete="off"
+        />
+        <Box paddingBlockStart="200">
+          <Button variant="primary">Save</Button>
+        </Box>
+      </BlockStack>
     </Page>
   );
 }

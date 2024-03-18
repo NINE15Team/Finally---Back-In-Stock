@@ -4,7 +4,7 @@ import prisma from "~/db.server";
 const findAll = async (params: any = {}) => {
     return await prisma.customerSubscription.findMany({
         where: {
-            isNotified: params?.isNotifiedm,
+            isNotified: params?.isNotified,
             productInfo: {
                 inStock: false,
                 store: {

@@ -11,7 +11,7 @@ const saveStoreInfo = async (data: any) => {
             updatedAt: new Date(),
         },
         create: {
-            storeId: '12345',
+            storeId: data.storeName,
             storeName: data.storeName,
             shopifyURL: data.shopifyURL,
             updatedAt: new Date(),

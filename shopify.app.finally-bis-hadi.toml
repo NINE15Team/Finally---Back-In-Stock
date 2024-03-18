@@ -2,7 +2,7 @@
 
 client_id = "4be5fc9d1ae991fced4096c5f04e5665"
 name = "finally-bis-hadi"
-application_url = "https://forth-confirmation-trace-equations.trycloudflare.com"
+application_url = "https://romance-base-fax-impressed.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_customers,write_inventory,write_orders,write_prod
 
 [auth]
 redirect_urls = [
-  "https://forth-confirmation-trace-equations.trycloudflare.com/auth/callback",
-  "https://forth-confirmation-trace-equations.trycloudflare.com/auth/shopify/callback",
-  "https://forth-confirmation-trace-equations.trycloudflare.com/api/auth/callback"
+  "https://romance-base-fax-impressed.trycloudflare.com/auth/callback",
+  "https://romance-base-fax-impressed.trycloudflare.com/auth/shopify/callback",
+  "https://romance-base-fax-impressed.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
