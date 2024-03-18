@@ -9,9 +9,6 @@ import { readFile } from "fs/promises";
 import path from "path";
 import Handlebars from "handlebars";
 import { fileURLToPath } from 'url';
-import { Optional } from "@prisma/client/runtime/library";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -51,9 +48,8 @@ const sendGridAdapter = async (
     });
 };
 
-const loadEmailTemplate = async (email: Optional<EmailDTO>) => {
-  let { store, imageURL, productTitle, price, productHandle } =
-    email.productInfo;
+const loadEmailTemplate = async (email: Partial<EmailDTO> | undefined) => {
+  let { store, imageURL, productTitle, price, productHandle } = email.productInfo;
   console.log(store, imageURL, productTitle, price, productHandle);
   const emailPath = path.join(__dirname, "..", "utils", "email-template.hbs");
   const file = (await readFile(emailPath)).toString();
@@ -61,19 +57,48 @@ const loadEmailTemplate = async (email: Optional<EmailDTO>) => {
   if (!imageURL.startsWith('https://')) {
     imageURL = 'https:' + imageURL;
   }
-  const populatedTemplate = template({
-    shop: store.storeName,
-    product: {
-      image: imageURL,
-      name: productTitle,
-      price,
-      url: `${store.shopifyURL}/products/${productHandle}`,
-    },
-  });
-  return populatedTemplate.toString();
+  return `
+  <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet" />
+      </head>
+        <body
+          style="font-family: 'Barlow'; box-sizing: border-box; margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;">
+          <div style="width: fit-content; border: 1px solid black;">
+            <div style="padding-block: 30px; padding-inline: 38px; text-align: center; font-size: 1.4rem;">
+              <p>${store.storeName}</p>
+            </div>
+            <div
+              style="text-align: center; background: linear-gradient(#f6f6f6, #f6f6f6) top, linear-gradient(white, white) bottom; background-size: 100% 50%; background-repeat: no-repeat; padding: 1.2rem 2rem;">
+              <h1>Good News!</h1>
+              <p>Your product is back in stock and now available.</p>
+              <div style="width: fit-content; margin: auto;">
+                <img src="${imageURL}" alt="" style="width: 15rem; height: 15rem;">
+                <div style="margin-inline: auto; margin-top: 1rem; text-align: left;">
+                  <p style="font-weight: bold;">${productTitle}</p>
+                  <p>${price}$</p>
+                </div>
+              </div>
+              <a href="${store.shopifyURL}/products/${productHandle}"
+                style="color: white; display: block; background: black; text-decoration: none; font-weight: 400; width: fit-content; margin: 1.3rem auto; text-transform: uppercase; padding: 1.1rem 1.7rem; border-radius: 4rem;">Checkout
+                Now</a>
+              <hr style="margin-block: 1.3rem;">
+              <p style="font-size: 0.65rem;">If you have any questions, reply to this email or contact us at xxxxx.</p>
+            </div>
+          </div>
+        </body>
+
+        </html>`;
 };
 
-const sendEmail = async (email: Optional<EmailDTO>) => {
+const sendEmail = async (email: Partial<EmailDTO>) => {
   console.log(email);
   const data = {
     personalizations: [

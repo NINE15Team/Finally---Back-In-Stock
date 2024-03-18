@@ -6,7 +6,7 @@ export interface EmailDTO {
     name: String;
     title: String;
     html: String;
-    productInfo: ProductInfo;
+    productInfo: Partial<ProductInfo>;
     id: number;
     storeId: number;
     storeName: string;
