@@ -24,7 +24,8 @@
     "seed": "npx ts-node --esm --experimental-specifier-resolution=node prisma/seed.ts",
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
-    "logs:staging": "heroku logs --tail -a finally-back-in-stock-staging"
+    "logs:dev": "heroku logs --tail -a finally-back-in-stock-dev",
+    "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev"
   },
   "type": "module",
   "dependencies": {
