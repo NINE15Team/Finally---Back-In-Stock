@@ -51,9 +51,6 @@ const sendGridAdapter = async (
 const loadEmailTemplate = async (email: Partial<EmailDTO> | undefined) => {
   let { store, imageURL, productTitle, price, productHandle } = email.productInfo;
   console.log(store, imageURL, productTitle, price, productHandle);
-  const emailPath = path.join(__dirname, "..", "utils", "email-template.hbs");
-  const file = (await readFile(emailPath)).toString();
-  const template = Handlebars.compile(file);
   if (!imageURL.startsWith('https://')) {
     imageURL = 'https:' + imageURL;
   }
