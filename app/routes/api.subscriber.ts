@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
                 }
             }
         }
-        console.log("Add to subscription", subscribeItem);
+        console.log("Add to subscription", requstBody.email);
         let result = await subscribeProduct(subscribeItem);
         return json(
             { status: true },
