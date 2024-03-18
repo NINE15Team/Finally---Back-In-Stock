@@ -21,8 +21,23 @@ const saveStoreInfo = async (data: any) => {
     });
 };
 
+const deleteStoreByName = async (storeName: string) => {
+    return await prisma.shopifyStoreInfo.delete({
+        where: {
+            storeName: storeName
+        },
+    });
+};
+
+const deleteStoreByURL = async (storeName: string) => {
+    return await prisma.shopifyStoreInfo.delete({
+        where: {
+            storeName: storeName
+        },
+    });
+};
+
 const findStoreByName = async (name: string = "") => {
-    console.log(name, "_______________________--");
     return await prisma.shopifyStoreInfo.findUnique({
         where: {
             storeName: name
@@ -30,4 +45,4 @@ const findStoreByName = async (name: string = "") => {
     });
 };
 
-export { saveStoreInfo, findStoreByName }
+export { saveStoreInfo, findStoreByName, deleteStoreByName, deleteStoreByURL }
