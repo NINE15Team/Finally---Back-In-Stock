@@ -10,6 +10,7 @@
     "config:use": "shopify app config use",
     "generate": "shopify app generate",
     "deploy": "shopify app deploy",
+    "deploy:development": "npm run shopify app config use development && shopify app deploy",
     "deploy:staging": "npm run shopify app config use staging && shopify app deploy",
     "env": "shopify app env",
     "start": "npx prisma generate &&  npm run build && remix-serve ./build/server/index.js",
