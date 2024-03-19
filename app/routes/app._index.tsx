@@ -112,7 +112,7 @@ export default function Index() {
             </Form>
           </Card>
         )}
-      {emailVerified == true &&
+      {emailVerified == "YES" &&
         (<div >
           <ui-title-bar title="Back In Stock">
             <button variant="primary" onClick={refreshData}>
