@@ -83,6 +83,8 @@ export default function Index() {
     revalidate();
   };
 
+  console.log(emailVerified)
+
   return (
     <Page>
 
@@ -110,7 +112,7 @@ export default function Index() {
             </Form>
           </Card>
         )}
-      {emailVerified == "YES" &&
+      {emailVerified == true &&
         (<div >
           <ui-title-bar title="Back In Stock">
             <button variant="primary" onClick={refreshData}>

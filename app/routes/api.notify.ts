@@ -16,7 +16,7 @@ export const action: ActionFunction = async ({ request }) => {
             let resp = await sendEmail({
                 title: `Product Restock ${sub.productInfo.productTitle}`,
                 toEmail: sub.customerEmail,
-                senderEmail: emailInfo?.senderEmail,
+                emailTitle: emailInfo?.emailTitle,
                 name: "Finally Back in Stock",
                 productInfo: prodInfo
             })

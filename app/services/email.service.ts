@@ -98,7 +98,7 @@ const sendEmail = async (email: Partial<EmailDTO>) => {
         to: [
           {
             email: email.toEmail,
-            name: "Finally Back in Stock",
+            name: email.emailTitle,
           },
         ],
         cc: [
@@ -213,7 +213,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
       storeId: storeInfo?.id,
     },
     create: {
-      senderEmail: email.senderEmail,
+      emailTitle: email.emailTitle,
       senderName: email.senderName,
       isEmailVerified: EmailVerificationStatus.YES,
       createdAt: new Date(),

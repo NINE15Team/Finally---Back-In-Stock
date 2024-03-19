@@ -22,6 +22,9 @@ export default function App() {
         <Link to="/app" rel="home">
           Home
         </Link>
+        <Link to="/app/email">
+          Email
+        </Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>
