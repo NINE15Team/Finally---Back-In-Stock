@@ -26,6 +26,7 @@ import {
 import { authenticate } from "../shopify.server";
 import { findAll } from "../services/customer-subscriber.service";
 import { isEmailVerified, updateEmail } from "../services/email.service";
+import { updateStoreInfo } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
@@ -48,9 +49,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { session } = await authenticate.admin(request);
+  let { admin, session } = await authenticate.admin(request);
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
+  await updateStoreInfo(admin);
   return await updateEmail({ senderEmail: obj.email, storeName: session.shop, senderName: session.shop })
 };
 

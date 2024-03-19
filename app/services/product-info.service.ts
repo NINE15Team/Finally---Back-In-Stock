@@ -1,5 +1,5 @@
 import prisma from "~/db.server";
-import { findStoreByName } from "../services/store-info.service";
+import { findStoreByURL } from "../services/store-info.service";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
@@ -33,7 +33,7 @@ const findByProductAndVariantId = async (productId: any, variantId: any) => {
 };
 
 const addProductInfo = async (prodInfo: ProductInfoDTO) => {
-    let storeInfo = await findStoreByName(prodInfo.storeName);
+    let storeInfo = await findStoreByURL(prodInfo.storeURL);
     return await prisma.productInfo.upsert({
         where: {
             productId_variantId: {
@@ -93,7 +93,7 @@ const upsertProduct = async (req: any, store: string) => {
                 isActive: req.status == 'active' ? true : false,
             })
     });
-    let storeInfo = await findStoreByName(store);
+    let storeInfo = await findStoreByURL(store);
     prodcutInfos.forEach(async elm => {
         console.log(elm)
         return await prisma.productInfo.upsert({

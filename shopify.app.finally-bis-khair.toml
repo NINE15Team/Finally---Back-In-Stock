@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://hook-designated-breaks-structure.trycloudflare.com"
+application_url = "https://subsidiaries-predictions-adaptor-wallpaper.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://hook-designated-breaks-structure.trycloudflare.com/auth/callback",
-  "https://hook-designated-breaks-structure.trycloudflare.com/auth/shopify/callback",
-  "https://hook-designated-breaks-structure.trycloudflare.com/api/auth/callback"
+  "https://subsidiaries-predictions-adaptor-wallpaper.trycloudflare.com/auth/callback",
+  "https://subsidiaries-predictions-adaptor-wallpaper.trycloudflare.com/auth/shopify/callback",
+  "https://subsidiaries-predictions-adaptor-wallpaper.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

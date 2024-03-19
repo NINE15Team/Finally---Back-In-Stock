@@ -1,9 +1,10 @@
 import prisma from "../db.server";
+import { authenticate } from "../shopify.server";
 
 const saveStoreInfo = async (data: any) => {
     return await prisma.shopifyStoreInfo.upsert({
         where: {
-            storeName: data.storeName
+            shopifyURL: data.shopifyURL
         },
         update: {
             storeName: data.storeName,
@@ -15,34 +16,48 @@ const saveStoreInfo = async (data: any) => {
             storeName: data.storeName,
             shopifyURL: data.shopifyURL,
             updatedAt: new Date(),
-
         }
 
     });
 };
 
-const deleteStoreByName = async (storeName: string) => {
+const deleteStoreByURL = async (storeURL: string) => {
     return await prisma.shopifyStoreInfo.delete({
         where: {
-            storeName: storeName
+            shopifyURL: storeURL
         },
     });
 };
 
-const deleteStoreByURL = async (storeName: string) => {
-    return await prisma.shopifyStoreInfo.delete({
-        where: {
-            storeName: storeName
-        },
-    });
-};
-
-const findStoreByName = async (name: string = "") => {
+const findStoreByURL = async (url: string = "") => {
     return await prisma.shopifyStoreInfo.findUnique({
         where: {
-            storeName: name
+            shopifyURL: url
         }
     });
 };
+const updateStoreInfo = async (admin: any) => {
+    const { shop } = await admin.rest.get({
+        path: `shop`,
+    }).then((response: any) => response.json());
+    console.log(shop);
+    let appStoreInfo = await prisma.shopifyStoreInfo.findFirst({
+        where: {
+            shopifyURL: shop.myshopify_domain
+        },
+    });
 
-export { saveStoreInfo, findStoreByName, deleteStoreByName, deleteStoreByURL }
+    return await prisma.shopifyStoreInfo.update({
+        where: {
+            id: appStoreInfo?.id
+        },
+        data: {
+            storeId: shop.id + "",
+            storeName: shop.name,
+            updatedAt: new Date()
+        }
+    });
+
+};
+
+export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo }
