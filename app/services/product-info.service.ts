@@ -33,7 +33,14 @@ const findByProductAndVariantId = async (productId: any, variantId: any) => {
 };
 
 const addProductInfo = async (prodInfo: ProductInfoDTO) => {
-    let storeInfo = await findStoreByURL(prodInfo.storeURL);
+    let storeInfo: any = {};
+    if (prodInfo.storeId) {
+        storeInfo = {
+            id: prodInfo.storeId
+        }
+    } else {
+        storeInfo = await findStoreByURL(prodInfo.storeURL);
+    }
     return await prisma.productInfo.upsert({
         where: {
             productId_variantId: {

@@ -3,9 +3,8 @@ import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from
 import { subscribeProduct } from "~/services/customer-subscriber.service";
 
 export const loader: LoaderFunction = async ({ request }) => {
-    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
     return json(
-        { hello: "world" },
+        { success: true },
         {
             headers: {
                 "Access-Control-Allow-Origin": "*",
