@@ -1,14 +1,9 @@
 import prisma from "../db.server";
 
-import { findStoreByName } from "../services/store-info.service";
+import { findStoreByURL } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
-import { ProductInfo } from "../models/product-info.model";
 import { ShopifyStoreInfo } from "~/models/shopify-store-info.model";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
-import { readFile } from "fs/promises";
-import path from "path";
-import Handlebars from "handlebars";
-import { fileURLToPath } from 'url';
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -161,7 +156,7 @@ const sendVerificationEmail = async (
 const saveOrUpdate = async (email: Partial<EmailDTO>) => {
   let storeInfo: any = {};
   if (!email.storeId) {
-    storeInfo = await findStoreByName(email.storeName);
+    storeInfo = await findByStoreId(email.storeName);
   } else {
     storeInfo = {
       id: email.storeId,
@@ -212,7 +207,7 @@ const updateSender = async (storeId: any, senderId: any) => {
 };
 
 const updateEmail = async (email: Partial<EmailDTO>) => {
-  const storeInfo = await findStoreByName(email.storeName);
+  const storeInfo = await findStoreByURL(email.storeName);
   let emailInfo = await prisma.emailConfiguartion.upsert({
     where: {
       storeId: storeInfo?.id,
@@ -254,7 +249,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
 };
 
 const findByStoreName = async (storeName: any) => {
-  const storeInfo = await findStoreByName(storeName);
+  const storeInfo = await findStoreByURL(storeName);
   return await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
@@ -272,7 +267,7 @@ const findByStoreId = async (storeId: any) => {
 
 
 const isEmailVerified = async (storeName: string) => {
-  const storeInfo = await findStoreByName(storeName);
+  const storeInfo = await findStoreByURL(storeName);
   let data = await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
@@ -292,7 +287,7 @@ const isEmailVerified = async (storeName: string) => {
 
 const getStoreInfo = async (email: Partial<EmailDTO>) => {
   if (!email.storeId) {
-    return await findStoreByName(email.storeName);
+    return await findStoreByURL(email.storeName);
   } else {
     return {
       id: email.storeId,
