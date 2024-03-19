@@ -98,7 +98,7 @@ const sendEmail = async (email: Partial<EmailDTO>) => {
         to: [
           {
             email: email.toEmail,
-            name: email.emailTitle,
+            name: email.title,
           },
         ],
         cc: [
@@ -128,30 +128,6 @@ const sendEmail = async (email: Partial<EmailDTO>) => {
   return sendGridAdapter("mail/send", { data, responseType: "text" });
 };
 
-const sendVerificationEmail = async (
-  email: EmailDTO,
-  storeInfo: ShopifyStoreInfo,
-) => {
-  const data = {
-    nickname: email.senderName,
-    from_email: email.senderEmail,
-    from_name: email.senderName,
-    reply_to: email.senderEmail,
-    reply_to_name: email.senderName,
-    address: "CA",
-    state: "CA",
-    city: "San Francisco",
-    country: "USA",
-    zip: "94105",
-  };
-
-  console.log("Sender data", data);
-
-  return await sendGridAdapter("verified_senders", {
-    data: data,
-    responseType: "json",
-  });
-};
 
 const saveOrUpdate = async (email: Partial<EmailDTO>) => {
   let storeInfo: any = {};
@@ -167,7 +143,9 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       storeId: storeInfo?.id,
     },
     create: {
-      isEmailVerified: EmailVerificationStatus.PENDING,
+      title: email.title,
+      senderEmail: email.senderEmail,
+      isEmailVerified: EmailVerificationStatus.YES,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -177,8 +155,8 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       },
     },
     update: {
-      senderId: email.senderId,
-      isEmailVerified: email.isEmailVerified,
+      senderEmail: email.senderEmail,
+      isEmailVerified: EmailVerificationStatus.YES,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
@@ -192,29 +170,16 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
   });
 };
 
-const updateSender = async (storeId: any, senderId: any) => {
-  console.log("updateSender", { storeId, senderId });
-  return await prisma.emailConfiguartion.update({
-    where: {
-      storeId: storeId,
-    },
-    data: {
-      senderId: senderId,
-      isEmailVerified: EmailVerificationStatus.PENDING,
-      updatedAt: new Date(),
-    },
-  });
-};
 
-const updateEmail = async (email: Partial<EmailDTO>) => {
-  const storeInfo = await findStoreByURL(email.storeName);
+const upsertEmail = async (email: Partial<EmailDTO>) => {
+  const storeInfo = await findStoreByURL(email.shopifyURL);
   let emailInfo = await prisma.emailConfiguartion.upsert({
     where: {
       storeId: storeInfo?.id,
     },
     create: {
-      emailTitle: email.emailTitle,
-      senderName: email.senderName,
+      senderEmail: email.senderEmail,
+      title: email.title,
       isEmailVerified: EmailVerificationStatus.YES,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -225,7 +190,7 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
       },
     },
     update: {
-      senderName: email.senderName,
+      senderEmail: email.senderEmail,
       isEmailVerified: EmailVerificationStatus.YES,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -238,9 +203,6 @@ const updateEmail = async (email: Partial<EmailDTO>) => {
   });
 
   try {
-    // let emailVerification = await sendVerificationEmail(emailInfo as unknown as EmailDTO, storeInfo as ShopifyStoreInfo);
-    // console.log('Verification Email Sent to :', emailVerification.id);
-    // emailInfo = await updateSender(storeInfo?.id, emailVerification.id);
     console.log("Email Updated : ", emailInfo);
     return emailInfo;
   } catch (err) {
@@ -295,11 +257,12 @@ const getStoreInfo = async (email: Partial<EmailDTO>) => {
   }
 };
 
+
 export {
   sendEmail,
   saveOrUpdate,
   findByStoreName,
-  updateEmail,
+  upsertEmail,
   isEmailVerified,
   findByStoreId
 };

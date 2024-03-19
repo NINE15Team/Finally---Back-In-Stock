@@ -8,7 +8,6 @@ const saveStoreInfo = async (data: any) => {
         },
         update: {
             storeName: data.storeName,
-            shopifyURL: data.shopifyURL,
             updatedAt: new Date(),
         },
         create: {
@@ -21,43 +20,40 @@ const saveStoreInfo = async (data: any) => {
     });
 };
 
-const deleteStoreByURL = async (storeURL: string) => {
+const deleteStoreByURL = async (shopifyURL: string) => {
     return await prisma.shopifyStoreInfo.delete({
         where: {
-            shopifyURL: storeURL
+            shopifyURL: shopifyURL
         },
     });
 };
 
-const findStoreByURL = async (url: string = "") => {
+const findStoreByURL = async (shopifyURL: string = "") => {
     return await prisma.shopifyStoreInfo.findUnique({
         where: {
-            shopifyURL: url
+            shopifyURL: shopifyURL
         }
     });
 };
 const updateStoreInfo = async (admin: any) => {
-    const { shop } = await admin.rest.get({
-        path: `shop`,
-    }).then((response: any) => response.json());
-    console.log(shop);
+    const { shop } = await admin.rest.get({ path: `shop` }).then((response: any) => response.json());
     let appStoreInfo = await prisma.shopifyStoreInfo.findFirst({
         where: {
             shopifyURL: shop.myshopify_domain
         },
     });
-
-    return await prisma.shopifyStoreInfo.update({
+    await prisma.shopifyStoreInfo.update({
         where: {
             id: appStoreInfo?.id
         },
         data: {
             storeId: shop.id + "",
             storeName: shop.name,
+            shopifyURL: shop.myshopify_domain,
             updatedAt: new Date()
         }
     });
-
+    return shop;
 };
 
 export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo }

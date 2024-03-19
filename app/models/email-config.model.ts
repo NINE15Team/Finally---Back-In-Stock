@@ -5,8 +5,7 @@ import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 export class EmailConfiguration {
     id: number = 0;
     store: ShopifyStoreInfo = {} as ShopifyStoreInfo;
-    senderName: string = '';
-    emailTitle: string = '';
+    title: string = '';
     senderId: number = 0;
     isEmailVerified: EmailVerificationStatus = EmailVerificationStatus.NO;
     headerContent: string = '';
