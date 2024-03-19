@@ -2,6 +2,7 @@ export interface ProductInfoDTO {
     id: number;
     storeId: string;
     storeName: string;
+    storeURL: string;
     productHandle: string;
     productId: string;
     productTitle: string;
