@@ -35,7 +35,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://anime-indonesia-negotiations-realtor.trycloudflare.com";
+      const API_URL = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({

@@ -7,7 +7,10 @@ import { authenticate } from "../shopify.server";
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
         where: {
-            inStock: param.inStock
+            inStock: param.inStock,
+            store: {
+                shopifyURL: param.shopifyURL
+            }
         },
         include: {
             customerSubscription: {
