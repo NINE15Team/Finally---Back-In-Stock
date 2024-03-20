@@ -37,9 +37,7 @@ if (host === "localhost") {
 export default defineConfig({
   server: {
     port: Number(process.env.PORT || 3000),
-    hmr: false,
-    cors: false,
-    host: true
+    hmr: hmrConfig
   },
   plugins: [
     remix({
