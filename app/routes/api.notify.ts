@@ -13,14 +13,18 @@ export const action: ActionFunction = async ({ request }) => {
         subscribers.forEach(async sub => {
             let emailInfo = await loadEmailConfig(sub.productInfo.storeId);
             let prodInfo: any = sub.productInfo;
-            let resp = await sendEmail({
-                title: `Product Restock ${sub.productInfo.productTitle}`,
-                toEmail: sub.customerEmail,
-                senderEmail: emailInfo?.senderEmail,
-                productInfo: prodInfo
-            })
-            await setCustomerNotified(sub.customerEmail, sub.productInfo.id);
-            console.log(`Notified to ${sub.customerEmail}`, resp);
+            if (sub.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
+                console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
+            } else {
+                let resp = await sendEmail({
+                    title: `Product Restock ${sub.productInfo.productTitle}`,
+                    toEmail: sub.customerEmail,
+                    senderEmail: emailInfo?.senderEmail,
+                    productInfo: prodInfo
+                })
+                await setCustomerNotified(sub.customerEmail, sub.productInfo.id);
+                console.log(`Notified to ${sub.customerEmail}`, resp);
+            }
         })
     }
     return json({ nice: "jokess" });
