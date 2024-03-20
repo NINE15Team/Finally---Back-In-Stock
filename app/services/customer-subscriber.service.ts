@@ -6,13 +6,13 @@ import { findStoreByURL } from "./store-info.service";
 const findAll = async (params: any = {}) => {
     return await prisma.customerSubscription.findMany({
         where: {
-            isNotified: params?.isNotified,
             productInfo: {
                 inStock: false,
                 store: {
-                    storeName: params.storeName
+                    shopifyURL: params.shopifyURL
                 }
-            }
+            },
+            isNotified: params?.isNotified,
         },
         include: {
             productInfo: {

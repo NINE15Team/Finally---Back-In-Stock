@@ -85,7 +85,9 @@ export default function Index() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        shopifyURL: storeName
+      }),
     });
     shopifyBridge.modal.show('info-modal');
     revalidate();
@@ -111,14 +113,14 @@ export default function Index() {
       </ui-title-bar>
       <Modal id="info-modal">
         <p style={{ marginLeft: '5px' }}>Email notification has been processed </p>
-        <TitleBar title="Notification Message"></TitleBar>
+        <TitleBar title="NotificaPtion Message"></TitleBar>
       </Modal>
 
       <Modal id="email-list-modal">
         <List type="bullet">
           <ul>
-            {selectedProductInfo?.customerSubscription?.map((productInfo: any) => (
-              <List.Item key={productInfo.customerEmail}>{productInfo.customerEmail}</List.Item>
+            {selectedProductInfo?.customerSubscription?.map((elm: any) => (
+              <List.Item key={elm.customerEmail}>{elm.customerEmail} -  {elm.isNotified ? 'Notified' : 'Not Notify Yet'}</List.Item>
             ))}
           </ul>
         </List>
