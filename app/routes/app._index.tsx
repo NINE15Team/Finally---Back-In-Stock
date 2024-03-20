@@ -137,7 +137,7 @@ export default function Index() {
                   columnContentTypes={["text", "text", "text", "text"]}
                   headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
                   rows={rows}
-                  totals={['', '', '', `$${potentialRevenue}`]}
+                  totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'NILL'}`]}
                   pagination={{
                     hasNext: true,
                     onNext: () => { },
