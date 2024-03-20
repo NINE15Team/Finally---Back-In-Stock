@@ -4,9 +4,18 @@ import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
 
-const findAll = async () => {
-    return await prisma.productInfo.findMany();
+const findAll = async (param: Partial<ProductInfoDTO>) => {
+    return await prisma.productInfo.findMany({
+        where: {
+            inStock: param.inStock
+        },
+        include: {
+            customerSubscription: {
+            }
+        }
+    });
 };
+
 
 const isProductAlreadyAdded = async (productId: any, variantId: any) => {
     let count = await countProductAndVariantId(productId, variantId);
@@ -33,14 +42,7 @@ const findByProductAndVariantId = async (productId: any, variantId: any) => {
 };
 
 const addProductInfo = async (prodInfo: ProductInfoDTO) => {
-    let storeInfo: any = {};
-    if (prodInfo.storeId) {
-        storeInfo = {
-            id: prodInfo.storeId
-        }
-    } else {
-        storeInfo = await findStoreByURL(prodInfo.storeURL);
-    }
+    let storeInfo = await findStoreByURL(prodInfo.shopifyURL);
     return await prisma.productInfo.upsert({
         where: {
             productId_variantId: {

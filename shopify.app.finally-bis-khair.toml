@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://kick-tobacco-tests-shape.trycloudflare.com"
+application_url = "https://anime-indonesia-negotiations-realtor.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://kick-tobacco-tests-shape.trycloudflare.com/auth/callback",
-  "https://kick-tobacco-tests-shape.trycloudflare.com/auth/shopify/callback",
-  "https://kick-tobacco-tests-shape.trycloudflare.com/api/auth/callback"
+  "https://anime-indonesia-negotiations-realtor.trycloudflare.com/auth/callback",
+  "https://anime-indonesia-negotiations-realtor.trycloudflare.com/auth/shopify/callback",
+  "https://anime-indonesia-negotiations-realtor.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

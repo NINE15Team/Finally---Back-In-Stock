@@ -22,14 +22,15 @@ import {
   TextField,
   Button,
   ButtonGroup,
+  List,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { findAll } from "../services/customer-subscriber.service";
+import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
+import { findAll as findAllProducts, } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo } from "../services/store-info.service";
-import { EmailDTO } from "../dto/email.dto";
-import { useRef, useEffect, useState, useCallback } from "react";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
@@ -42,18 +43,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     senderEmail: shopInfo.email
   });
 
-  const data = await findAll({ storeName: session.shop });
-  let rows = [];
-  for (let i = 0; i < data.length; i++) {
-    const subscription = data[i];
-    rows.push([
-      subscription.customerEmail,
-      subscription.productInfo?.productTitle,
-      subscription.productInfo?.variantTitle,
-      subscription.isNotified + "",
-    ]);
-  }
-  return { rows, storeName: session.shop };
+  const data = await findAllProducts({ inStock: false });
+  const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
+
+  return { data, storeName: session.shop, potentialRevenue };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -65,13 +58,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData<typeof action>();
-  let { rows, storeName, emailVerified } = useLoaderData<typeof loader>();
   const shopifyBridge = useAppBridge();
   let { revalidate } = useRevalidator();
-  const [email, setEmail] = useState("");
+  let { data, storeName, emailVerified, potentialRevenue } = useLoaderData<typeof loader>();
+  let rows: any = [];
+  const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
-  const handleEmailChange = useCallback((value: string) => setEmail(value), []);
 
+  for (let i = 0; i < data.length; i++) {
+    const productInfo = data[i];
+    rows.push([
+      productInfo.variantTitle,
+      productInfo.price,
+      RenderLink(productInfo.customerSubscription?.length, productInfo.id),
+      (Number(productInfo.price) * productInfo.customerSubscription?.length),
+    ]);
+  }
   const refreshData = async () => {
     revalidate();
   };
@@ -89,7 +91,16 @@ export default function Index() {
     revalidate();
   };
 
-  console.log(emailVerified)
+  function RenderLink(content: any, productInfoId: any) {
+    const handleClick = () => {
+      let productInfo: any = data.filter(d => d.id == productInfoId)[0];
+      console.log(productInfo);
+      setSelectedProductInfo(productInfo)
+      shopifyBridge.modal.show('email-list-modal');
+    };
+    // Return the Link component with the onClick handler attached
+    return <Link onClick={handleClick}>{content}</Link>;
+  }
 
   return (
     <Page>
@@ -102,6 +113,19 @@ export default function Index() {
         <p style={{ marginLeft: '5px' }}>Email notification has been processed </p>
         <TitleBar title="Notification Message"></TitleBar>
       </Modal>
+
+      <Modal id="email-list-modal">
+        <List type="bullet">
+          <ul>
+            {selectedProductInfo?.customerSubscription?.map((productInfo: any) => (
+              <List.Item key={productInfo.customerEmail}>{productInfo.customerEmail}</List.Item>
+            ))}
+          </ul>
+        </List>
+        <TitleBar title="Subscribers List"></TitleBar>
+      </Modal>
+
+
       <BlockStack gap="400">
         <Layout>
           <Layout.Section>
@@ -109,8 +133,9 @@ export default function Index() {
               <BlockStack gap="200">
                 <DataTable
                   columnContentTypes={["text", "text", "text", "text"]}
-                  headings={["Customer", "Product", "Variant", "Is Notified"]}
+                  headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
                   rows={rows}
+                  totals={['', '', '', `$${potentialRevenue}`]}
                   pagination={{
                     hasNext: true,
                     onNext: () => { },

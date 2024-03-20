@@ -2,7 +2,7 @@ class BackInStock extends HTMLElement {
   constructor() {
     super();
     this.form = this.querySelector(".out-of-stock");
-    this.storeId = this.dataset.store;
+    this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
     this.productTitle = this.dataset.productTitle;
     this.productHandle = this.dataset.productHandle;
@@ -35,18 +35,17 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://finally-back-in-stock-dev-2db9466211f6.herokuapp.com";
+      const API_URL = "https://anime-indonesia-negotiations-realtor.trycloudflare.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({
-          storeId: this.storeId,
-          storeName: this.storeId,
+          shopifyURL: this.shopifyURL,
           productHandle: this.productHandle,
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
           imageURL: this.productInstance.featured_image,
-          price: this.getVariant(variantId).price + "",
+          price: this.getVariant(variantId).price,
           variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")
         }),

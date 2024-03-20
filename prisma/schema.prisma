@@ -44,14 +44,14 @@ model ProductInfo {
   productTitle         String                 @default("Default Product") @map("product_title")
   variantId            String                 @map("variant_id")
   variantTitle         String                 @default("Default Variant") @map("variant_title")
-  price                String                 @default("Default Variant") @map("price")
+  price                Float                 @default(0) @map("price")
   imageURL             String                 @default("Default Variant") @map("image_url")
   status               Boolean                @default(false)
   inStock              Boolean                @default(false)
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
   isActive             Boolean                @default(true)
-  CustomerSubscription CustomerSubscription[]
+  customerSubscription CustomerSubscription[]
 
   @@unique([productId, variantId])
   @@map("product_info")
