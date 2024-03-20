@@ -3,7 +3,6 @@ import { ProductInfo } from "~/models/product-info.model";
 
 export interface EmailDTO {
   toEmail: string;
-  name: string;
   title: string;
   html: string;
   productInfo: Partial<ProductInfo>;

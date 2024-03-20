@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://happen-computing-peter-beings.trycloudflare.com"
+application_url = "https://albany-tiles-walls-stages.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customers,write_products"
 
 [auth]
 redirect_urls = [
-  "https://happen-computing-peter-beings.trycloudflare.com/auth/callback",
-  "https://happen-computing-peter-beings.trycloudflare.com/auth/shopify/callback",
-  "https://happen-computing-peter-beings.trycloudflare.com/api/auth/callback"
+  "https://albany-tiles-walls-stages.trycloudflare.com/auth/callback",
+  "https://albany-tiles-walls-stages.trycloudflare.com/auth/shopify/callback",
+  "https://albany-tiles-walls-stages.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

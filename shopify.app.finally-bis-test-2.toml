@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "25b1df45d3eaa891371d804a8e8e31b5"
-name = "finally-bis-test-1"
+name = "finally-bis-test-2"
 application_url = "https://finally-back-in-stock-test-2-10fbfed6cb48.herokuapp.com/"
 embedded = true
 
