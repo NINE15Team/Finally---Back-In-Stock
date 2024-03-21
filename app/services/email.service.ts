@@ -90,7 +90,6 @@ const loadEmailTemplate = async (email: Partial<EmailDTO> | undefined) => {
 };
 
 const sendEmail = async (email: Partial<EmailDTO>) => {
-  console.log(email);
   const data = {
     personalizations: [
       {
