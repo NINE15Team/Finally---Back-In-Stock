@@ -26,7 +26,7 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
-import { findAll as findAllProducts, } from "../services/product-info.service";
+import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo } from "../services/store-info.service";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
@@ -43,7 +43,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     senderEmail: shopInfo.email
   });
 
-  const data = await findAllProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
+  const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
   const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
 
   return { data, storeName: session.shop, potentialRevenue };
