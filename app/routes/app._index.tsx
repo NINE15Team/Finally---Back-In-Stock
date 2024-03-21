@@ -45,7 +45,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
   const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
-
   return { data, storeName: session.shop, potentialRevenue };
 };
 
