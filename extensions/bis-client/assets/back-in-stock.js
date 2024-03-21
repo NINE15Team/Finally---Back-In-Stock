@@ -40,7 +40,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://distinct-quest-publishers-jeremy.trycloudflare.com";
+      const API_URL = "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({
