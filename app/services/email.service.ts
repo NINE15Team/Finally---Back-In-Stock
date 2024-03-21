@@ -2,7 +2,6 @@ import prisma from "../db.server";
 
 import { findStoreByURL } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
-import { ShopifyStoreInfo } from "~/models/shopify-store-info.model";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 
 const loadConfig = () => {
@@ -130,14 +129,7 @@ const sendEmail = async (email: Partial<EmailDTO>) => {
 
 
 const saveOrUpdate = async (email: Partial<EmailDTO>) => {
-  let storeInfo: any = {};
-  if (!email.storeId) {
-    storeInfo = await findByStoreId(email.storeName);
-  } else {
-    storeInfo = {
-      id: email.storeId,
-    };
-  }
+  const storeInfo = await findStoreByURL(email.shopifyURL);
   return prisma.emailConfiguartion.upsert({
     where: {
       storeId: storeInfo?.id,
@@ -155,11 +147,10 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       },
     },
     update: {
-      senderEmail: email.senderEmail,
-      isEmailVerified: EmailVerificationStatus.YES,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
+      buttonContent: email.buttonContent,
       updatedAt: new Date(),
       store: {
         connect: {
@@ -210,8 +201,8 @@ const upsertEmail = async (email: Partial<EmailDTO>) => {
   }
 };
 
-const findByStoreName = async (storeName: any) => {
-  const storeInfo = await findStoreByURL(storeName);
+const findEmailConfigByStoreURL = async (url: any) => {
+  const storeInfo = await findStoreByURL(url);
   return await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
@@ -257,11 +248,10 @@ const getStoreInfo = async (email: Partial<EmailDTO>) => {
   }
 };
 
-
 export {
   sendEmail,
   saveOrUpdate,
-  findByStoreName,
+  findEmailConfigByStoreURL,
   upsertEmail,
   isEmailVerified,
   findByStoreId
