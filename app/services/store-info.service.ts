@@ -56,4 +56,10 @@ const updateStoreInfo = async (admin: any) => {
     return shop;
 };
 
-export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo }
+const getStoreInfoShopify = async (admin: any) => {
+    const { shop } = await admin.rest.get({ path: `shop` }).then((response: any) => response.json());
+    return shop;
+};
+
+
+export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo, getStoreInfoShopify }
