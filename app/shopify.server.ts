@@ -28,30 +28,6 @@ const shopify = shopifyApp({
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
     },
-    INVENTORY_ITEMS_UPDATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_ITEMS_CREATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_ITEMS_DELETE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_LEVELS_CONNECT: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_LEVELS_DISCONNECT: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
-    INVENTORY_LEVELS_UPDATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
-    },
     CUSTOMERS_DATA_REQUEST: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
@@ -67,17 +43,17 @@ const shopify = shopifyApp({
 
   },
   hooks: {
-    afterAuth: async ({ session }) => {
+    afterAuth: async ({ session }: any) => {
       shopify.registerWebhooks({ session });
       let storeInfo = await saveStoreInfo({
-        storeId: '12345',
+        storeId: session.shop,
         storeName: session.shop,
         shopifyURL: session.shop,
         createdAt: new Date(),
         updatedAt: new Date(),
         isActive: true
       });
-      console.log("***********************APP Initilized**************************************")
+      console.log("***********************APP Initilized**************************************", storeInfo)
     },
   },
   future: {

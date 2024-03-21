@@ -2,7 +2,7 @@ class BackInStock extends HTMLElement {
   constructor() {
     super();
     this.form = this.querySelector(".out-of-stock");
-    this.storeId = this.dataset.store;
+    this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
     this.productTitle = this.dataset.productTitle;
     this.productHandle = this.dataset.productHandle;
@@ -13,20 +13,26 @@ class BackInStock extends HTMLElement {
   }
 
   initializeListeners() {
-    console.log(this.productInstance);
+    console.log(this.productInstance, this.hasVariantSelectElm());
     if (this.hasVariantSelectElm()) {
+      let prodInstance = this.productInstance;
+      let $form = this.form;
       document.querySelector("product-info variant-selects").addEventListener('change', function () {
-        let isDisabled = this.querySelector(":checked").classList.contains('disabled');
-        if (isDisabled) {
-          document.querySelector(".out-of-stock").classList.remove('none');
-        } else {
-          document.querySelector(".out-of-stock").classList.add('none');
-        }
+        setTimeout(function () {
+          let selectedVariant = document.querySelector('product-form form [name=id]').value;
+          let isAvailable = prodInstance.variants.some(v => v.id == selectedVariant && v.available);
+          if (!isAvailable) {
+            $form.classList.remove('none');
+          } else {
+            $form.classList.add('none');
+          }
+        }, 100)
       });
     }
+    
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      document.querySelector(".out-of-stock .message *").classList.add("none");
+      this.querySelector(".message *").classList.add("none");
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
@@ -34,25 +40,23 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com";
+      const API_URL = "https://distinct-quest-publishers-jeremy.trycloudflare.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({
-          storeId: this.storeId,
-          storeName: this.storeId,
+          shopifyURL: this.shopifyURL,
           productHandle: this.productHandle,
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
-          variantTitle: this.getVariantTitle(variantId),
+          imageURL: this.productInstance.featured_image,
+          price: this.getVariant(variantId).price,
+          variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")
         }),
-      });
+      }).then(r => r.json());
 
-      if (response?.ok) {
+      if (response?.status) {
         this.showMessage('info')
       } else {
         this.showMessage('error')
@@ -62,14 +66,14 @@ class BackInStock extends HTMLElement {
 
   showMessage(type) {
     if (type == 'info') {
-      document.querySelector(".out-of-stock .message .success").classList.remove("none");
+      this.form.querySelector(".message .success").classList.remove("none");
     } else if (type == 'error') {
-      document.querySelector(".out-of-stock .message .error").classList.remove("none");
+      this.form.querySelector(".message .error").classList.remove("none");
     }
   }
 
-  getVariantTitle(variantId) {
-    return this.productInstance.variants.find(d => d.id == variantId).title;
+  getVariant(variantId) {
+    return this.productInstance.variants.find(d => d.id == variantId);
   }
 
   hasVariantSelectElm() {
@@ -86,5 +90,6 @@ class BackInStock extends HTMLElement {
   }
 }
 
-if (!customElements.get("back-in-stock"))
+if (!customElements.get("back-in-stock")) {
   customElements.define("back-in-stock", BackInStock);
+}

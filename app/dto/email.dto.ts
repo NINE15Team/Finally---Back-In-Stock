@@ -1,32 +1,23 @@
+import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import { ProductInfo } from "~/models/product-info.model";
 
 export interface EmailDTO {
-    email: String;
-    name: String;
-    title: String;
-    html: String;
-    productInfo: ProductInfo;
-    id: number;
-    storeId: number;
-    storeName: string;
-    senderName: string;
-    senderEmail: string;
-    isEmailVerified: boolean;
-    senderId: string;
-    headerContent: string;
-    headerFontFamily: string;
-    headerFontSize: string;
-    headerBgColor: string;
-    bodyContent: string;
-    bodyFontFamily: string;
-    bodyFontSize: string;
-    bodyBgColor: string;
-    footerContent: string;
-    footerFontFamily: string;
-    footerFontSize: string;
-    footerBgColor: string;
+  toEmail: string;
+  title: string;
+  html: string;
+  productInfo: Partial<ProductInfo>;
+  id: number;
+  storeId: number;
+  storeName: string;
+  shopifyURL: string;
+  senderEmail: string;
+  isEmailVerified: EmailVerificationStatus | string;
+  senderId: number;
+  headerContent: string;
+  bodyContent: string;
+  footerContent: string;
+  buttonContent: string;
 
-    createdAt: Date;
-    updatedAt: Date;
-
+  createdAt: Date;
+  updatedAt: Date;
 }

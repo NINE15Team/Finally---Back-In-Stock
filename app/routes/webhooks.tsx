@@ -2,6 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import { upsertProduct } from "../services/product-info.service";
+import { deleteStoreByURL } from "../services/store-info.service";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, session, admin, payload } = await authenticate.webhook(
@@ -24,24 +25,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       console.log("_______________-PRODUCTS_UPDATE______________");
       let result = await upsertProduct(payload, shop);
       break;
-    case "INVENTORY_ITEMS_UPDATE":
-      // console.log("INVENTORY_ITEMS_UPDATE", payload);
-      break;
-    case "INVENTORY_ITEMS_CREATE":
-      // console.log("INVENTORY_ITEMS_CREATE", payload);
-      break;
-    case "INVENTORY_ITEMS_DELETE":
-      // console.log("INVENTORY_ITEMS_DELETED", payload);
-      break;
-    case "INVENTORY_LEVELS_CONNECT":
-      // console.log("INVENTORY_LEVELS_CONNECT", payload);
-      break;
-    case "INVENTORY_LEVELS_DISCONNECT":
-      // console.log("INVENTORY_LEVELS_DISCONNECT", payload);
-      break;
-    case "INVENTORY_LEVELS_UPDATE":
-      // console.log("INVENTORY_LEVELS_UPDATE", payload);
-      break;
     case "CUSTOMERS_DATA_REQUEST":
       console.log("CUSTOMERS_DATA_REQUEST", payload);
       break;
@@ -49,7 +32,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       console.log("CUSTOMERS_DATA_REQUEST", payload);
       break;
     case "SHOP_REDACT":
-      console.log("SHOP_REDACT", payload);
+      await deleteStoreByURL(payload.shop_domain);
+      console.log("All Shop Data Deleted");
       break;
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });

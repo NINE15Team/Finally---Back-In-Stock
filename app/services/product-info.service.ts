@@ -1,10 +1,49 @@
 import prisma from "~/db.server";
-import { findStoreByName } from "../services/store-info.service";
+import { findStoreByURL } from "../services/store-info.service";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
+import { createAdminApiClient } from '@shopify/admin-api-client';
+import { authenticate } from "../shopify.server";
 
-const findAll = async () => {
-    return await prisma.productInfo.findMany();
+const findAll = async (param: Partial<ProductInfoDTO>) => {
+    return await prisma.productInfo.findMany({
+        where: {
+            inStock: param.inStock,
+            store: {
+                shopifyURL: param.shopifyURL
+            },
+            NOT: {
+                customerSubscription: {
+                    none: {}
+                }
+            }
+        },
+        include: {
+            customerSubscription: {
+            }
+        }
+    });
 };
+
+const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
+    return await prisma.productInfo.findMany({
+        where: {
+            inStock: param.inStock,
+            store: {
+                shopifyURL: param.shopifyURL
+            },
+            NOT: {
+                customerSubscription: {
+                    none: {}
+                }
+            }
+        },
+        include: {
+            customerSubscription: {
+            }
+        }
+    });
+};
+
 
 const isProductAlreadyAdded = async (productId: any, variantId: any) => {
     let count = await countProductAndVariantId(productId, variantId);
@@ -31,7 +70,7 @@ const findByProductAndVariantId = async (productId: any, variantId: any) => {
 };
 
 const addProductInfo = async (prodInfo: ProductInfoDTO) => {
-    let storeInfo = await findStoreByName(prodInfo.storeName);
+    let storeInfo = await findStoreByURL(prodInfo.shopifyURL);
     return await prisma.productInfo.upsert({
         where: {
             productId_variantId: {
@@ -42,6 +81,8 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
         update: {
             productTitle: prodInfo.productTitle,
             variantTitle: prodInfo.variantTitle,
+            imageURL: prodInfo.imageURL,
+            price: prodInfo.price,
             status: true,
             inStock: false,
             updatedAt: new Date(),
@@ -53,6 +94,8 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             productTitle: prodInfo.productTitle,
             variantId: prodInfo.variantId,
             variantTitle: prodInfo.variantTitle,
+            imageURL: prodInfo.imageURL,
+            price: prodInfo.price,
             status: true,
             inStock: false,
             createdAt: new Date(),
@@ -78,6 +121,8 @@ const upsertProduct = async (req: any, store: string) => {
                 productHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
+                price: Number(elm.price),
+                imageURL: req.image?.src,
                 status: true,
                 inStock: elm.inventory_quantity > 0 ? true : false,
                 createdAt: new Date(),
@@ -85,7 +130,7 @@ const upsertProduct = async (req: any, store: string) => {
                 isActive: req.status == 'active' ? true : false,
             })
     });
-    let storeInfo = await findStoreByName(store);
+    let storeInfo = await findStoreByURL(store);
     prodcutInfos.forEach(async elm => {
         console.log(elm)
         return await prisma.productInfo.upsert({
@@ -98,6 +143,8 @@ const upsertProduct = async (req: any, store: string) => {
             update: {
                 productTitle: elm.productTitle,
                 variantTitle: elm.variantTitle,
+                imageURL: elm.imageURL,
+                price: elm.price,
                 status: true,
                 inStock: elm.inStock,
                 updatedAt: new Date(),
@@ -109,6 +156,8 @@ const upsertProduct = async (req: any, store: string) => {
                 productTitle: elm.productTitle,
                 variantId: elm.variantId,
                 variantTitle: elm.variantTitle,
+                imageURL: elm.imageURL,
+                price: elm.price,
                 status: true,
                 inStock: elm.inStock,
                 createdAt: new Date(),
@@ -127,4 +176,28 @@ const upsertProduct = async (req: any, store: string) => {
     return prodcutInfos;
 };
 
-export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }
+const findProductByIdShopify = async (request: Request) => {
+    let { session } = await authenticate.admin(request);
+    const client = createAdminApiClient({
+        storeDomain: session.shop,
+        apiVersion: '2024-01',
+        accessToken: session.accessToken,
+    });
+    const operation = `
+      query ProductQuery($id: ID!) {
+        product(id: $id) {
+          id
+          title
+          handle
+        }
+      }
+    `;
+    const { data, errors, extensions } = await client.request(operation, {
+        variables: {
+            id: 'gid://shopify/Product/8339514851618',
+        },
+    });
+    return data;
+}
+
+export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts }

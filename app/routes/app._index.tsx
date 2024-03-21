@@ -1,5 +1,13 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit, useLoaderData, useRevalidator, json, Form } from "@remix-run/react";
+import {
+  useActionData,
+  useNavigation,
+  useSubmit,
+  useLoaderData,
+  useRevalidator,
+  json,
+  Form,
+} from "@remix-run/react";
 import {
   Page,
   Layout,
@@ -8,58 +16,92 @@ import {
   BlockStack,
   Link,
   InlineStack,
-  DataTable
+  DataTable,
+  Box,
+  FormLayout,
+  TextField,
+  Button,
+  ButtonGroup,
+  List,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { findAll } from "../services/customer-subscriber.service";
-import { isEmailVerified, save, updateEmail } from "../services/email.service";
-import { EmailDTO } from "../dto/email.dto";
-
-
+import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
+import { findSubscribedProducts } from "../services/product-info.service";
+import { upsertEmail } from "../services/email.service";
+import { updateStoreInfo } from "../services/store-info.service";
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let authObj = await authenticate.admin(request);
-  const data = await findAll({ storeName: authObj.session.shop });
-  const verification = await isEmailVerified(authObj.session.shop);
-  console.log(verification);
-  let rows = [];
-  for (let i = 0; i < data.length; i++) {
-    const subscription = data[i];
-    rows.push([
-      subscription.customerEmail,
-      subscription.productInfo?.productTitle,
-      subscription.productInfo?.variantTitle,
-      subscription.isNotified + ""
-    ]);
-  }
-  return { rows, storeName: authObj.session.shop };
+  let { admin, session } = await authenticate.admin(request);
+
+  let shopInfo: any = await updateStoreInfo(admin);
+  await upsertEmail({
+    storeId: shopInfo.id,
+    shopifyURL: shopInfo.myshopify_domain,
+    title: shopInfo.name,
+    senderEmail: shopInfo.email
+  });
+
+  const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
+  const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
+
+  return { data, storeName: session.shop, potentialRevenue };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { session } = await authenticate.admin(request);
-  return await updateEmail({ senderEmail: "khair.naqvi@gmail.com", storeName: session.shop, senderName: "BIS 2 " })
+  let { admin, session } = await authenticate.admin(request);
+  let formData = await request.formData();
+  let obj = Object.fromEntries(formData) as any;
 };
 
 export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData<typeof action>();
-  let { rows, storeName } = useLoaderData<typeof loader>();
+  const shopifyBridge = useAppBridge();
   let { revalidate } = useRevalidator();
+  let { data, storeName, emailVerified, potentialRevenue } = useLoaderData<typeof loader>();
+  let rows: any = [];
+  const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
+
+  for (let i = 0; i < data.length; i++) {
+    const productInfo = data[i];
+    rows.push([
+      productInfo.variantTitle,
+      productInfo.price,
+      RenderLink(productInfo.customerSubscription?.length, productInfo.id),
+      (Number(productInfo.price) * productInfo.customerSubscription?.length),
+    ]);
+  }
   const refreshData = async () => {
     revalidate();
-  }
+  };
 
   const onNotifyCustomer = async () => {
-    console.log('notify start');
+    console.log("notify start");
     const response = await fetch(`/api/notify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        shopifyURL: storeName
+      }),
     });
-    console.log(response);
+    shopifyBridge.modal.show('info-modal');
+    revalidate();
+  };
+
+  function RenderLink(content: any, productInfoId: any) {
+    const handleClick = () => {
+      let productInfo: any = data.filter(d => d.id == productInfoId)[0];
+      console.log(productInfo);
+      setSelectedProductInfo(productInfo)
+      shopifyBridge.modal.show('email-list-modal');
+    };
+    // Return the Link component with the onClick handler attached
+    return <Link onClick={handleClick}>{content}</Link>;
   }
 
   return (
@@ -69,31 +111,38 @@ export default function Index() {
           Reload Data
         </button>
       </ui-title-bar>
-      <BlockStack gap="500">
+      <Modal id="info-modal">
+        <p style={{ marginLeft: '5px' }}>Email notification has been processed </p>
+        <TitleBar title="NotificaPtion Message"></TitleBar>
+      </Modal>
+
+      <Modal id="email-list-modal">
+        <List type="bullet">
+          <ul>
+            {selectedProductInfo?.customerSubscription?.map((elm: any) => (
+              <List.Item key={elm.customerEmail}>{elm.customerEmail} -  {elm.isNotified ? 'Notified' : 'Not Notify Yet'}</List.Item>
+            ))}
+          </ul>
+        </List>
+        <TitleBar title="Subscribers List"></TitleBar>
+      </Modal>
+
+
+      <BlockStack gap="400">
         <Layout>
           <Layout.Section>
             <Card>
               <BlockStack gap="200">
                 <DataTable
-                  columnContentTypes={[
-                    'text',
-                    'text',
-                    'text',
-                    'text',
-                  ]}
-                  headings={[
-                    'Customer',
-                    'Product',
-                    'Variant',
-                    'Is Notified',
-                  ]}
+                  columnContentTypes={["text", "text", "text", "text"]}
+                  headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
                   rows={rows}
+                  totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'NILL'}`]}
                   pagination={{
                     hasNext: true,
                     onNext: () => { },
                   }}
                 />
-
               </BlockStack>
             </Card>
           </Layout.Section>
@@ -102,42 +151,10 @@ export default function Index() {
             <BlockStack gap="500">
               <Card>
                 <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Summary
-                  </Text>
                   <BlockStack gap="200">
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Customers
-                      </Text>
-                      <Link
-                        url="https://remix.run"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        100
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Out of Stock Items
-                      </Text>
-                      <Link
-                        url="https://www.prisma.io/"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        200
-                      </Link>
-                    </InlineStack>
-                    <button variant="primary" onClick={onNotifyCustomer}>
+                    <Button variant="primary" onClick={onNotifyCustomer}>
                       Notify Customers
-                    </button>
-                    <Form method="POST">
-                      <button variant="primary" type="submit">
-                        Perform Action
-                      </button>
-                    </Form>
+                    </Button>
                   </BlockStack>
                 </BlockStack>
               </Card>
