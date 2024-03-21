@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import { upsertProduct } from "../services/product-info.service";
-import { deleteStoreByName, deleteStoreByURL } from "../services/store-info.service";
+import { deleteStoreByURL } from "../services/store-info.service";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, session, admin, payload } = await authenticate.webhook(
