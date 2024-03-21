@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://distinct-quest-publishers-jeremy.trycloudflare.com"
+application_url = "https://teenage-veteran-perfect-mental.trycloudflare.com"
 embedded = true
 
 [build]
@@ -12,13 +12,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_customers,write_products"
+scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://distinct-quest-publishers-jeremy.trycloudflare.com/auth/callback",
-  "https://distinct-quest-publishers-jeremy.trycloudflare.com/auth/shopify/callback",
-  "https://distinct-quest-publishers-jeremy.trycloudflare.com/api/auth/callback"
+  "https://teenage-veteran-perfect-mental.trycloudflare.com/auth/callback",
+  "https://teenage-veteran-perfect-mental.trycloudflare.com/auth/shopify/callback",
+  "https://teenage-veteran-perfect-mental.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
