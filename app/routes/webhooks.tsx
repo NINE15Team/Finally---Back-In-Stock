@@ -2,6 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { authenticate } from "../shopify.server";
 import db from "../db.server";
 import { upsertProduct } from "../services/product-info.service";
+import { deleteStoreByURL } from "../services/store-info.service";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, session, admin, payload } = await authenticate.webhook(
@@ -31,7 +32,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       console.log("CUSTOMERS_DATA_REQUEST", payload);
       break;
     case "SHOP_REDACT":
-      console.log("SHOP_REDACT", payload);
+      await deleteStoreByURL(payload.shop_domain);
+      console.log("All Shop Data Deleted");
       break;
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });

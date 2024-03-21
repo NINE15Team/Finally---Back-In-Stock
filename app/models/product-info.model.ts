@@ -1,3 +1,4 @@
+import { CustomerSubscription } from "./customer-subscription.model";
 import { ShopifyStoreInfo } from "./shopify-store-info.model";
 
 export class ProductInfo {
@@ -8,13 +9,15 @@ export class ProductInfo {
     productTitle: string;
     variantId: number;
     variantTitle: string;
-    price: string;
+    price: number;
     imageURL: string;
     status: boolean;
     inStock: boolean;
     createdAt: Date;
     updatedAt: Date;
     isActive: boolean;
+    subscribers?: CustomerSubscription[];
+
 
     constructor(
         id: number,
@@ -24,13 +27,14 @@ export class ProductInfo {
         productTitle: string,
         variantId: number,
         variantTitle: string,
-        price: string,
+        price: number,
         imageURL: string,
         status: boolean,
         inStock: boolean,
         createdAt: Date,
         updatedAt: Date,
-        isActive: boolean
+        isActive: boolean,
+        subscribers?: CustomerSubscription[]
     ) {
         this.id = id;
         this.store = store;
@@ -46,5 +50,6 @@ export class ProductInfo {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isActive = isActive;
+        subscribers = subscribers
     }
 }

@@ -22,46 +22,58 @@ import {
   TextField,
   Button,
   ButtonGroup,
+  List,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { findAll } from "../services/customer-subscriber.service";
-import { isEmailVerified, updateEmail } from "../services/email.service";
-import { EmailDTO } from "../dto/email.dto";
-import { useRef, useEffect, useState, useCallback } from "react";
+import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
+import { findSubscribedProducts } from "../services/product-info.service";
+import { upsertEmail } from "../services/email.service";
+import { updateStoreInfo } from "../services/store-info.service";
+import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
+import { useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let authObj = await authenticate.admin(request);
-  const data = await findAll({ storeName: authObj.session.shop });
-  const emailVerified = await isEmailVerified(authObj.session.shop);
-  let rows = [];
-  for (let i = 0; i < data.length; i++) {
-    const subscription = data[i];
-    rows.push([
-      subscription.customerEmail,
-      subscription.productInfo?.productTitle,
-      subscription.productInfo?.variantTitle,
-      subscription.isNotified + "",
-    ]);
-  }
-  return { rows, storeName: authObj.session.shop, emailVerified };
+  let { admin, session } = await authenticate.admin(request);
+
+  let shopInfo: any = await updateStoreInfo(admin);
+  await upsertEmail({
+    storeId: shopInfo.id,
+    shopifyURL: shopInfo.myshopify_domain,
+    title: shopInfo.name,
+    senderEmail: shopInfo.email
+  });
+
+  const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
+  const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
+
+  return { data, storeName: session.shop, potentialRevenue };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { session } = await authenticate.admin(request);
+  let { admin, session } = await authenticate.admin(request);
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
-  return await updateEmail({ senderEmail: obj.email, storeName: session.shop, senderName: session.shop })
 };
 
 export default function Index() {
   const nav = useNavigation();
   const actionData = useActionData<typeof action>();
-  let { rows, storeName, emailVerified } = useLoaderData<typeof loader>();
+  const shopifyBridge = useAppBridge();
   let { revalidate } = useRevalidator();
-  const [email, setEmail] = useState("");
+  let { data, storeName, emailVerified, potentialRevenue } = useLoaderData<typeof loader>();
+  let rows: any = [];
+  const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
-  const handleEmailChange = useCallback((value: string) => setEmail(value), []);
 
+  for (let i = 0; i < data.length; i++) {
+    const productInfo = data[i];
+    rows.push([
+      productInfo.variantTitle,
+      productInfo.price,
+      RenderLink(productInfo.customerSubscription?.length, productInfo.id),
+      (Number(productInfo.price) * productInfo.customerSubscription?.length),
+    ]);
+  }
   const refreshData = async () => {
     revalidate();
   };
@@ -73,77 +85,83 @@ export default function Index() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify({
+        shopifyURL: storeName
+      }),
     });
-    console.log(response);
+    shopifyBridge.modal.show('info-modal');
+    revalidate();
   };
+
+  function RenderLink(content: any, productInfoId: any) {
+    const handleClick = () => {
+      let productInfo: any = data.filter(d => d.id == productInfoId)[0];
+      console.log(productInfo);
+      setSelectedProductInfo(productInfo)
+      shopifyBridge.modal.show('email-list-modal');
+    };
+    // Return the Link component with the onClick handler attached
+    return <Link onClick={handleClick}>{content}</Link>;
+  }
 
   return (
     <Page>
-    Hello
-      {(emailVerified == undefined || emailVerified == 'NO') &&
-        (
-          <Card padding="400">
-            <Form method="POST">
+      <ui-title-bar title="Back In Stock">
+        <button variant="primary" onClick={refreshData}>
+          Reload Data
+        </button>
+      </ui-title-bar>
+      <Modal id="info-modal">
+        <p style={{ marginLeft: '5px' }}>Email notification has been processed </p>
+        <TitleBar title="NotificaPtion Message"></TitleBar>
+      </Modal>
+
+      <Modal id="email-list-modal">
+        <List type="bullet">
+          <ul>
+            {selectedProductInfo?.customerSubscription?.map((elm: any) => (
+              <List.Item key={elm.customerEmail}>{elm.customerEmail} -  {elm.isNotified ? 'Notified' : 'Not Notify Yet'}</List.Item>
+            ))}
+          </ul>
+        </List>
+        <TitleBar title="Subscribers List"></TitleBar>
+      </Modal>
+
+
+      <BlockStack gap="400">
+        <Layout>
+          <Layout.Section>
+            <Card>
               <BlockStack gap="200">
-                <TextField
-                  value={email}
-                  onChange={handleEmailChange}
-                  name="email"
-                  label="Email"
-                  type="email"
-                  autoComplete="email"
+                <DataTable
+                  columnContentTypes={["text", "text", "text", "text"]}
+                  headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
+                  rows={rows}
+                  totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'NILL'}`]}
+                  pagination={{
+                    hasNext: true,
+                    onNext: () => { },
+                  }}
                 />
               </BlockStack>
-              <InlineStack align="end">
-                <ButtonGroup>
-                  <Button variant="primary" submit={true}>Verify Email</Button>
-                </ButtonGroup>
-              </InlineStack>
-            </Form>
-          </Card>
-        )}
-      {emailVerified == "YES" &&
-        (<div >
-          <ui-title-bar title="Back In Stock">
-            <button variant="primary" onClick={refreshData}>
-              Reload Data
-            </button>
-          </ui-title-bar>
-          <BlockStack gap="500">
-            <Layout>
-              <Layout.Section>
-                <Card>
-                  <BlockStack gap="200">
-                    <DataTable
-                      columnContentTypes={["text", "text", "text", "text"]}
-                      headings={["Customer", "Product", "Variant", "Is Notified"]}
-                      rows={rows}
-                      pagination={{
-                        hasNext: true,
-                        onNext: () => { },
-                      }}
-                    />
-                  </BlockStack>
-                </Card>
-              </Layout.Section>
+            </Card>
+          </Layout.Section>
 
-              <Layout.Section variant="oneThird">
-                <BlockStack gap="500">
-                  <Card>
-                    <BlockStack gap="200">
-                      <BlockStack gap="200">
-                        <Button variant="primary" onClick={onNotifyCustomer}>
-                          Notify Customers
-                        </Button>
-                      </BlockStack>
-                    </BlockStack>
-                  </Card>
+          <Layout.Section variant="oneThird">
+            <BlockStack gap="500">
+              <Card>
+                <BlockStack gap="200">
+                  <BlockStack gap="200">
+                    <Button variant="primary" onClick={onNotifyCustomer}>
+                      Notify Customers
+                    </Button>
+                  </BlockStack>
                 </BlockStack>
-              </Layout.Section>
-            </Layout>
-          </BlockStack>
-        </div>)}
+              </Card>
+            </BlockStack>
+          </Layout.Section>
+        </Layout>
+      </BlockStack>
     </Page>
   );
 }

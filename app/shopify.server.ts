@@ -43,7 +43,7 @@ const shopify = shopifyApp({
 
   },
   hooks: {
-    afterAuth: async ({ session }) => {
+    afterAuth: async ({ session }: any) => {
       shopify.registerWebhooks({ session });
       let storeInfo = await saveStoreInfo({
         storeId: session.shop,
@@ -53,7 +53,7 @@ const shopify = shopifyApp({
         updatedAt: new Date(),
         isActive: true
       });
-      console.log("***********************APP Initilized**************************************")
+      console.log("***********************APP Initilized**************************************", storeInfo)
     },
   },
   future: {

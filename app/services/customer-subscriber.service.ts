@@ -1,16 +1,18 @@
 import { CustomerSubscription } from "@prisma/client";
+import { findAll as findProducts } from "../services/product-info.service";
 import prisma from "~/db.server";
+import { findStoreByURL } from "./store-info.service";
 
 const findAll = async (params: any = {}) => {
     return await prisma.customerSubscription.findMany({
         where: {
-            isNotified: params?.isNotified,
             productInfo: {
                 inStock: false,
                 store: {
-                    storeName: params.storeName
+                    shopifyURL: params.shopifyURL
                 }
-            }
+            },
+            isNotified: params?.isNotified,
         },
         include: {
             productInfo: {
@@ -63,5 +65,11 @@ const setCustomerNotified = async (email: string, productInfoId: number) => {
     })
 };
 
+const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialRevenue: any }> => {
+    let storeInfo = await findStoreByURL(storeURL);
+    let result: any[] = await prisma.$queryRaw`SELECT  SUM(pi2.price) FROM  customer_subscription cs Left join  product_info pi2  on pi2.id = cs.product_info_id  left join store_info si on pi2.store_id = si.id  where si.id = ${storeInfo?.id}`
+    return { potentialRevenue: result[0].sum }
+};
 
-export { findAll, subscribeProduct, setCustomerNotified }
+
+export { findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue }
