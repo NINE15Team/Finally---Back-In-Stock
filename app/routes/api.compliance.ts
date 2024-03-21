@@ -19,5 +19,12 @@ export const action: ActionFunction = async ({ request }) => {
         await deleteStoreByURL(requstBody?.shop_domain);
         console.log(requstBody);
     }
-    return json({ data: "removed" });
+    return json(
+        { status: true },
+        {
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+            },
+        }
+    );
 };
