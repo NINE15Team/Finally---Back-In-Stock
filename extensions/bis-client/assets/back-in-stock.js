@@ -9,25 +9,30 @@ class BackInStock extends HTMLElement {
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
-    console.log(this.productInstance.featured_image);
     this.initializeListeners();
   }
 
   initializeListeners() {
-    console.log(this.productInstance);
+    console.log(this.productInstance, this.hasVariantSelectElm());
     if (this.hasVariantSelectElm()) {
+      let prodInstance = this.productInstance;
+      let $form = this.form;
       document.querySelector("product-info variant-selects").addEventListener('change', function () {
-        let isDisabled = this.querySelector(":checked").classList.contains('disabled');
-        if (isDisabled) {
-          document.querySelector(".out-of-stock").classList.remove('none');
-        } else {
-          document.querySelector(".out-of-stock").classList.add('none');
-        }
+        setTimeout(function () {
+          let selectedVariant = document.querySelector('product-form form [name=id]').value;
+          let isAvailable = prodInstance.variants.some(v => v.id == selectedVariant && v.available);
+          if (!isAvailable) {
+            $form.classList.remove('none');
+          } else {
+            $form.classList.add('none');
+          }
+        }, 100)
       });
     }
+    
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      document.querySelector(".out-of-stock .message *").classList.add("none");
+      this.querySelector(".message *").classList.add("none");
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
@@ -35,7 +40,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com";
+      const API_URL = "https://distinct-quest-publishers-jeremy.trycloudflare.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({
@@ -61,9 +66,9 @@ class BackInStock extends HTMLElement {
 
   showMessage(type) {
     if (type == 'info') {
-      document.querySelector(".out-of-stock .message .success").classList.remove("none");
+      this.form.querySelector(".message .success").classList.remove("none");
     } else if (type == 'error') {
-      document.querySelector(".out-of-stock .message .error").classList.remove("none");
+      this.form.querySelector(".message .error").classList.remove("none");
     }
   }
 
@@ -85,5 +90,6 @@ class BackInStock extends HTMLElement {
   }
 }
 
-if (!customElements.get("back-in-stock"))
+if (!customElements.get("back-in-stock")) {
   customElements.define("back-in-stock", BackInStock);
+}
