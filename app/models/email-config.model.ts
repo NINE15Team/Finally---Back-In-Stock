@@ -8,6 +8,7 @@ export class EmailConfiguration {
     title: string = '';
     senderId: number = 0;
     isEmailVerified: EmailVerificationStatus = EmailVerificationStatus.NO;
+    senderEmail: string = '';
     headerContent: string = '';
     bodyContent: string = '';
     footerContent: string = '';

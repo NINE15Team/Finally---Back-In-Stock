@@ -10,6 +10,31 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
             inStock: param.inStock,
             store: {
                 shopifyURL: param.shopifyURL
+            },
+            NOT: {
+                customerSubscription: {
+                    none: {}
+                }
+            }
+        },
+        include: {
+            customerSubscription: {
+            }
+        }
+    });
+};
+
+const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
+    return await prisma.productInfo.findMany({
+        where: {
+            inStock: param.inStock,
+            store: {
+                shopifyURL: param.shopifyURL
+            },
+            NOT: {
+                customerSubscription: {
+                    none: {}
+                }
             }
         },
         include: {
@@ -96,7 +121,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
-                price: elm.price,
+                price: Number(elm.price),
                 imageURL: req.image?.src,
                 status: true,
                 inStock: elm.inventory_quantity > 0 ? true : false,
@@ -175,4 +200,4 @@ const findProductByIdShopify = async (request: Request) => {
     return data;
 }
 
-export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded }
+export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts }

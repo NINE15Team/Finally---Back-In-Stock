@@ -26,7 +26,7 @@ import {
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
-import { findAll as findAllProducts, } from "../services/product-info.service";
+import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo } from "../services/store-info.service";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
@@ -43,10 +43,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     senderEmail: shopInfo.email
   });
 
-  const data = await findAllProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
+  const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
   const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
-
-  return { data, storeName: session.shop, potentialRevenue };
+  return { data, shopifyURL: shopInfo.myshopify_domain, storeName: shopInfo.name, potentialRevenue };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -60,7 +59,7 @@ export default function Index() {
   const actionData = useActionData<typeof action>();
   const shopifyBridge = useAppBridge();
   let { revalidate } = useRevalidator();
-  let { data, storeName, emailVerified, potentialRevenue } = useLoaderData<typeof loader>();
+  let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<typeof loader>();
   let rows: any = [];
   const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
@@ -86,7 +85,8 @@ export default function Index() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        shopifyURL: storeName
+        shopifyURL: shopifyURL,
+        storeName: storeName,
       }),
     });
     shopifyBridge.modal.show('info-modal');
@@ -112,7 +112,7 @@ export default function Index() {
         </button>
       </ui-title-bar>
       <Modal id="info-modal">
-        <p style={{ marginLeft: '5px' }}>Email notification has been processed </p>
+        <p style={{ padding: '20px' }}>Email notification has been processed </p>
         <TitleBar title="NotificaPtion Message"></TitleBar>
       </Modal>
 

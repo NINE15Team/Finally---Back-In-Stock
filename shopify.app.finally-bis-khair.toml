@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://albany-tiles-walls-stages.trycloudflare.com"
+application_url = "https://acm-magazines-vacations-bold.trycloudflare.com"
 embedded = true
 
 [build]
@@ -12,13 +12,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_customers,write_products"
+scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://albany-tiles-walls-stages.trycloudflare.com/auth/callback",
-  "https://albany-tiles-walls-stages.trycloudflare.com/auth/shopify/callback",
-  "https://albany-tiles-walls-stages.trycloudflare.com/api/auth/callback"
+  "https://acm-magazines-vacations-bold.trycloudflare.com/auth/callback",
+  "https://acm-magazines-vacations-bold.trycloudflare.com/auth/shopify/callback",
+  "https://acm-magazines-vacations-bold.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

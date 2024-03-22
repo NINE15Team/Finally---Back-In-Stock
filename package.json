@@ -27,7 +27,8 @@
     "graphql-codegen": "graphql-codegen",
     "vite": "vite",
     "logs:dev": "heroku logs --tail -a finally-back-in-stock-dev",
-    "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev"
+    "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev",
+    "logs:live": "heroku logs --tail -a finally-back-in-stock-live"
   },
   "type": "module",
   "dependencies": {

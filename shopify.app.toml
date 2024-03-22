@@ -1,38 +1,30 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "72a63a557f1b001566a1a73c21584434"
-name = "finally-back-in-stock"
-application_url = "https://no-replacing-harrison-implementing.trycloudflare.com"
+client_id = "de0f56b0104cb0768f7a45702a92cc91"
+name = "Finally Back In Stock - Live"
+application_url = "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com"
 embedded = true
 
 [build]
-automatically_update_urls_on_dev = true
-dev_store_url = "app-bis2.myshopify.com"
+automatically_update_urls_on_dev = false
 include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "read_customers,write_customers,write_inventory,write_orders,write_products"
+scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://no-replacing-harrison-implementing.trycloudflare.com/auth/callback",
-  "https://no-replacing-harrison-implementing.trycloudflare.com/auth/shopify/callback",
-  "https://no-replacing-harrison-implementing.trycloudflare.com/api/auth/callback"
+  "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com/auth/callback",
+  "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com/auth/shopify/callback",
+  "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com/api/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-01"
 
-  [webhooks.privacy_compliance]
-  customer_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
-  customer_data_request_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
-  shop_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
-
-[app_proxy]
-url = "https://no-replacing-harrison-implementing.trycloudflare.com/api/hello"
-subpath = "bis-api"
-prefix = "apps"
+[webhooks.privacy_compliance]
+shop_deletion_url = "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com/api/compliance"
 
 [pos]
 embedded = false
