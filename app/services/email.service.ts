@@ -86,6 +86,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
               <p style="font-size: 0.65rem;">
                ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}.
               </p>
+              <p style="font-size: 0.65rem;">If you'd prefer not to receive email from me, <a href="#">Unsubscribe here</a></p>
             </div>
           </div>
         </body>
