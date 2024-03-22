@@ -2,12 +2,10 @@ import { ActionFunction, json } from "@remix-run/node"; // or cloudflare/deno
 import { setCustomerNotified, findAll as findAllSubscribers, subscribeProduct } from "~/services/customer-subscriber.service";
 import { findEmailConfigByStoreURL } from "~/services/email.service";
 import { sendEmail } from "../services/email.service";
-import { EmailConfiguration } from "~/models/email-config.model";
 
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requestBody = await request.json();
-        console.log("________________--",requestBody);
         let subscribers = await findAllSubscribers({ isNotified: false, isSubscribed: true, shopifyURL: requestBody.shopifyURL });
         let emailInfo = await findEmailConfigByStoreURL(requestBody.shopifyURL);
         subscribers.forEach(async sub => {

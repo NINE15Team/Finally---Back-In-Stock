@@ -88,9 +88,4 @@ const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialR
 };
 
 
-const unSubscribeFromProduct = async () => {
-    return prisma.customerSubscription.findFirst();
-};
-
-
-export { findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeFromProduct }
+export { findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct }
