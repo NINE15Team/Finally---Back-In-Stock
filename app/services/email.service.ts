@@ -5,6 +5,7 @@ import { EmailDTO } from "../dto/email.dto";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { ProductInfo } from "~/models/product-info.model";
+import EncryptionUtil from "~/utils/encryption.util";
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -50,6 +51,12 @@ const loadEmailTemplate = async (email: EmailDTO) => {
   if (productInfo?.imageURL && !productInfo?.imageURL?.startsWith('https://')) {
     productInfo.imageURL = 'https:' + productInfo.imageURL;
   }
+  let { SHOPIFY_APP_URL, AES_SECRET_KEY } = process.env;
+  if (AES_SECRET_KEY == undefined) {
+    throw new Error("API SECRECT key is missing in .env flie");
+  }
+  let token = EncryptionUtil.encrypt(JSON.stringify({ sid: email.subscriberId }), AES_SECRET_KEY);
+  let unsubscribeLink = `${SHOPIFY_APP_URL}/public/unsubscribe?token=${token}`;
   return `
   <!DOCTYPE html>
     <html lang="en">
@@ -86,7 +93,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
               <p style="font-size: 0.65rem;">
                ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}.
               </p>
-              <p style="font-size: 0.65rem;">If you'd prefer not to receive email from me, <a href="#">Unsubscribe here</a></p>
+              <p style="font-size: 0.65rem;">If you'd prefer not to receive email from me, <a href="${unsubscribeLink}">Unsubscribe here</a></p>
             </div>
           </div>
         </body>

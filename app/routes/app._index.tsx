@@ -113,7 +113,7 @@ export default function Index() {
       </ui-title-bar>
       <Modal id="info-modal">
         <p style={{ padding: '20px' }}>Email notification has been processed </p>
-        <TitleBar title="NotificaPtion Message"></TitleBar>
+        <TitleBar title="Notification Message"></TitleBar>
       </Modal>
 
       <Modal id="email-list-modal">

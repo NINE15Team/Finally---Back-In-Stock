@@ -1,4 +1,4 @@
-const API_URL = "https://egypt-pack-however-warm.trycloudflare.com";
+const API_URL = "https://matches-virgin-isa-peru.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
