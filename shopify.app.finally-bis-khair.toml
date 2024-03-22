@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://skins-harry-rate-farming.trycloudflare.com"
+application_url = "https://matches-virgin-isa-peru.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://skins-harry-rate-farming.trycloudflare.com/auth/callback",
-  "https://skins-harry-rate-farming.trycloudflare.com/auth/shopify/callback",
-  "https://skins-harry-rate-farming.trycloudflare.com/api/auth/callback"
+  "https://matches-virgin-isa-peru.trycloudflare.com/auth/callback",
+  "https://matches-virgin-isa-peru.trycloudflare.com/auth/shopify/callback",
+  "https://matches-virgin-isa-peru.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
