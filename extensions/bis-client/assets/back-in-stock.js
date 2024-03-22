@@ -1,3 +1,4 @@
+const API_URL = "https://egypt-pack-however-warm.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -29,7 +30,7 @@ class BackInStock extends HTMLElement {
         }, 100)
       });
     }
-    
+
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
       this.querySelector(".message *").classList.add("none");
@@ -40,7 +41,6 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com";
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({

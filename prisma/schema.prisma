@@ -24,34 +24,33 @@ model ShopifyStoreInfo {
   id                 Int                 @id @default(autoincrement())
   storeId            String              @map("store_id")
   storeName          String              @map("store_name")
-  shopifyURL         String              @map("shopify_url")
+  shopifyURL         String              @unique @map("shopify_url")
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at")
   isActive           Boolean             @default(true) @map("is_active")
-  productInfo        ProductInfo[]
   EmailConfiguartion EmailConfiguartion?
+  productInfo        ProductInfo[]
 
-  @@unique([shopifyURL])
   @@map("store_info")
 }
 
 model ProductInfo {
   id                   Int                    @id @default(autoincrement())
   storeId              Int                    @map("store_id")
-  store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id], onDelete: Cascade) // This establishes the relationship
-  productHandle        String                 @map("product_handle")
   productId            String                 @map("product_id")
   productTitle         String                 @default("Default Product") @map("product_title")
   variantId            String                 @map("variant_id")
   variantTitle         String                 @default("Default Variant") @map("variant_title")
-  price                Float                 @default(0) @map("price")
-  imageURL             String                 @default("Default Variant") @map("image_url")
   status               Boolean                @default(false)
+  isActive             Boolean                @default(true)
+  productHandle        String                 @map("product_handle")
+  imageURL             String                 @default("Default Variant") @map("image_url")
+  price                Float                  @default(0) @map("price")
+  customerSubscription CustomerSubscription[]
+  store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   inStock              Boolean                @default(false)
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
-  isActive             Boolean                @default(true)
-  customerSubscription CustomerSubscription[]
 
   @@unique([productId, variantId])
   @@map("product_info")
@@ -60,13 +59,14 @@ model ProductInfo {
 model CustomerSubscription {
   id            Int         @id @default(autoincrement())
   productInfoId Int         @map("product_info_id")
-  productInfo   ProductInfo @relation(fields: [productInfoId], references: [id], onDelete: Cascade) // This establishes the relationship
   customerEmail String      @default("Default Email") @map("customer_email")
   status        Boolean     @default(false) @map("status")
   isNotified    Boolean     @default(false) @map("is_notified")
+  isSubscribed  Boolean     @default(true) @map("is_subscribed")
+  isActive      Boolean     @default(true)
+  productInfo   ProductInfo @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
-  isActive      Boolean     @default(true)
 
   @@unique([customerEmail, productInfoId])
   @@map("customer_subscription")
@@ -74,19 +74,18 @@ model CustomerSubscription {
 
 model EmailConfiguartion {
   id              Int              @id @default(autoincrement())
-  storeId         Int              @map("store_id")
-  store           ShopifyStoreInfo @relation(fields: [storeId], references: [id], onDelete: Cascade) // This establishes the relationship
   senderEmail     String           @default("") @map("sender_email")
-  title           String           @default("") @map("email_title")
-  senderId        Int              @default(0) @map("sender_id")
+  storeId         Int              @unique @map("store_id")
   isEmailVerified String           @default("NO") @map("email_verified")
   headerContent   String           @default("") @map("header_content")
   bodyContent     String           @default("") @map("body_content")
   footerContent   String           @default("") @map("footer_content")
+  senderId        Int              @default(0) @map("sender_id")
   buttonContent   String           @default("") @map("button_content")
+  title           String           @default("") @map("email_title")
+  store           ShopifyStoreInfo @relation(fields: [storeId], references: [id], onDelete: Cascade)
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at")
 
-  @@unique([storeId])
   @@map("email_configuartion")
 }
