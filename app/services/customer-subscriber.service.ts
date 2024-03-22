@@ -4,6 +4,24 @@ import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 
+const findById = async (params: CustomerSubscriptionDTO) => {
+    return await prisma.customerSubscription.findFirst({
+        where: {
+            id: params.id
+        },
+        include: {
+            productInfo: {
+                include: {
+                    store: {
+
+                    }
+                }
+            }
+        }
+    });
+};
+
+
 const findAll = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findMany({
         where: {
@@ -88,4 +106,4 @@ const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialR
 };
 
 
-export { findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct }
+export { findById, findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct }
