@@ -83,6 +83,7 @@ const loadEmailTemplate = async (email: Partial<EmailDTO> | undefined) => {
                 Now</a>
               <hr style="margin-block: 1.3rem;">
               <p style="font-size: 0.65rem;">If you have any questions, reply to this email or contact us at xxxxx.</p>
+              <p style="font-size: 0.65rem;">If you'd prefer not to receive email from me, <a href="#">Unsubscribe here</a></p>
             </div>
           </div>
         </body>
