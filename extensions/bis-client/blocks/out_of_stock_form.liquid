@@ -35,12 +35,16 @@
   >
     <h3>{{ blockSettings.form_title }}</h3>
     <p>{{ blockSettings.description }}</p>
-    <label for="email">Email</label>
     <div class="wrapper">
-      <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}">
-      <button style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
+      <div class="field">
+        <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}" class="field__input">
+        <label for="email" class="field__label">Email</label>
+    </div>
+    <div class="contact__button">
+      <button class="button" style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
         {{ blockSettings.button_text }}
       </button>
+    </div>
     </div>
     <p class="message">
       <span class="success none">
@@ -79,25 +83,25 @@
       "type": "color",
       "id": "form_background",
       "label": "Form background",
-      "default": "#000"
+      "default": "#FFF"
     },
     {
       "type": "color",
       "id": "button_background",
       "label": "Button background",
-      "default": "#fff"
+      "default": "#000"
     },
     {
       "type": "color",
       "id": "button_text_color",
       "label": "Button text color",
-      "default": "#000"
+      "default": "#FFF"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text color",
-      "default": "#fff"
+      "default": "#000"
     },
     {
       "type": "header",
@@ -142,7 +146,8 @@
     {
       "type": "liquid",
       "id": "custom_css",
-      "label": "Custom CSS"
+      "label": "Custom CSS",
+      "default": "== .field { margin-bottom: 10px; }"
     },
     {
       "type": "paragraph",
