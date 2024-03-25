@@ -1,4 +1,4 @@
-const API_URL = "https://donation-round-dishes-restore.trycloudflare.com";
+const API_URL = "https://finally-back-in-stock-live-21b2a44a9d45.herokuapp.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -50,7 +50,7 @@ class BackInStock extends HTMLElement {
           productTitle: this.productTitle,
           variantId: variantId,
           imageURL: this.productInstance.featured_image,
-          price: this.getVariant(variantId).price,
+          price: Number(this.getVariant(variantId).price)/100,
           variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")
         }),
