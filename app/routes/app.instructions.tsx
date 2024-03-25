@@ -19,28 +19,28 @@ export default function Instructions() {
                     <List type="bullet">
                         <List.Item>
                             <Text variant="headingMd" as="p">
-                                Click "customize" on your theme
+                                Step 1: Click "customize" on your theme
                             </Text>
                         </List.Item>
-                        <img src={step1}></img>
+                        <img src={step1} height="100%" width="100%"></img>
                         <List.Item>
                             <Text variant="headingMd" as="p">
-                                On the left hand side, click "Add Block"
+                                Step 2: On the left hand side, click "Add Block"
                             </Text>
                         </List.Item>
-                        <img src={step2}></img>
+                        <img src={step2} height="100%" width="100%"></img>
                         <List.Item>
                             <Text variant="headingMd" as="p">
-                                Click on Apps and select "Back in Stock Form"
+                                Step 3/4: Click on Apps and select "Back in Stock Form"
                             </Text>
                         </List.Item>
-                        <img src={step3_4}></img>
+                        <img src={step3_4} height="100%" width="100%"></img>
                         <List.Item>
                             <Text variant="headingMd" as="p">
-                                Choose customization options of how the widget will display"
+                                Step 5/6: Choose customization options of how the widget will display"
                             </Text>
                         </List.Item>
-                        <img src={step5_6}></img>
+                        <img src={step5_6} height="100%" width="100%"></img>
                     </List>
                 </Card>
                 <BlockStack inlineAlign="end">

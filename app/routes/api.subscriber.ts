@@ -1,7 +1,7 @@
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
-import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.model";
+import { CustomerSubscriptionDTO } from "../dto/customer-subscription.dto";
 
 export const loader: LoaderFunction = async ({ request }) => {
     return json(
