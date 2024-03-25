@@ -27,6 +27,7 @@ model ShopifyStoreInfo {
   shopifyURL         String              @unique @map("shopify_url")
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @default(now()) @updatedAt @map("updated_at")
+  isInitilized       Boolean             @default(false) @map("is_initilized")
   isActive           Boolean             @default(true) @map("is_active")
   EmailConfiguartion EmailConfiguartion?
   productInfo        ProductInfo[]

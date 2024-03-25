@@ -50,10 +50,23 @@ const updateStoreInfo = async (admin: any) => {
             storeId: shop.id + "",
             storeName: shop.name,
             shopifyURL: shop.myshopify_domain,
+            isInitilized: true,
             updatedAt: new Date()
         }
     });
     return shop;
+};
+
+
+const isInitilized = async (admin: any) => {
+    const { shop } = await admin.rest.get({ path: `shop` }).then((response: any) => response.json());
+    let count = await prisma.shopifyStoreInfo.count({
+        where: {
+            shopifyURL: shop.myshopify_domain,
+            isInitilized: true
+        }
+    });
+    return count > 0;
 };
 
 const getStoreInfoShopify = async (admin: any) => {
@@ -61,5 +74,32 @@ const getStoreInfoShopify = async (admin: any) => {
     return shop;
 };
 
+const activateWebPixel = async (admin: any) => {
+    const response = await admin.graphql(
+        `#graphql
+        mutation webPixelCreate($webPixel: WebPixelInput!) {
+                webPixelCreate(webPixel: $webPixel) {
+                    userErrors {
+                        code
+                        field
+                        message
+                    }
+                    webPixel {
+                        id
+                        settings
+                    }
+                }
+            }`, {
+        variables: {
+            webPixel: {
+                settings: JSON.stringify({ accountID: "234" })
+            }
+        }
+    },
+    );
+    const data = await response.json();
+    return response;
+};
 
-export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo, getStoreInfoShopify }
+
+export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo, getStoreInfoShopify, activateWebPixel, isInitilized }

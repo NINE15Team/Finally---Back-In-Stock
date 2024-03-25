@@ -2,7 +2,7 @@
 
 client_id = "ac164153b025181d937b5907c40bd024"
 name = "finally-bis-khair"
-application_url = "https://matches-virgin-isa-peru.trycloudflare.com"
+application_url = "https://donation-round-dishes-restore.trycloudflare.com"
 embedded = true
 
 [build]
@@ -12,13 +12,13 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://matches-virgin-isa-peru.trycloudflare.com/auth/callback",
-  "https://matches-virgin-isa-peru.trycloudflare.com/auth/shopify/callback",
-  "https://matches-virgin-isa-peru.trycloudflare.com/api/auth/callback"
+  "https://donation-round-dishes-restore.trycloudflare.com/auth/callback",
+  "https://donation-round-dishes-restore.trycloudflare.com/auth/shopify/callback",
+  "https://donation-round-dishes-restore.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
