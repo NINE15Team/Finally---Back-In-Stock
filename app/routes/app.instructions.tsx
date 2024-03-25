@@ -1,18 +1,18 @@
-import { BlockStack, Box, Button, Card, List, Page, Scrollable, Text } from '@shopify/polaris';
-import { Form } from '@remix-run/react';
+import { BlockStack, Box, Button, Card, Frame, List, Loading, Page, Scrollable, Spinner, Text } from '@shopify/polaris';
+import { PlusIcon } from '@shopify/polaris-icons';
+import { Form, unstable_useViewTransitionState, useNavigation } from '@remix-run/react';
 
 import step1 from "../image/step_1.png";
 import step2 from "../image/step_2.png";
 import step3_4 from "../image/step_3_4.png";
 import step5_6 from "../image/step_5_6.png";
 
-
-
 export default function Instructions() {
+    const navigation = useNavigation();
 
     return (
         <Page>
-            <Form method='POST' navigate={false} fetcherKey="init-key" >
+            <Form method='POST'>
                 <Card>
                     <Text variant="headingXl" as="h2">Installation Instructions</Text>
                     <Text variant="headingXl" as="h4">Follow these steps to install the application:</Text>
@@ -45,7 +45,10 @@ export default function Instructions() {
                 </Card>
                 <BlockStack inlineAlign="end">
                     <Box paddingBlockStart="200">
-                        <Button variant="primary" tone="critical" submit={true}>Proceed</Button>
+                        {navigation.state == 'idle' ?
+                            <Button variant="primary" tone="critical" submit={true}>Proceed</Button> :
+                            <Spinner accessibilityLabel="Spinner example" size="small" />
+                        }
                     </Box>
                 </BlockStack>
             </Form>

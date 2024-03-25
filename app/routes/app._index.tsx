@@ -37,6 +37,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     title: shopInfo.name,
     senderEmail: shopInfo.email
   });
+  console.log("I am parrent");
   return await isInitilized(admin);
 };
 
