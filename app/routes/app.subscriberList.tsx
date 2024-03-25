@@ -29,7 +29,7 @@ export default function SubscriberList() {
             productInfo.variantTitle,
             `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-            `${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+            `$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
         ]);
     }
     const refreshData = async () => {
