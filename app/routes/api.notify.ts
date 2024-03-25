@@ -6,7 +6,7 @@ import { sendEmail } from "../services/email.service";
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requestBody = await request.json();
-        let subscribers = await findAllSubscribers({ isNotified: false, isSubscribed: true, shopifyURL: requestBody.shopifyURL });
+        let subscribers = await findAllSubscribers({ isNotified: false, isSubscribed: true, shopifyURL: requestBody.shopifyURL, inStock: true });
         let emailInfo = await findEmailConfigByStoreURL(requestBody.shopifyURL);
         subscribers.forEach(async sub => {
             if (sub.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
@@ -26,6 +26,7 @@ export const action: ActionFunction = async ({ request }) => {
                     productInfo: {
                         productTitle: sub.productInfo.productTitle,
                         productHandle: sub.productInfo.productHandle,
+                        variantId: sub.productInfo.variantId,
                         price: sub.productInfo.price,
                         imageURL: sub.productInfo.imageURL,
                         variantTitle: sub.productInfo.variantTitle

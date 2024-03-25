@@ -26,7 +26,7 @@ const findAll = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findMany({
         where: {
             productInfo: {
-                inStock: false,
+                inStock: params.inStock,
                 store: {
                     shopifyURL: params.shopifyURL
                 }

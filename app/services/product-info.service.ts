@@ -28,7 +28,6 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
 const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
         where: {
-            inStock: param.inStock,
             store: {
                 shopifyURL: param.shopifyURL
             },

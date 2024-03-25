@@ -26,11 +26,13 @@ export default function SubscriberList() {
 
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
+        console.log(productInfo);
         rows.push([
-            productInfo.variantTitle,
+            `${productInfo.productTitle} - ${productInfo.variantTitle}`,
             `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
             `${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+            productInfo.inStock ? 'Yes' : 'No'
         ]);
     }
     const refreshData = async () => {
@@ -95,9 +97,10 @@ export default function SubscriberList() {
                             <BlockStack gap="200">
                                 <DataTable
                                     columnContentTypes={["text", "text", "text", "text"]}
-                                    headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
+                                    headings={["Product", "Price", "Subscribers", "Potential Revenue", "In stock"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`]}
+                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`,'']}
+                                    showTotalsInFooter
                                     pagination={{
                                         hasNext: true,
                                         onNext: () => { },

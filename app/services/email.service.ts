@@ -186,7 +186,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 		       	<p align="center" style="font-size: 18px; max-width: 420px; display: inline-block; vertical-align: middle;margin-top: 0; padding: 0 15px;">
              ${email?.bodyContent || "Your product is back in stock and now available."}
 		      	</p>
-		      	<a href="url" style="    
+		      	<a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="    
 		      	font-size: 18px;
 				max-width: 420px;
     			display: inline-block;
@@ -210,7 +210,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
         <tbody>
             <tr>
                 <td style="line-height: 24px; font-size: 16px; border-radius: 6px; margin: 0;" align="center">
-                    <a href="${shopifyURL}/products/${productInfo?.productHandle}" style="color: white; background-color: black; border-radius: 50px; font-size: 16px; font-family: Barlow, sans-serif;text-decoration: none; border-radius: 6px; line-height: 20px; display: block; font-weight: normal; white-space: nowrap; padding: 20px 50px 20px 50px; border: 1px solid transparent; border-radius:40px; height: ;" href="#"> ${email?.buttonContent || "Checkout Now"}</a>
+                    <a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="color: white; background-color: black; border-radius: 50px; font-size: 16px; font-family: Barlow, sans-serif;text-decoration: none; border-radius: 6px; line-height: 20px; display: block; font-weight: normal; white-space: nowrap; padding: 20px 50px 20px 50px; border: 1px solid transparent; border-radius:40px; height: ;" href="#"> ${email?.buttonContent || "Checkout Now"}</a>
                 </td>
             </tr>
         </tbody>
