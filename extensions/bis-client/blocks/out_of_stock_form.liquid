@@ -10,6 +10,10 @@
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
 <style>
+  #{{ block.id }} form {
+    padding-left: {{blockSettings.padding_left}}px;
+    padding-right: {{blockSettings.padding_right}}px;
+  }
   {% capture block_css %}{{ blockSettings.custom_css }}{% endcapture %}
   {% if block_css != blank %}
     {% assign block_id_selector = '#' | append: block.id %}
@@ -142,6 +146,26 @@
       "id": "button_text",
       "label": "Button text",
       "default": "Submit"
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Left",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Right",
+      "default": 0
     },
     {
       "type": "liquid",
