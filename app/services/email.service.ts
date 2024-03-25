@@ -58,46 +58,192 @@ const loadEmailTemplate = async (email: EmailDTO) => {
   let token = EncryptionUtil.encrypt(JSON.stringify({ sid: email.subscriberId }), AES_SECRET_KEY);
   let unsubscribeLink = `${SHOPIFY_APP_URL}/public/unsubscribe?token=${token}`;
   return `
-  <!DOCTYPE html>
-    <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet" />
-      </head>
-        <body
-          style="font-family: 'Barlow'; box-sizing: border-box; margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;">
-          <div style="width: fit-content; border: 1px solid black;">
-            <div style="padding-block: 30px; padding-inline: 38px; text-align: center; font-size: 1.4rem;">
-              <p>${storeName}</p>
-            </div>
-            <div
-              style="text-align: center; background: linear-gradient(#f6f6f6, #f6f6f6) top, linear-gradient(white, white) bottom; background-size: 100% 50%; background-repeat: no-repeat; padding: 1.2rem 2rem;">
-              <h1>${email?.headerContent || "Good News!"}</h1>
-              <p>${email?.bodyContent || "Your product is back in stock and now available."}</p>
-              <div style="width: fit-content; margin: auto;">
-                <img src="${productInfo?.imageURL}" alt="" style="width: 15rem; height: 15rem;">
-                <div style="margin-inline: auto; margin-top: 1rem; text-align: left;">
-                  <p style="font-weight: bold;">${productInfo?.productTitle}</p>
-                  <p>${productInfo?.price}$</p>
-                </div>
-              </div>
-              <a href="${shopifyURL}/products/${productInfo?.productHandle}"
-                style="color: white; display: block; background: black; text-decoration: none; font-weight: 400; width: fit-content; margin: 1.3rem auto; text-transform: uppercase; padding: 1.1rem 1.7rem; border-radius: 4rem;">
-                ${email?.buttonContent || "Checkout Now"}</a>
-              <hr style="margin-block: 1.3rem;">
-              <p style="font-size: 0.65rem;">
-               ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}.
-              </p>
-              <p style="font-size: 0.65rem;">If you'd prefer not to receive email from me, <a href="${unsubscribeLink}">Unsubscribe here</a></p>
-            </div>
-          </div>
-        </body>
-        </html>`;
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern HTML Email Template</title>
+<style type="text/css">
+	@import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Montserrat:wght@200;300;400;500;600;700;800&display=swap')
+	body {
+		margin: 0;
+		background-color: #cccccc;
+	}
+	table {
+		border-spacing: 0;
+	}
+	td {
+		padding: 0;
+	}
+	img {
+		border: 0;
+	}
+	.wrapper{
+		width:  100%;
+		table-layout: fixed;
+		background-color: #cccccc;
+		padding-bottom: 60px;
+		padding-top: 60px;
+	}	
+	.main{
+		background-color: #ffffff;
+		margin: 0 auto;
+		width: 100%;
+		max-width: 600px;
+		border-spacing: 0;
+		font-family: "Barlow", sans-serif;
+		color: #303030;
+
+
+	}
+	.two-columns{
+		text-align: center;
+		font-size: 0;
+	}
+	.two-columns .column{
+		width: 100%;
+		max-width: 250px;
+		display: inline-block;
+		vertical-align: middle;
+		text-align: start;
+	}
+	.column p,
+	.column b{
+		font-size: 16px;
+		line-height: 1.5;
+	}
+	.name{
+		padding: 15px 15px;
+	}
+	.three-columns{
+		text-align: center;
+		font-size: 0;
+		padding: 15px 0 25px;
+	}
+	.three-columns .column{
+
+		width: 100%;
+		max-width: 200px;
+		display: inline-block;
+		vertical-align: middle;
+		text-align: start;
+	}
+	.three-columns .column .padding{
+	 padding:  30px 35px;
+	}
+	.icon-grid .icon{
+		width: 100%;
+		max-width:35px;
+		display: inline-block;
+		vertical-align: middle;
+		text-align: start;
+	}
+	.icon-grid .column{
+		width: 100%;
+		display: inline-block;
+		vertical-align: middle;
+		text-align: start;
+		background-color: #F7F7F7;
+	}
+	.icon-grid{
+		padding: 12%;
+	}
+</style>
+</head>
+<body>
+
+<center class="wrapper" style="padding-bottom: 60px;
+		padding-top: 60px;">
+<table class="main">
+<!-- TOP BORDER -->
+
+<tr>
+	<td>
+		<table align="end" width="100%">
+			<tr>
+				<td align="end" style="
+			    color: black;
+			    text-align: end;
+			    vertical-align: baseline;">
+					<p style="text-align: center; font-size:20px;">${storeName}</p>
+
+			</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+
+<!-- Intro text-->
+
+<tr>
+	<td>
+		<table align="center" width="100%" style="background: #F6F6F6">
+			<tr>
+				<td align="center" style="text-align:center;">
+		      	<h3 style="font-size: 30px; font-weight: bold; text-align: center;">${email?.headerContent || "Good News!"}</h3>
+		       	<p align="center" style="font-size: 18px; max-width: 420px; display: inline-block; vertical-align: middle;margin-top: 0; padding: 0 15px;">
+             ${email?.bodyContent || "Your product is back in stock and now available."}
+		      	</p>
+		      	<a href="url" style="    
+		      	font-size: 18px;
+				max-width: 420px;
+    			display: inline-block;
+    			vertical-align: middle;
+    			margin-top: 0;
+    			padding: 0 15px;
+    			text-decoration: none;
+    			padding-bottom: 30px;">
+					<img src="${productInfo?.imageURL}" alt="Wexel" title="Wexel" width="330px" alt="">
+					<p align="left" style=" color: black; margin: 0;"><strong> ${productInfo?.productTitle}</strong></p>
+					<p align="left" style=" color: black;  margin: 0;">$${productInfo?.price}</p>
+				</a>
+			</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+<tr align="center">
+	<td>
+<table class="btn" role="presentation" border="0" cellpadding="0" cellspacing="0" style=" margin-bottom:  60px;margin-top:  30px;">
+        <tbody>
+            <tr>
+                <td style="line-height: 24px; font-size: 16px; border-radius: 6px; margin: 0;" align="center">
+                    <a href="${shopifyURL}/products/${productInfo?.productHandle}" style="color: white; background-color: black; border-radius: 50px; font-size: 16px; font-family: Barlow, sans-serif;text-decoration: none; border-radius: 6px; line-height: 20px; display: block; font-weight: normal; white-space: nowrap; padding: 20px 50px 20px 50px; border: 1px solid transparent; border-radius:40px; height: ;" href="#"> ${email?.buttonContent || "Checkout Now"}</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+	</td>
+</tr>
+
+
+<!-- TITLE, TEXT & BUTTON -->
+
+<tr>
+	<td>
+		<hr style="
+				border-top: .5px solid #BDBDBD;
+				max-width: 500px;
+    			vertical-align: middle;
+    			padding: 0 15px;
+    			">
+		<table align="center" width="100%">
+			<p class="bottom-text text-center" style="line-height: 24px; font-size: 13px; width: 100%; padding-bottom: 15px; margin: 0;" align="center">
+      ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}
+      </p>
+		</table>
+	</td>
+</tr>
+
+<!-- FOOTER SECTION -->
+</table>
+</center>
+</body>
+</html>
+<!-- Begin Social Share **you can remove this to center the template :) -->
+  `;
 };
 
 const sendEmail = async (email: EmailDTO) => {
