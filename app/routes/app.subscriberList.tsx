@@ -1,3 +1,4 @@
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
     useLoaderData,
     useRevalidator,
@@ -29,7 +30,7 @@ export default function SubscriberList() {
             productInfo.variantTitle,
             `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-            `$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+            `${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
         ]);
     }
     const refreshData = async () => {
@@ -96,7 +97,7 @@ export default function SubscriberList() {
                                     columnContentTypes={["text", "text", "text", "text"]}
                                     headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'No customers at this time'}`]}
+                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`]}
                                     pagination={{
                                         hasNext: true,
                                         onNext: () => { },
