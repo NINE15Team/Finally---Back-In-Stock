@@ -9,6 +9,13 @@
 {% if blockSettings.product.selected_or_first_available_variant.available == false %}
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
+<style>
+  {% capture block_css %}{{ blockSettings.custom_css }}{% endcapture %}
+  {% if block_css != blank %}
+    {% assign block_id_selector = '#' | append: block.id %}
+    {{ block_css | replace: '==', block_id_selector | strip_html | escape }}
+  {% endif %}
+</style>
 <script src="{{ 'back-in-stock.js' | asset_url}}" async></script>
 <script type="application/json" id="bis-product-json">
   {{ product | json }}
@@ -20,6 +27,7 @@
   data-product-title="{{ product.title }}"
   data-variant-id="{{ product.selected_or_first_available_variant.id }}"
   data-variant-title="{{ product.selected_or_first_available_variant.title }}"
+  id="{{ block.id }}"
 >
   <form
     class="out-of-stock {{ out_of_stock_form_class }}"
@@ -130,6 +138,19 @@
       "id": "button_text",
       "label": "Button text",
       "default": "Submit"
+    },
+    {
+      "type": "liquid",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "paragraph",
+      "content": "To apply CSS exclusively to this block, use '==' to reference its parent container. For example, to adjust the font size of headings within this block, you can use:"
+    },
+    {
+      "type": "paragraph",
+      "content": "== h3 { font-size: 20px; }"
     }
   ]
 }
