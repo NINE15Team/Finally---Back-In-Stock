@@ -2,8 +2,10 @@ import prisma from "../db.server";
 
 import { findStoreByURL } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
-import { ShopifyStoreInfo } from "~/models/shopify-store-info.model";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
+import { ProductInfoDTO } from "~/dto/product-info.dto";
+import { ProductInfo } from "~/models/product-info.model";
+import EncryptionUtil from "~/utils/encryption.util";
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -43,12 +45,18 @@ const sendGridAdapter = async (
     });
 };
 
-const loadEmailTemplate = async (email: Partial<EmailDTO> | undefined) => {
-  let { store, imageURL, productTitle, price, productHandle } = email.productInfo;
-  console.log(store, imageURL, productTitle, price, productHandle);
-  if (!imageURL.startsWith('https://')) {
-    imageURL = 'https:' + imageURL;
+const loadEmailTemplate = async (email: EmailDTO) => {
+  console.log("Email Content", email)
+  let { productInfo, storeName, shopifyURL }: EmailDTO = email;
+  if (productInfo?.imageURL && !productInfo?.imageURL?.startsWith('https://')) {
+    productInfo.imageURL = 'https:' + productInfo.imageURL;
   }
+  let { SHOPIFY_APP_URL, AES_SECRET_KEY } = process.env;
+  if (AES_SECRET_KEY == undefined) {
+    throw new Error("API SECRECT key is missing in .env flie");
+  }
+  let token = EncryptionUtil.encrypt(JSON.stringify({ sid: email.subscriberId }), AES_SECRET_KEY);
+  let unsubscribeLink = `${SHOPIFY_APP_URL}/public/unsubscribe?token=${token}`;
   return `
   <!DOCTYPE html>
     <html lang="en">
@@ -65,33 +73,34 @@ const loadEmailTemplate = async (email: Partial<EmailDTO> | undefined) => {
           style="font-family: 'Barlow'; box-sizing: border-box; margin: 0; padding: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center;">
           <div style="width: fit-content; border: 1px solid black;">
             <div style="padding-block: 30px; padding-inline: 38px; text-align: center; font-size: 1.4rem;">
-              <p>${store.storeName}</p>
+              <p>${storeName}</p>
             </div>
             <div
               style="text-align: center; background: linear-gradient(#f6f6f6, #f6f6f6) top, linear-gradient(white, white) bottom; background-size: 100% 50%; background-repeat: no-repeat; padding: 1.2rem 2rem;">
-              <h1>Good News!</h1>
-              <p>Your product is back in stock and now available.</p>
+              <h1>${email?.headerContent || "Good News!"}</h1>
+              <p>${email?.bodyContent || "Your product is back in stock and now available."}</p>
               <div style="width: fit-content; margin: auto;">
-                <img src="${imageURL}" alt="" style="width: 15rem; height: 15rem;">
+                <img src="${productInfo?.imageURL}" alt="" style="width: 15rem; height: 15rem;">
                 <div style="margin-inline: auto; margin-top: 1rem; text-align: left;">
-                  <p style="font-weight: bold;">${productTitle}</p>
-                  <p>${price}$</p>
+                  <p style="font-weight: bold;">${productInfo?.productTitle}</p>
+                  <p>${productInfo?.price}$</p>
                 </div>
               </div>
-              <a href="${store.shopifyURL}/products/${productHandle}"
-                style="color: white; display: block; background: black; text-decoration: none; font-weight: 400; width: fit-content; margin: 1.3rem auto; text-transform: uppercase; padding: 1.1rem 1.7rem; border-radius: 4rem;">Checkout
-                Now</a>
+              <a href="${shopifyURL}/products/${productInfo?.productHandle}"
+                style="color: white; display: block; background: black; text-decoration: none; font-weight: 400; width: fit-content; margin: 1.3rem auto; text-transform: uppercase; padding: 1.1rem 1.7rem; border-radius: 4rem;">
+                ${email?.buttonContent || "Checkout Now"}</a>
               <hr style="margin-block: 1.3rem;">
-              <p style="font-size: 0.65rem;">If you have any questions, reply to this email or contact us at xxxxx.</p>
+              <p style="font-size: 0.65rem;">
+               ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}.
+              </p>
+              <p style="font-size: 0.65rem;">If you'd prefer not to receive email from me, <a href="${unsubscribeLink}">Unsubscribe here</a></p>
             </div>
           </div>
         </body>
-
         </html>`;
 };
 
-const sendEmail = async (email: Partial<EmailDTO>) => {
-  console.log(email);
+const sendEmail = async (email: EmailDTO) => {
   const data = {
     personalizations: [
       {
@@ -130,14 +139,7 @@ const sendEmail = async (email: Partial<EmailDTO>) => {
 
 
 const saveOrUpdate = async (email: Partial<EmailDTO>) => {
-  let storeInfo: any = {};
-  if (!email.storeId) {
-    storeInfo = await findByStoreId(email.storeName);
-  } else {
-    storeInfo = {
-      id: email.storeId,
-    };
-  }
+  const storeInfo = await findStoreByURL(email.shopifyURL);
   return prisma.emailConfiguartion.upsert({
     where: {
       storeId: storeInfo?.id,
@@ -155,11 +157,10 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       },
     },
     update: {
-      senderEmail: email.senderEmail,
-      isEmailVerified: EmailVerificationStatus.YES,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
+      buttonContent: email.buttonContent,
       updatedAt: new Date(),
       store: {
         connect: {
@@ -210,8 +211,8 @@ const upsertEmail = async (email: Partial<EmailDTO>) => {
   }
 };
 
-const findByStoreName = async (storeName: any) => {
-  const storeInfo = await findStoreByURL(storeName);
+const findEmailConfigByStoreURL = async (url: any) => {
+  const storeInfo = await findStoreByURL(url);
   return await prisma.emailConfiguartion.findFirst({
     where: {
       storeId: storeInfo?.id,
@@ -257,11 +258,10 @@ const getStoreInfo = async (email: Partial<EmailDTO>) => {
   }
 };
 
-
 export {
   sendEmail,
   saveOrUpdate,
-  findByStoreName,
+  findEmailConfigByStoreURL,
   upsertEmail,
   isEmailVerified,
   findByStoreId

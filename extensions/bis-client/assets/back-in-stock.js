@@ -1,3 +1,4 @@
+const API_URL = "https://matches-virgin-isa-peru.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -29,7 +30,7 @@ class BackInStock extends HTMLElement {
         }, 100)
       });
     }
-    
+
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
       this.querySelector(".message *").classList.add("none");

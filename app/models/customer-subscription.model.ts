@@ -6,6 +6,7 @@ export class CustomerSubscription {
     customerEmail: string;
     status: boolean;
     isNotified: boolean;
+    isSubscribed: boolean;
     createdAt: Date;
     updatedAt: Date;
     isActive: boolean;
@@ -15,6 +16,7 @@ export class CustomerSubscription {
         customerEmail: string,
         status: boolean,
         isNotified: boolean,
+        isSubscribed: boolean,
         createdAt: Date,
         updatedAt: Date,
         isActive: boolean,
@@ -25,6 +27,7 @@ export class CustomerSubscription {
         this.status = status;
         this.isNotified = isNotified;
         this.createdAt = createdAt;
+        this.isSubscribed = isSubscribed;
         this.updatedAt = updatedAt;
         this.isActive = isActive;
     }

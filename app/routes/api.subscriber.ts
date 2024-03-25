@@ -1,6 +1,7 @@
 import { ActionFunction, json, LoaderFunction } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
+import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.model";
 
 export const loader: LoaderFunction = async ({ request }) => {
     return json(
@@ -25,19 +26,14 @@ export const action: ActionFunction = async ({ request }) => {
         }
         console.log("Finding Product By Variant Id");
         let productInfo = await findByProductAndVariantId(requstBody.productId, requstBody.variantId);
-        let subscribeItem = {
+        let subscribeItem: CustomerSubscriptionDTO = {
             customerEmail: requstBody.email,
             tel: requstBody.tel ?? "",
             isNotified: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
             isActive: false,
-            productInfo: {
-                connect: {
-                    id: productInfo?.id
-                }
-            }
-        }
+            productInfoId: productInfo?.id!,
+        };
+
         console.log("Add to subscription", requstBody.email);
         let result = await subscribeProduct(subscribeItem);
         return json(

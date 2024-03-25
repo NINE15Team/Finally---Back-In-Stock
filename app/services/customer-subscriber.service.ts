@@ -2,8 +2,27 @@ import { CustomerSubscription } from "@prisma/client";
 import { findAll as findProducts } from "../services/product-info.service";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
+import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 
-const findAll = async (params: any = {}) => {
+const findById = async (params: CustomerSubscriptionDTO) => {
+    return await prisma.customerSubscription.findFirst({
+        where: {
+            id: params.id
+        },
+        include: {
+            productInfo: {
+                include: {
+                    store: {
+
+                    }
+                }
+            }
+        }
+    });
+};
+
+
+const findAll = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findMany({
         where: {
             productInfo: {
@@ -24,30 +43,45 @@ const findAll = async (params: any = {}) => {
     });
 };
 
-const subscribeProduct = async (subscribeItem: any) => {
+const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.upsert({
         where: {
             customerEmail_productInfoId: {
-                customerEmail: subscribeItem.customerEmail,
-                productInfoId: subscribeItem.productInfo.connect.id
+                customerEmail: subscribeItem.customerEmail!,
+                productInfoId: subscribeItem.productInfoId!
             }
         },
         update: {
             isNotified: false,
+            isSubscribed: true,
             updatedAt: new Date(),
             customerTel: subscribeItem.tel
         },
         create: {
             customerEmail: subscribeItem.customerEmail,
+            isSubscribed: true,
+            isNotified: false,
             createdAt: new Date(),
             updatedAt: new Date(),
             productInfo: {
                 connect: {
-                    id: subscribeItem.productInfo.connect.id
+                    id: subscribeItem.productInfoId
                 }
             },
             customerTel: subscribeItem.tel
         }
+    })
+};
+
+const unSubscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
+    return await prisma.customerSubscription.update({
+        where: {
+            id: subscribeItem.id
+        },
+        data: {
+            isSubscribed: false,
+            updatedAt: new Date(),
+        },
     })
 };
 
@@ -73,4 +107,4 @@ const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialR
 };
 
 
-export { findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue }
+export { findById, findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct }
