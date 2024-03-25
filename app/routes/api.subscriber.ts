@@ -27,6 +27,7 @@ export const action: ActionFunction = async ({ request }) => {
         let productInfo = await findByProductAndVariantId(requstBody.productId, requstBody.variantId);
         let subscribeItem = {
             customerEmail: requstBody.email,
+            tel: requstBody.tel ?? "",
             isNotified: false,
             createdAt: new Date(),
             updatedAt: new Date(),

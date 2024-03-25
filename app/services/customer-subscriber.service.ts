@@ -35,6 +35,7 @@ const subscribeProduct = async (subscribeItem: any) => {
         update: {
             isNotified: false,
             updatedAt: new Date(),
+            customerTel: subscribeItem.tel
         },
         create: {
             customerEmail: subscribeItem.customerEmail,
@@ -44,8 +45,8 @@ const subscribeProduct = async (subscribeItem: any) => {
                 connect: {
                     id: subscribeItem.productInfo.connect.id
                 }
-            }
-
+            },
+            customerTel: subscribeItem.tel
         }
     })
 };
