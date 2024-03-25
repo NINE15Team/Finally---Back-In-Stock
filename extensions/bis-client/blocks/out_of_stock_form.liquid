@@ -6,7 +6,7 @@
 
 {% assign out_of_stock_form_class = 'none' %}
 {% assign blockSettings = block.settings %}
-{% if blockSettings.product.selected_or_first_available_variant.available == false  or request.design_mode %}
+{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
 <style>
@@ -33,8 +33,8 @@
     class="out-of-stock {{ out_of_stock_form_class }}"
     style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }}"
   >
-    <h3>{{ blockSettings.form_title }}</h3>
-    <p>{{ blockSettings.description }}</p>
+    <h3 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h3>
+    <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
     <label for="email">Email</label>
     <div class="wrapper">
       <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}">
