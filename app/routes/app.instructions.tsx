@@ -14,7 +14,7 @@ export default function Instructions() {
         <Page>
             <Form method='POST' navigate={false} fetcherKey="init-key" >
                 <Card>
-                    <Text variant="heading3xl" as="h2">Installation Instructions</Text>
+                    <Text variant="headingXl" as="h2">Installation Instructions</Text>
                     <Text variant="headingXl" as="h4">Follow these steps to install the application:</Text>
                     <List type="bullet">
                         <List.Item>
