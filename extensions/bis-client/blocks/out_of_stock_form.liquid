@@ -10,6 +10,10 @@
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
 <style>
+  #{{ block.id }} form {
+    padding-left: {{blockSettings.padding_left}}px;
+    padding-right: {{blockSettings.padding_right}}px;
+  }
   {% capture block_css %}{{ blockSettings.custom_css }}{% endcapture %}
   {% if block_css != blank %}
     {% assign block_id_selector = '#' | append: block.id %}
@@ -33,18 +37,14 @@
     class="out-of-stock {{ out_of_stock_form_class }}"
     style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }}"
   >
-    <h3>{{ blockSettings.form_title }}</h3>
-    <p>{{ blockSettings.description }}</p>
+    <h3 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h3>
+    <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
+    <label for="email">Email</label>
     <div class="wrapper">
-      <div class="field">
-        <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}" class="field__input">
-        <label for="email" class="field__label">Email</label>
-    </div>
-    <div class="contact__button">
-      <button class="button" style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
+      <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}">
+      <button style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
         {{ blockSettings.button_text }}
       </button>
-    </div>
     </div>
     <p class="message">
       <span class="success none">
@@ -83,25 +83,25 @@
       "type": "color",
       "id": "form_background",
       "label": "Form background",
-      "default": "#FFF"
+      "default": "#000"
     },
     {
       "type": "color",
       "id": "button_background",
       "label": "Button background",
-      "default": "#000"
+      "default": "#fff"
     },
     {
       "type": "color",
       "id": "button_text_color",
       "label": "Button text color",
-      "default": "#FFF"
+      "default": "#000"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Text color",
-      "default": "#000"
+      "default": "#fff"
     },
     {
       "type": "header",
@@ -144,10 +144,30 @@
       "default": "Submit"
     },
     {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Left",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Right",
+      "default": 0
+    },
+    {
       "type": "liquid",
       "id": "custom_css",
       "label": "Custom CSS",
-      "default": "== .field { margin-bottom: 10px; }"
+      "default": ""
     },
     {
       "type": "paragraph",
