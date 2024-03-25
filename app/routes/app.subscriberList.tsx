@@ -1,70 +1,35 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
-    useActionData,
-    useNavigation,
-    useSubmit,
     useLoaderData,
     useRevalidator,
-    json,
-    Form,
 } from "@remix-run/react";
 import {
     Page,
     Layout,
-    Text,
     Card,
     BlockStack,
     Link,
-    InlineStack,
     DataTable,
-    Box,
-    FormLayout,
-    TextField,
     Button,
-    ButtonGroup,
     List,
 } from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
-import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
-import { findSubscribedProducts } from "../services/product-info.service";
-import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, getStoreInfoShopify } from "../services/store-info.service";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { useState } from "react";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-    let { admin, session } = await authenticate.admin(request);
-    let shopInfo: any = await getStoreInfoShopify(admin);
-
-    const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
-    const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
-    return { data, shopifyURL: shopInfo.myshopify_domain, storeName: shopInfo.name, potentialRevenue };
-};
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-    let { admin, session } = await authenticate.admin(request);
-    let formData = await request.formData();
-    let obj = Object.fromEntries(formData) as any;
-};
-
 export default function SubscriberList() {
-    const nav = useNavigation();
-    const actionData = useActionData<typeof action>();
     const shopifyBridge = useAppBridge();
     let { revalidate } = useRevalidator();
-    let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<typeof loader>();
+    let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<any>();
     let rows: any = [];
     const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
 
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
-        let price = productInfo.price / 100;
         rows.push([
             productInfo.variantTitle,
-            `$${price}`,
+            `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-            `${(Number(price) * productInfo.customerSubscription?.length)}`,
+            `${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
         ]);
     }
     const refreshData = async () => {
@@ -131,7 +96,7 @@ export default function SubscriberList() {
                                     columnContentTypes={["text", "text", "text", "text"]}
                                     headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue / 100}` : 'No customers at this time'}`]}
+                                    totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'No customers at this time'}`]}
                                     pagination={{
                                         hasNext: true,
                                         onNext: () => { },

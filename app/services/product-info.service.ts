@@ -3,6 +3,7 @@ import { findStoreByURL } from "../services/store-info.service";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
+import { calculatePrice } from "~/utils/app.util";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
@@ -74,28 +75,28 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
     return await prisma.productInfo.upsert({
         where: {
             productId_variantId: {
-                productId: prodInfo.productId,
-                variantId: prodInfo.variantId
+                productId: prodInfo.productId!,
+                variantId: prodInfo.variantId!
             }
         },
         update: {
             productTitle: prodInfo.productTitle,
             variantTitle: prodInfo.variantTitle,
             imageURL: prodInfo.imageURL,
-            price: prodInfo.price,
+            price: calculatePrice(prodInfo.price),
             status: true,
             inStock: false,
             updatedAt: new Date(),
             isActive: true,
         },
         create: {
-            productHandle: prodInfo.productHandle,
-            productId: prodInfo.productId,
-            productTitle: prodInfo.productTitle,
-            variantId: prodInfo.variantId,
-            variantTitle: prodInfo.variantTitle,
+            productHandle: prodInfo.productHandle!,
+            productId: prodInfo.productId!,
+            productTitle: prodInfo.productTitle!,
+            variantId: prodInfo.variantId!,
+            variantTitle: prodInfo.variantTitle!,
             imageURL: prodInfo.imageURL,
-            price: prodInfo.price,
+            price: calculatePrice(prodInfo.price),
             status: true,
             inStock: false,
             createdAt: new Date(),
@@ -121,7 +122,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
-                price: Number(elm.price),
+                price: calculatePrice(Number(elm)) / 100,
                 imageURL: req.image?.src,
                 status: true,
                 inStock: elm.inventory_quantity > 0 ? true : false,
@@ -144,7 +145,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productTitle: elm.productTitle,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
-                price: elm.price,
+                price: calculatePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
                 updatedAt: new Date(),
@@ -157,7 +158,7 @@ const upsertProduct = async (req: any, store: string) => {
                 variantId: elm.variantId,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
-                price: elm.price,
+                price: calculatePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
                 createdAt: new Date(),
