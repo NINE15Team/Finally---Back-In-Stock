@@ -1,6 +1,6 @@
-export function calculatePrice(price: any): number {
-    if (typeof price === 'number' && !isNaN(price) && price !== 0) {
-        return price / 100;
+export function parsePrice(price: any): number {
+    if (!isNaN(price) && price != 0) {
+        return Number(price);
     } else {
         console.error('Invalid or undefined price encountered.');
         return 0;

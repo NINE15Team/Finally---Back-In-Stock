@@ -3,7 +3,7 @@ import { findStoreByURL } from "../services/store-info.service";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
-import { calculatePrice } from "~/utils/app.util";
+import { parsePrice } from "~/utils/app.util";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
@@ -83,7 +83,7 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             productTitle: prodInfo.productTitle,
             variantTitle: prodInfo.variantTitle,
             imageURL: prodInfo.imageURL,
-            price: calculatePrice(prodInfo.price),
+            price: parsePrice(prodInfo.price),
             status: true,
             inStock: false,
             updatedAt: new Date(),
@@ -96,7 +96,7 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             variantId: prodInfo.variantId!,
             variantTitle: prodInfo.variantTitle!,
             imageURL: prodInfo.imageURL,
-            price: calculatePrice(prodInfo.price),
+            price: parsePrice(prodInfo.price),
             status: true,
             inStock: false,
             createdAt: new Date(),
@@ -122,7 +122,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
-                price: calculatePrice(Number(elm)) / 100,
+                price: parsePrice(elm.price),
                 imageURL: req.image?.src,
                 status: true,
                 inStock: elm.inventory_quantity > 0 ? true : false,
@@ -145,7 +145,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productTitle: elm.productTitle,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
-                price: calculatePrice(elm.price),
+                price: parsePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
                 updatedAt: new Date(),
@@ -158,7 +158,7 @@ const upsertProduct = async (req: any, store: string) => {
                 variantId: elm.variantId,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
-                price: calculatePrice(elm.price),
+                price: parsePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
                 createdAt: new Date(),
