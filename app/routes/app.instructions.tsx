@@ -14,8 +14,7 @@ export default function Instructions() {
         <Page>
             <Form method='POST'>
                 <Card>
-                    <Text variant="headingXl" as="h2">Installation Instructions</Text>
-                    <Text variant="headingXl" as="h4">Follow these steps to install the application:</Text>
+                    <Text variant="headingXl" as="h4">Follow these steps to install the application "Notify Me" widget :</Text>
                     <List type="bullet">
                         <List.Item>
                             <Text variant="headingMd" as="p">
