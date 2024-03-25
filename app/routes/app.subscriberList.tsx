@@ -62,9 +62,9 @@ export default function SubscriberList() {
         let price = productInfo.price / 100;
         rows.push([
             productInfo.variantTitle,
-            price,
+            `$${price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-            (Number(price) * productInfo.customerSubscription?.length),
+            `${(Number(price) * productInfo.customerSubscription?.length)}`,
         ]);
     }
     const refreshData = async () => {
@@ -131,7 +131,7 @@ export default function SubscriberList() {
                                     columnContentTypes={["text", "text", "text", "text"]}
                                     headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'No customers at this time'}`]}
+                                    totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue / 100}` : 'No customers at this time'}`]}
                                     pagination={{
                                         hasNext: true,
                                         onNext: () => { },

@@ -1,9 +1,11 @@
-import { ActionFunctionArgs } from '@remix-run/node';
-import { BlockStack, Box, Button, Card, List, Page } from '@shopify/polaris';
-import { updateStoreInfo, isInitilized } from "../services/store-info.service";
-import { authenticate } from "../shopify.server";
-import { upsertEmail } from "../services/email.service";
+import { BlockStack, Box, Button, Card, List, Page, Scrollable, Text } from '@shopify/polaris';
 import { Form } from '@remix-run/react';
+
+import step1 from "../image/step_1.png";
+import step2 from "../image/step_2.png";
+import step3_4 from "../image/step_3_4.png";
+import step5_6 from "../image/step_5_6.png";
+
 
 
 export default function Instructions() {
@@ -12,18 +14,40 @@ export default function Instructions() {
         <Page>
             <Form method='POST' navigate={false} fetcherKey="init-key" >
                 <Card>
-                    <p>Follow these steps to install the application:</p>
-                    <h1>Installation Instructions</h1>
+                    <Text variant="heading3xl" as="h2">Installation Instructions</Text>
+                    <Text variant="headingXl" as="h4">Follow these steps to install the application:</Text>
                     <List type="bullet">
-                        <List.Item>Click "customize" on your theme.</List.Item>
-                        <List.Item>On the left hand side, click "Add Block".</List.Item>
-                        <List.Item>Click on Apps and select "Back in Stock Form"</List.Item>
-                        <List.Item>Choose customization options of how the widget will display"</List.Item>
+                        <List.Item>
+                            <Text variant="headingMd" as="p">
+                                Click "customize" on your theme
+                            </Text>
+                        </List.Item>
+                        <img src={step1}></img>
+                        <List.Item>
+                            <Text variant="headingMd" as="p">
+                                On the left hand side, click "Add Block"
+                            </Text>
+                        </List.Item>
+                        <img src={step2}></img>
+                        <List.Item>
+                            <Text variant="headingMd" as="p">
+                                Click on Apps and select "Back in Stock Form"
+                            </Text>
+                        </List.Item>
+                        <img src={step3_4}></img>
+                        <List.Item>
+                            <Text variant="headingMd" as="p">
+                                Choose customization options of how the widget will display"
+                            </Text>
+                        </List.Item>
+                        <img src={step5_6}></img>
                     </List>
-                    <Box paddingBlockStart="200">
-                        <Button variant="primary" submit={true}>Proceed</Button>
-                    </Box>
                 </Card>
+                <BlockStack inlineAlign="end">
+                    <Box paddingBlockStart="200">
+                        <Button variant="primary" tone="critical" submit={true}>Proceed</Button>
+                    </Box>
+                </BlockStack>
             </Form>
         </Page >
     );
