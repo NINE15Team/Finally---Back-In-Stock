@@ -6,28 +6,34 @@ import { AppProvider } from "@shopify/shopify-app-remix/react";
 import "@shopify/polaris/build/esm/styles.css";
 
 import { authenticate } from "../shopify.server";
+import { isInitilized } from "~/services/store-info.service";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  await authenticate.admin(request);
-
-  return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
+  let { admin, session } = await authenticate.admin(request);
+  let initilized = await isInitilized(admin);
+  return json({ apiKey: process.env.SHOPIFY_API_KEY || "", initilized: initilized });
 };
 
 export default function App() {
-  const { apiKey } = useLoaderData<typeof loader>();
+  const { apiKey, initilized } = useLoaderData<typeof loader>();
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <ui-nav-menu>
         <Link to="/app" rel="home">
-          Home
+          Home 
         </Link>
-        <Link to="/app/email">
-          Email
-        </Link>
-        <Link to="/app/instructions">
-          QuickSetup Guide
-        </Link>
+        {initilized && (
+          <>
+            <Link to="/app/email" >
+              Email 
+            </Link>
+            <Link to="/app/instructions">
+              QuickSetup Guide
+            </Link>
+          </>
+        )
+        }
       </ui-nav-menu>
       <Outlet />
     </AppProvider>
