@@ -1,0 +1,31 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "de0f56b0104cb0768f7a45702a92cc91"
+name = "Finally Back in Stock"
+application_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = false
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://finally-back-in-stock-a2662c637241.herokuapp.com/auth/callback",
+  "https://finally-back-in-stock-a2662c637241.herokuapp.com/auth/shopify/callback",
+  "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-01"
+
+[webhooks.privacy_compliance]
+shop_deletion_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/compliance"
+customer_deletion_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/compliance"
+customer_data_request_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/data-request"
+[pos]
+embedded = false
