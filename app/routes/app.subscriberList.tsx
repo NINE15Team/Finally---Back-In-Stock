@@ -68,7 +68,7 @@ export default function SubscriberList() {
 
     return (
         <Page>
-            <ui-title-bar title="Back In Stock">
+            <ui-title-bar title="Finally Back In Stock">
                 <button variant="primary" onClick={refreshData}>
                     Reload Data
                 </button>

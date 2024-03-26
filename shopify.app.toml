@@ -25,6 +25,8 @@ api_version = "2024-01"
 
 [webhooks.privacy_compliance]
 shop_deletion_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/compliance"
+customer_deletion_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/compliance"
+customer_data_request_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/api/data-request"
 
 [pos]
 embedded = false
