@@ -12,6 +12,7 @@ import {
     DataTable,
     Button,
     List,
+    Text,
 } from "@shopify/polaris";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { useState } from "react";
@@ -31,7 +32,7 @@ export default function SubscriberList() {
             `${productInfo.productTitle} - ${productInfo.variantTitle}`,
             `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-            `${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+            BoldText(`$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`),
             productInfo.inStock ? 'Yes' : 'No'
         ]);
     }
@@ -65,6 +66,13 @@ export default function SubscriberList() {
         // Return the Link component with the onClick handler attached
         return <Link onClick={handleClick}>{content}</Link>;
     }
+    function BoldText(content: any) {
+        return (
+            <Text variant="headingSm" as="h6">
+                {content}
+            </Text>
+        )
+    }
 
     return (
         <Page>
@@ -97,9 +105,9 @@ export default function SubscriberList() {
                             <BlockStack gap="200">
                                 <DataTable
                                     columnContentTypes={["text", "text", "text", "text"]}
-                                    headings={["Product", "Price", "Subscribers", "Potential Revenue", "In stock"]}
+                                    headings={["Product", "Price", "Subscribers", BoldText("Potential Revenue"), "In stock"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`,'']}
+                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '']}
                                     showTotalsInFooter
                                     pagination={{
                                         hasNext: true,

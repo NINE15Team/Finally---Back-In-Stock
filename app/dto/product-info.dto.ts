@@ -4,9 +4,9 @@ export interface ProductInfoDTO {
     storeName?: string;
     shopifyURL?: string;
     productHandle?: string;
-    productId?: string;
+    productId?: number;
     productTitle?: string;
-    variantId?: string;
+    variantId?: number;
     variantTitle?: string;
     price?: number;
     imageURL?: string;
