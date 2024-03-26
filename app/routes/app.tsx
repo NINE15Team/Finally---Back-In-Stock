@@ -26,7 +26,7 @@ export default function App() {
           Email
         </Link>
         <Link to="/app/instructions">
-          Setup instruction
+          QuickSetup Guide
         </Link>
       </ui-nav-menu>
       <Outlet />
