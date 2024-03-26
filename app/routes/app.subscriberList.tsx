@@ -89,6 +89,19 @@ export default function SubscriberList() {
                 <TitleBar title="Subscribers List"></TitleBar>
             </Modal>
 
+            <Layout.Section variant="oneThird">
+                <BlockStack gap="500">
+                    <Card>
+                        <BlockStack gap="200">
+                            <BlockStack gap="200">
+                                <Button variant="primary" onClick={onNotifyCustomer}>
+                                    Notify Customers
+                                </Button>
+                            </BlockStack>
+                        </BlockStack>
+                    </Card>
+                </BlockStack>
+            </Layout.Section>
 
             <BlockStack gap="400">
                 <Layout>
@@ -99,7 +112,7 @@ export default function SubscriberList() {
                                     columnContentTypes={["text", "text", "text", "text"]}
                                     headings={["Product", "Price", "Subscribers", "Potential Revenue", "In stock"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`,'']}
+                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '']}
                                     showTotalsInFooter
                                     pagination={{
                                         hasNext: true,
@@ -110,19 +123,6 @@ export default function SubscriberList() {
                         </Card>
                     </Layout.Section>
 
-                    <Layout.Section variant="oneThird">
-                        <BlockStack gap="500">
-                            <Card>
-                                <BlockStack gap="200">
-                                    <BlockStack gap="200">
-                                        <Button variant="primary" onClick={onNotifyCustomer}>
-                                            Notify Customers
-                                        </Button>
-                                    </BlockStack>
-                                </BlockStack>
-                            </Card>
-                        </BlockStack>
-                    </Layout.Section>
                 </Layout>
             </BlockStack>
 

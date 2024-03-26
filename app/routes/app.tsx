@@ -22,10 +22,13 @@ export default function App() {
         <Link to="/app" rel="home">
           Home
         </Link>
-        <Link to="/app/email">
+        <Link to="/app/email" hidden>
           Email
         </Link>
-        <Link to="/app/instructions">
+        <Link to="/app/datatable" hidden>
+          Table
+        </Link>
+        <Link to="/app/instructions" hidden={true}>
           Setup instruction
         </Link>
       </ui-nav-menu>
