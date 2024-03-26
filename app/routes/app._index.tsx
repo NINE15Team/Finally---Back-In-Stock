@@ -50,7 +50,7 @@ export default function Index() {
     if (initilized) {
       return <SubscriberList />;
     } else {
-      return <Instructions />;
+      return <Instructions showButton={true} />;
     }
   };
 

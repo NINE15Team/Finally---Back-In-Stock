@@ -25,6 +25,9 @@ export default function App() {
         <Link to="/app/email">
           Email
         </Link>
+        <Link to="/app/instructions">
+          Setup instruction
+        </Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>
