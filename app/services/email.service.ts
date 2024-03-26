@@ -156,7 +156,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 
 <center class="wrapper" style="padding-bottom: 60px;
 		padding-top: 60px;">
-<table class="main">
+<table class="main" style="width:100%;max-width:600px;border:solid 1px;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
 <!-- TOP BORDER -->
 
 <tr>
@@ -183,12 +183,11 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 			<tr>
 				<td align="center" style="text-align:center;">
 		      	<h3 style="font-size: 30px; font-weight: bold; text-align: center;">${email?.headerContent || "Good News!"}</h3>
-		       	<p align="center" style="font-size: 18px; max-width: 420px; display: inline-block; vertical-align: middle;margin-top: 0; padding: 0 15px;">
+		       	<p align="center" style="font-size: 18px;vertical-align: middle;margin-top: 0; padding: 0 15px;">
              ${email?.bodyContent || "Your product is back in stock and now available."}
 		      	</p>
 		      	<a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="    
 		      	font-size: 18px;
-				max-width: 420px;
     			display: inline-block;
     			vertical-align: middle;
     			margin-top: 0;
@@ -209,8 +208,8 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 <table class="btn" role="presentation" border="0" cellpadding="0" cellspacing="0" style=" margin-bottom:  60px;margin-top:  30px;">
         <tbody>
             <tr>
-                <td style="line-height: 24px; font-size: 16px; border-radius: 6px; margin: 0;" align="center">
-                    <a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="color: white; background-color: black; border-radius: 50px; font-size: 16px; font-family: Barlow, sans-serif;text-decoration: none; border-radius: 6px; line-height: 20px; display: block; font-weight: normal; white-space: nowrap; padding: 20px 50px 20px 50px; border: 1px solid transparent; border-radius:40px; height: ;" href="#"> ${email?.buttonContent || "Checkout Now"}</a>
+                <td style="line-height: 24px; font-size: 16px; border-radius: 6px; margin: 0; background: black; padding: 15px 30px;border-radius: 50px;" align="center">
+                    <a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="color: white !important; text-decoration: none !important;" > ${email?.buttonContent || "Checkout Now"}</a>
                 </td>
             </tr>
         </tbody>
@@ -221,21 +220,24 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 
 <!-- TITLE, TEXT & BUTTON -->
 
-<tr>
-	<td>
-		<hr style="
-				border-top: .5px solid #BDBDBD;
-				max-width: 500px;
-    			vertical-align: middle;
-    			padding: 0 15px;
-    			">
-		<table align="center" width="100%">
-			<p class="bottom-text text-center" style="line-height: 24px; font-size: 13px; width: 100%; padding-bottom: 15px; margin: 0;" align="center">
-      ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}
-      </p>
-		</table>
-	</td>
-</tr>
+  <tr>
+    <td>
+      <hr style="
+          border-top: .5px solid #BDBDBD;
+          max-width: 500px;
+            vertical-align: middle;
+            padding: 0 15px;
+            ">
+      <table align="center" width="100%">
+        <p class="bottom-text text-center" style="line-height: 24px; font-size: 13px; width: 100%;margin: 0;" align="center">
+        ${email?.footerContent || 'If you have any questions, reply to this email or contact us at xxxxx'}
+        </p>
+        <p class="bottom-text text-center" style="line-height: 24px; font-size: 13px; width: 100%; padding-bottom: 15px; margin: 0;" align="center">
+            To unsubscribe this product email, <a href="${unsubscribeLink}"> Click </a> 
+        </p>
+      </table>
+    </td>
+  </tr>
 
 <!-- FOOTER SECTION -->
 </table>
@@ -363,7 +365,7 @@ const findEmailConfigByStoreURL = async (url: any) => {
     where: {
       storeId: storeInfo?.id,
     },
-  });
+  }) || {};
 };
 
 const findByStoreId = async (storeId: any) => {
