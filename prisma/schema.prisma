@@ -52,22 +52,24 @@ model ProductInfo {
   inStock              Boolean                @default(false)
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
+  NotificationHistory  NotificationHistory?
 
   @@unique([productId, variantId])
   @@map("product_info")
 }
 
 model CustomerSubscription {
-  id            Int         @id @default(autoincrement())
-  productInfoId Int         @map("product_info_id")
-  customerEmail String      @default("Default Email") @map("customer_email") @db.VarChar(50)
-  status        Boolean     @default(false) @map("status")
-  isNotified    Boolean     @default(false) @map("is_notified")
-  isSubscribed  Boolean     @default(true) @map("is_subscribed")
-  isActive      Boolean     @default(true)
-  productInfo   ProductInfo @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
-  createdAt     DateTime    @default(now()) @map("created_at")
-  updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
+  id               Int               @id @default(autoincrement())
+  productInfoId    Int               @map("product_info_id")
+  customerEmail    String            @default("Default Email") @map("customer_email") @db.VarChar(50)
+  status           Boolean           @default(false) @map("status")
+  isNotified       Boolean           @default(false) @map("is_notified")
+  isSubscribed     Boolean           @default(true) @map("is_subscribed")
+  isActive         Boolean           @default(true)
+  productInfo      ProductInfo       @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
+  createdAt        DateTime          @default(now()) @map("created_at")
+  updatedAt        DateTime          @default(now()) @updatedAt @map("updated_at")
+  CustomerActivity CustomerActivity?
 
   @@unique([customerEmail, productInfoId])
   @@map("customer_subscription")
@@ -89,4 +91,29 @@ model EmailConfiguartion {
   updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at")
 
   @@map("email_configuartion")
+}
+
+model NotificationHistory {
+  id                Int               @id @default(autoincrement())
+  noOfNotifications Int               @default(0) @map("no_of_notifications")
+  productInfoId     Int               @unique @map("product_info_id")
+  productInfo       ProductInfo       @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @default(now()) @updatedAt @map("updated_at")
+  CustomerActivity  CustomerActivity?
+
+  @@map("notification_history")
+}
+
+model CustomerActivity {
+  id                     Int                  @id @default(autoincrement())
+  status                 String               @default("") @map("no_of_notifications") @db.VarChar(20)
+  notificationHistoryId  Int                  @unique @map("notification_history_id")
+  notificationHistory    NotificationHistory  @relation(fields: [notificationHistoryId], references: [id], onDelete: Cascade)
+  customerSubscriptionId Int                  @unique @map("customer_subscription_id")
+  customerSubscription   CustomerSubscription @relation(fields: [customerSubscriptionId], references: [id], onDelete: Cascade)
+  createdAt              DateTime             @default(now()) @map("created_at")
+  updatedAt              DateTime             @default(now()) @updatedAt @map("updated_at")
+
+  @@map("customer_activity")
 }
