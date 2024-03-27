@@ -1,5 +1,5 @@
 type = "web_pixel_extension"
-name = "monitor-it"
+name = "web-pixel-conversion-rate"
 
 runtime_context = "strict"
 
