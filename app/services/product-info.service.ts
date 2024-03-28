@@ -26,6 +26,22 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
     });
 };
 
+const totalCount = async ({ shopifyURL } : { shopifyURL: any }) => {
+  const data = await prisma.productInfo.count({
+    where: {
+        store: {
+            shopifyURL: shopifyURL
+        },
+        NOT: {
+            customerSubscription: {
+                none: {}
+            }
+        }
+    }
+  });
+  return data;
+}
+
 const findSubscribedProducts = async (
   param: Partial<ProductInfoDTO>,
   page: number = 2,
@@ -214,4 +230,4 @@ const findProductByIdShopify = async (request: Request) => {
     return data;
 }
 
-export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts }
+export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts, totalCount }

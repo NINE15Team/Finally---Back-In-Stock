@@ -17,10 +17,10 @@ import {
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { useState } from "react";
 
-export default function SubscriberList() {
+export default function SubscriberList({ data, onPageChange, currentPage } : { data: any, onPageChange: (page: number) => Promise<void>, currentPage: number }) {
     const shopifyBridge = useAppBridge();
     let { revalidate } = useRevalidator();
-    let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<any>();
+    let {shopifyURL, storeName, potentialRevenue, maxPage } = useLoaderData<any>();
     let rows: any = [];
     const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
@@ -110,10 +110,13 @@ export default function SubscriberList() {
                                     totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '']}
                                     showTotalsInFooter
                                     pagination={{
-                                        hasNext: true,
-                                        onNext: () => { },
+                                        hasNext: currentPage != maxPage,
+                                        hasPrevious: currentPage > 1,
+                                        onNext: () => onPageChange(currentPage + 1),
+                                        onPrevious: () => onPageChange(currentPage - 1),
                                     }}
                                 />
+                                <div>{currentPage} - { maxPage }</div>
                             </BlockStack>
                         </Card>
                     </Layout.Section>
