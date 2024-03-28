@@ -6,6 +6,7 @@ import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { ProductInfo } from "~/models/product-info.model";
 import EncryptionUtil from "~/utils/encryption.util";
+import { EmailConfiguration } from "~/models/email-config.model";
 
 const loadConfig = () => {
   let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
@@ -365,7 +366,7 @@ const findEmailConfigByStoreURL = async (url: any) => {
     where: {
       storeId: storeInfo?.id,
     },
-  }) || {};
+  }) || {} as EmailConfiguration;
 };
 
 const findByStoreId = async (storeId: any) => {
