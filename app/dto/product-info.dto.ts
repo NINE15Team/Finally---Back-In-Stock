@@ -15,4 +15,5 @@ export interface ProductInfoDTO {
     createdAt?: Date;
     updatedAt?: Date;
     isActive?: boolean;
+    SKU?: string
 }

@@ -33,7 +33,8 @@ export default function SubscriberList() {
             `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
             BoldText(`$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`),
-            productInfo.inStock ? 'Yes' : 'No'
+            productInfo.inStock ? 'Yes' : 'No',
+            productInfo.SKU
         ]);
     }
     const refreshData = async () => {
@@ -104,10 +105,10 @@ export default function SubscriberList() {
                         <Card>
                             <BlockStack gap="200">
                                 <DataTable
-                                    columnContentTypes={["text", "text", "text", "text"]}
-                                    headings={["Product", "Price", "Subscribers", BoldText("Potential Revenue"), "In stock"]}
+                                    columnContentTypes={["text", "text", "text", "text", "text"]}
+                                    headings={["Product", "Price", "Subscribers", BoldText("Potential Revenue"), "In stock", "SKU"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '']}
+                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '', '']}
                                     showTotalsInFooter
                                     pagination={{
                                         hasNext: true,

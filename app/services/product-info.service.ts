@@ -100,6 +100,7 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             productTitle: prodInfo.productTitle!,
             variantId: prodInfo.variantId!,
             variantTitle: prodInfo.variantTitle!,
+            SKU: prodInfo.SKU!,
             imageURL: prodInfo.imageURL,
             price: parsePrice(prodInfo.price),
             status: true,

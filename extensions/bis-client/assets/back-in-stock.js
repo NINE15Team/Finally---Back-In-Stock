@@ -9,6 +9,7 @@ class BackInStock extends HTMLElement {
     this.productHandle = this.dataset.productHandle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
+    this.variantSku = this.dataset.variantSku;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
     this.initializeListeners();
   }
@@ -52,7 +53,8 @@ class BackInStock extends HTMLElement {
           imageURL: this.productInstance.featured_image,
           price: Number(this.getVariant(variantId).price)/100,
           variantTitle: this.getVariant(variantId).title,
-          email: formData.get("email")
+          email: formData.get("email"),
+          SKU: this.variantSku
         }),
       }).then(r => r.json());
 
