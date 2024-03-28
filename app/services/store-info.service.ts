@@ -21,7 +21,7 @@ const saveStoreInfo = async (data: any) => {
 };
 
 const deleteStoreByURL = async (shopifyURL: string) => {
-    return await prisma.shopifyStoreInfo.delete({
+    return await prisma.shopifyStoreInfo.deleteMany({
         where: {
             shopifyURL: shopifyURL
         },
