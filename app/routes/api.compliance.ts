@@ -16,6 +16,8 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json();
+        console.log('Headers', request.headers);
+        console.log('*******************', requstBody);
         await deleteStoreByURL(requstBody?.shop_domain);
         console.log(requstBody);
     }
