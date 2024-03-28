@@ -14,6 +14,7 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
+        console.log("**************************************8For data request");
     }
     return json(
         { status: true },
