@@ -31,6 +31,7 @@ model ShopifyStoreInfo {
   isActive           Boolean             @default(true) @map("is_active")
   EmailConfiguartion EmailConfiguartion?
   productInfo        ProductInfo[]
+  CustomerActivity   CustomerActivity?
 
   @@map("store_info")
 }
@@ -108,12 +109,14 @@ model NotificationHistory {
 model CustomerActivity {
   id                     Int                  @id @default(autoincrement())
   status                 String               @default("") @map("no_of_notifications") @db.VarChar(20)
+  storeId                Int                  @unique @map("store_id")
   notificationHistoryId  Int                  @unique @map("notification_history_id")
   notificationHistory    NotificationHistory  @relation(fields: [notificationHistoryId], references: [id], onDelete: Cascade)
   customerSubscriptionId Int                  @unique @map("customer_subscription_id")
   customerSubscription   CustomerSubscription @relation(fields: [customerSubscriptionId], references: [id], onDelete: Cascade)
   createdAt              DateTime             @default(now()) @map("created_at")
   updatedAt              DateTime             @default(now()) @updatedAt @map("updated_at")
+  store                  ShopifyStoreInfo     @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@map("customer_activity")
 }

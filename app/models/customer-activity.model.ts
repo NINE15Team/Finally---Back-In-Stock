@@ -1,9 +1,10 @@
-import { NotificationHistory } from "@prisma/client";
+import { NotificationHistory, ShopifyStoreInfo } from "@prisma/client";
 
 class CustomerActivity {
     id: number;
     status: string;
-    notificationHistory: NotificationHistory; 
+    notificationHistory: NotificationHistory;
+    store: ShopifyStoreInfo;
     customerSubscriptionId: number;
     createdAt: Date;
     updatedAt: Date;
@@ -13,6 +14,7 @@ class CustomerActivity {
         status: string,
         notificationHistory: NotificationHistory,
         customerSubscriptionId: number,
+        store: ShopifyStoreInfo,
         createdAt: Date,
         updatedAt: Date
     ) {
@@ -20,6 +22,7 @@ class CustomerActivity {
         this.status = status;
         this.notificationHistory = notificationHistory;
         this.customerSubscriptionId = customerSubscriptionId;
+        this.store = store;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
