@@ -24,6 +24,7 @@ export const action: ActionFunction = async ({ request }) => {
     return json(
         { status: true },
         {
+            status: 401,
             headers: {
                 "Access-Control-Allow-Origin": "*",
             },
