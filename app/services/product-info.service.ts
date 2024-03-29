@@ -4,7 +4,6 @@ import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
 import { parsePrice } from "~/utils/app.util";
-import { json } from "@remix-run/node";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
@@ -44,7 +43,7 @@ const totalCount = async ({ shopifyURL } : { shopifyURL: any }) => {
 
 const findSubscribedProducts = async (
   param: Partial<ProductInfoDTO>,
-  page: number = 2,
+  page: number = 1,
   pageSize: number = 10
 ) => {
     BigInt.prototype.toJSON = function () {

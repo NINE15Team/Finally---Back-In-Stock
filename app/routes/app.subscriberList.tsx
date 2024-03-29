@@ -1,4 +1,3 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
     useLoaderData,
     useRevalidator,
@@ -17,17 +16,16 @@ import {
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { useState } from "react";
 
-export default function SubscriberList({ data, onPageChange, currentPage } : { data: any, onPageChange: (page: number) => Promise<void>, currentPage: number }) {
+export default function SubscriberList({ currentPage, onPageChange } : { currentPage: number, onPageChange: (page: number) => Promise<void> }) {
     const shopifyBridge = useAppBridge();
     let { revalidate } = useRevalidator();
-    let {shopifyURL, storeName, potentialRevenue, maxPage } = useLoaderData<any>();
+    let {data, shopifyURL, storeName, potentialRevenue, maxPage } = useLoaderData<any>();
     let rows: any = [];
     const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
 
 
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
-        console.log(productInfo);
         rows.push([
             `${productInfo.productTitle} - ${productInfo.variantTitle}`,
             `$${productInfo.price}`,
