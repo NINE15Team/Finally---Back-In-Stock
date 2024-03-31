@@ -1,28 +1,28 @@
-import { NotificationHistory, ShopifyStoreInfo } from "@prisma/client";
+import { CustomerSubscription, NotificationHistory, ProductInfo, ShopifyStoreInfo } from "@prisma/client";
 
-class CustomerActivity {
-    id: number;
+export class CustomerActivity {
+    id: number = 0;
     status: string;
-    notificationHistory: NotificationHistory;
+    productInfo: ProductInfo;
     store: ShopifyStoreInfo;
-    customerSubscriptionId: number;
+    browserTrackId: string;
     createdAt: Date;
     updatedAt: Date;
 
     constructor(
         id: number,
         status: string,
-        notificationHistory: NotificationHistory,
-        customerSubscriptionId: number,
+        productInfo: ProductInfo,
         store: ShopifyStoreInfo,
+        browserTrackId: string,
         createdAt: Date,
         updatedAt: Date
     ) {
         this.id = id;
         this.status = status;
-        this.notificationHistory = notificationHistory;
-        this.customerSubscriptionId = customerSubscriptionId;
+        this.productInfo = productInfo;
         this.store = store;
+        this.browserTrackId = browserTrackId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

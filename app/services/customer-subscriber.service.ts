@@ -1,5 +1,4 @@
 import { CustomerSubscription } from "@prisma/client";
-import { findAll as findProducts } from "../services/product-info.service";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";

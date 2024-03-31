@@ -19,7 +19,7 @@ export interface EmailDTO {
   bodyContent?: string;
   footerContent?: string;
   buttonContent?: string;
-
+  uuid?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

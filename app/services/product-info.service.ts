@@ -21,6 +21,9 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
         },
         include: {
             customerSubscription: {
+                where: {
+                    isNotified: param.customerSubscribe?.isNotified
+                }
             }
         }
     });
@@ -46,7 +49,6 @@ const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
             }
         }
     });
-    console.log(d);
     return d;
 };
 
@@ -206,4 +208,7 @@ const findProductByIdShopify = async (request: Request) => {
     return data;
 }
 
-export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts }
+export {
+    findAll as findAllProducts,
+    upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts
+}

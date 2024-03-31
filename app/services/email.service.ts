@@ -58,6 +58,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
   }
   let token = EncryptionUtil.encrypt(JSON.stringify({ sid: email.subscriberId }), AES_SECRET_KEY);
   let unsubscribeLink = `${SHOPIFY_APP_URL}/public/unsubscribe?token=${token}`;
+  let productURL = `${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}&fbis=${email.uuid}`;
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -187,7 +188,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 		       	<p align="center" style="font-size: 18px;vertical-align: middle;margin-top: 0; padding: 0 15px;">
              ${email?.bodyContent || "Your product is back in stock and now available."}
 		      	</p>
-		      	<a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="    
+		      	<a href="${productURL}" style="    
 		      	font-size: 18px;
     			display: inline-block;
     			vertical-align: middle;
@@ -210,7 +211,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
         <tbody>
             <tr>
                 <td style="line-height: 24px; font-size: 16px; border-radius: 6px; margin: 0; background: black; padding: 15px 30px;border-radius: 50px;" align="center">
-                    <a href="${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}" style="color: white !important; text-decoration: none !important;" > ${email?.buttonContent || "Checkout Now"}</a>
+                    <a href="${productURL}" style="color: white !important; text-decoration: none !important;" > ${email?.buttonContent || "Checkout Now"}</a>
                 </td>
             </tr>
         </tbody>
@@ -250,40 +251,44 @@ const loadEmailTemplate = async (email: EmailDTO) => {
 };
 
 const sendEmail = async (email: EmailDTO) => {
-  const data = {
-    personalizations: [
-      {
-        to: [
-          {
-            email: email.toEmail,
-            name: email.title,
-          },
-        ],
-        cc: [
-          {
-            email: email.senderEmail,
-            name: "Finall Back In Stock",
-          },
-        ],
-        subject: "Finally Back in Stock",
+  try {
+    const data = {
+      personalizations: [
+        {
+          to: [
+            {
+              email: email.toEmail,
+              name: email.title,
+            },
+          ],
+          cc: [
+            {
+              email: email.senderEmail,
+              name: "Finall Back In Stock",
+            },
+          ],
+          subject: "Finally Back in Stock",
+        },
+      ],
+      content: [
+        {
+          type: "text/html",
+          value: await loadEmailTemplate(email),
+        },
+      ],
+      from: {
+        email: "access@nine15.com",
+        name: "Finally Back in Stock",
       },
-    ],
-    content: [
-      {
-        type: "text/html",
-        value: await loadEmailTemplate(email),
+      reply_to: {
+        email: email.senderEmail,
+        name: "Support",
       },
-    ],
-    from: {
-      email: "access@nine15.com",
-      name: "Finally Back in Stock",
-    },
-    reply_to: {
-      email: email.senderEmail,
-      name: "Support",
-    },
-  };
-  return sendGridAdapter("mail/send", { data, responseType: "text" });
+    };
+    return sendGridAdapter("mail/send", { data, responseType: "text" });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 

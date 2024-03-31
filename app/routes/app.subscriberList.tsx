@@ -27,7 +27,6 @@ export default function SubscriberList() {
 
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
-        console.log(productInfo);
         rows.push([
             `${productInfo.productTitle} - ${productInfo.variantTitle}`,
             `$${productInfo.price}`,
@@ -59,7 +58,6 @@ export default function SubscriberList() {
     function RenderLink(content: any, productInfoId: any) {
         const handleClick = () => {
             let productInfo: any = data.filter(d => d.id == productInfoId)[0];
-            console.log(productInfo);
             setSelectedProductInfo(productInfo)
             shopifyBridge.modal.show('email-list-modal');
         };
