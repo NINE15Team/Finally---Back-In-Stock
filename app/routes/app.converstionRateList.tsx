@@ -5,11 +5,11 @@ import {
     useRevalidator,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import { findAllNotificationHistory, getConversionRate } from "../services/notification-history.service";
-import { findSubscribedProducts } from "../services/product-info.service";
+import { getConversionRate } from "../services/notification-history.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
+import { isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
 import { DataTable, Page } from "@shopify/polaris";
+import { getYYYMDD } from "~/utils/date.util";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     let { admin, session } = await authenticate.admin(request);
@@ -21,7 +21,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
     let { admin, session } = await authenticate.admin(request);
     let formData = await request.formData();
-    let shopInfo: any = await updateStoreInfo(admin);
+    let shopInfo: any = await getStoreInfoShopify(admin);
     await upsertEmail({
         storeId: shopInfo.id,
         shopifyURL: shopInfo.myshopify_domain,
@@ -43,7 +43,8 @@ export default function Index() {
         let totalViews = item.viewCount || 0;
         let conversionRate = (totalOrders / totalViews) * 100;
         rows.push([
-            item.createdAt,
+            item.productTitle,
+            getYYYMDD(item.createdAt),
             item.noOfNotifications,
             totalViews,
             item.addToCartCount,
@@ -67,7 +68,7 @@ export default function Index() {
 
             <DataTable
                 columnContentTypes={["text", "text", "text", "text"]}
-                headings={["Date", "Notifications", "View", "Add to Cart", "Order Placed", "Conversion Rate"]}
+                headings={["Date", "Product", "Notifications", "View", "Add to Cart", "Order Placed", "Conversion Rate"]}
                 rows={rows}
                 showTotalsInFooter
                 pagination={{
