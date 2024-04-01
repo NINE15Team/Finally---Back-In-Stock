@@ -2,6 +2,8 @@ import { CustomerSubscription } from "@prisma/client";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
+import { findEmailConfigByStoreURL, sendEmail } from "./email.service";
+import { randomUUID } from "crypto";
 
 const findById = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findFirst({
@@ -126,5 +128,36 @@ const countOfSubscribers = async (storeURL: string) => {
     return count;
 };
 
+const notifyToCustomer = async (subscriberList: CustomerSubscriptionDTO[]) => {
+    let emailInfo = await findEmailConfigByStoreURL(subscriberList[0].shopifyURL);
+    for (const subscriber of subscriberList) {
+        let sub = await findById(subscriber);
+        let uuid = randomUUID();
+        let { productInfo } = sub;
+        let resp = await sendEmail({
+            title: `Product Restock ${productInfo.productTitle}`,
+            toEmail: sub?.customerEmail,
+            senderEmail: emailInfo?.senderEmail,
+            subscriberId: sub?.id,
+            bodyContent: emailInfo?.bodyContent,
+            headerContent: emailInfo?.headerContent,
+            footerContent: emailInfo?.footerContent,
+            buttonContent: emailInfo?.buttonContent,
+            shopifyURL: subscriberList[0].shopifyURL,
+            storeName: subscriberList[0].storeName,
+            uuid: uuid,
+            productInfo: {
+                productTitle: productInfo.productTitle,
+                productHandle: productInfo.productHandle,
+                variantId: productInfo.variantId,
+                price: productInfo.price,
+                imageURL: productInfo.imageURL,
+                variantTitle: productInfo.variantTitle
+            }
+        })
+    }
+
+
+}
 
 export { findById, findAll as findAllSubscribers, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct, countOfSubscribers }
