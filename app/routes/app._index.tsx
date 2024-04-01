@@ -4,12 +4,10 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import { countOfSubscribers, findAllSubscribers, findTotalPotentialRevenue } from "../services/customer-subscriber.service";
+import { countOfSubscribers,  } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
-import Instructions from "./app.instructions";
-import SubscriberList from "./app.subscriberList";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
 import { useState } from "react";
 
 import { Layout, Page } from "@shopify/polaris";
