@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Layout, Page } from "@shopify/polaris";
 import Checklist from "~/components/checklist";
 import NumRequest from "~/components/num-request";
-import Request from "~/components/request";
+import Report from "~/components/report";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
 
 
