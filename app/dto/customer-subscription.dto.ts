@@ -4,6 +4,7 @@ export interface CustomerSubscriptionDTO extends BaseDTO {
     id?: number;
     productInfoId?: number;
     customerEmail?: string;
+    inStock?: boolean;
     status?: boolean;
     isNotified?: boolean;
     isSubscribed?: boolean;

@@ -1,3 +1,4 @@
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
     useLoaderData,
     useRevalidator,
@@ -11,6 +12,7 @@ import {
     DataTable,
     Button,
     List,
+    Text,
 } from "@shopify/polaris";
 import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
 import { useState } from "react";
@@ -26,10 +28,11 @@ export default function SubscriberList() {
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
         rows.push([
-            productInfo.variantTitle,
+            `${productInfo.productTitle} - ${productInfo.variantTitle}`,
             `$${productInfo.price}`,
             RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-            `$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+            BoldText(`$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`),
+            productInfo.inStock ? 'Yes' : 'No'
         ]);
     }
     const refreshData = async () => {
@@ -55,17 +58,23 @@ export default function SubscriberList() {
     function RenderLink(content: any, productInfoId: any) {
         const handleClick = () => {
             let productInfo: any = data.filter(d => d.id == productInfoId)[0];
-            console.log(productInfo);
             setSelectedProductInfo(productInfo)
             shopifyBridge.modal.show('email-list-modal');
         };
         // Return the Link component with the onClick handler attached
         return <Link onClick={handleClick}>{content}</Link>;
     }
+    function BoldText(content: any) {
+        return (
+            <Text variant="headingSm" as="h6">
+                {content}
+            </Text>
+        )
+    }
 
     return (
         <Page>
-            <ui-title-bar title="Back In Stock">
+            <ui-title-bar title="Finally Back In Stock">
                 <button variant="primary" onClick={refreshData}>
                     Reload Data
                 </button>
@@ -94,9 +103,10 @@ export default function SubscriberList() {
                             <BlockStack gap="200">
                                 <DataTable
                                     columnContentTypes={["text", "text", "text", "text"]}
-                                    headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
+                                    headings={["Product", "Price", "Subscribers", BoldText("Potential Revenue"), "In stock"]}
                                     rows={rows}
-                                    totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'No customers at this time'}`]}
+                                    totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '']}
+                                    showTotalsInFooter
                                     pagination={{
                                         hasNext: true,
                                         onNext: () => { },

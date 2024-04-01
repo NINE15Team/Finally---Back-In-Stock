@@ -28,7 +28,7 @@
     "vite": "vite",
     "logs:dev": "heroku logs --tail -a finally-back-in-stock-dev",
     "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev",
-    "logs:live": "heroku logs --tail -a finally-back-in-stock-live"
+    "logs:live": "heroku logs --tail -a finally-back-in-stock"
   },
   "type": "module",
   "dependencies": {

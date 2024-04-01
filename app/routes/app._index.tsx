@@ -13,7 +13,7 @@ import { authenticate } from "../shopify.server";
 import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
 import Instructions from "./app.instructions";
 import SubscriberList from "./app.subscriberList";
 import { useState } from "react";
@@ -21,9 +21,11 @@ import { useState } from "react";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
-  console.log("I am parent")
+  if (!initilized) {
+    await activateWebPixel(admin);
+  }
   let shopInfo: any = await getStoreInfoShopify(admin);
-  const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
+  const data = await findSubscribedProducts({ shopifyURL: shopInfo.myshopify_domain });
   const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
   return { data, shopifyURL: shopInfo.myshopify_domain, storeName: shopInfo.name, potentialRevenue, initilized };
 };
@@ -38,7 +40,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     title: shopInfo.name,
     senderEmail: shopInfo.email
   });
-  console.log("I am parrent");
+  await activateWebPixel(admin);
   return await isInitilized(admin);
 };
 
@@ -51,7 +53,7 @@ export default function Index() {
     if (initilized) {
       return <SubscriberList />;
     } else {
-      return <Instructions />;
+      return <Instructions showButton={true} />;
     }
   };
 

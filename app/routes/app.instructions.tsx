@@ -7,7 +7,7 @@ import step2 from "../image/step_2.png";
 import step3_4 from "../image/step_3_4.png";
 import step5_6 from "../image/step_5_6.png";
 
-export default function Instructions() {
+export default function Instructions({ showButton }) {
     const navigation = useNavigation();
 
     return (
@@ -42,14 +42,15 @@ export default function Instructions() {
                         <img src={step5_6} height="100%" width="100%"></img>
                     </List>
                 </Card>
-                <BlockStack inlineAlign="end">
-                    <Box paddingBlockStart="200">
-                        {navigation.state == 'idle' ?
-                            <Button variant="primary" tone="critical" submit={true}>Proceed</Button> :
-                            <Spinner accessibilityLabel="Spinner example" size="small" />
-                        }
-                    </Box>
-                </BlockStack>
+                {showButton &&
+                    <BlockStack inlineAlign="end">
+                        <Box paddingBlockStart="200">
+                            {navigation.state == 'idle' ?
+                                <Button variant="primary" tone="critical" submit={true}>Proceed</Button> :
+                                <Spinner accessibilityLabel="Spinner example" size="small" />
+                            }
+                        </Box>
+                    </BlockStack>}
             </Form>
         </Page >
     );

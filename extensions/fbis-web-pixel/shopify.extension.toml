@@ -1,5 +1,5 @@
 type = "web_pixel_extension"
-name = "monitor-it"
+name = "fbis-web-pixel"
 
 runtime_context = "strict"
 
