@@ -72,9 +72,27 @@ const findByUUID = async (uuid: any) => {
     })
 };
 
+
+const sumNoOfNotifications = async (shopifyURL: string) => {
+    let result = await prisma.notificationHistory.aggregate({
+        _sum: {
+            noOfNotifications: true
+        },
+        where: {
+            productInfo: {
+                store: {
+                    shopifyURL: shopifyURL
+                }
+            }
+        }
+    })
+    return result['_sum'].noOfNotifications;
+};
+
 export {
     save as saveNotificationHistory,
     findByUUID as findNotificationHistoryByUUId,
     findAll as findAllNotificationHistory,
-    getConversionRate
+    getConversionRate,
+    sumNoOfNotifications
 }
