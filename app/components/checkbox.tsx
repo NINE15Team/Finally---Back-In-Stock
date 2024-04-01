@@ -2,8 +2,10 @@ import { Checkbox } from "@shopify/polaris";
 
 export default function CustomCheckBox({ label } : { label: string }) {
   return (
-    <Checkbox
-      label={label}
-    />
+    <div className="check-container">
+      <Checkbox
+        label={label}
+      />
+    </div>
   );
 }
