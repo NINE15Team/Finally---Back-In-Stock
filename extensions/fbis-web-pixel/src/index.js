@@ -1,6 +1,6 @@
 import { register } from "@shopify/web-pixels-extension";
 
-const API_URL = "https://thesaurus-hood-associated-preventing.trycloudflare.com";
+const API_URL = "https://finally-back-in-stock-dev-2db9466211f6.herokuapp.com";
 
 register(({ configuration, analytics, browser }) => {
 

@@ -40,9 +40,9 @@ export default function Index() {
         rows.push([
             item.createdAt,
             item.noOfNotifications,
-            item.completedCount,
+            item.viewCount,
             item.addToCartCount,
-            item.noOfNotifications
+            item.completedCount
         ]);
     }
 

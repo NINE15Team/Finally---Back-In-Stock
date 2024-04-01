@@ -20,8 +20,10 @@ import { useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
-  await activateWebPixel(admin);
   let initilized = await isInitilized(admin);
+  if (!initilized) {
+    await activateWebPixel(admin);
+  }
   let shopInfo: any = await getStoreInfoShopify(admin);
   const data = await findSubscribedProducts({ shopifyURL: shopInfo.myshopify_domain });
   const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
