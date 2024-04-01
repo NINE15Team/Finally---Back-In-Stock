@@ -1,18 +1,32 @@
 import { DataTable, Text } from "@shopify/polaris";
 import './request.scss'
+import { useLoaderData } from "@remix-run/react";
 
-export default function Report({title, rows, pagination} : {
+export default function Report({title, pagination} : {
   title: string,
-  rows: any[];
   pagination: boolean | undefined,
 
 }) {
-  rows = [
-    ['Product Name', 50, '$50', '$50'],
-    ['Product Name', 50, '$50', '$50'],
-    ['Product Name', 50, '$50', '$50'],
-    ['Product Name', 50, '$50', '$50'],
+  let { subscribedProducts } = useLoaderData<any>();
+  const rows: any = [
   ];
+  for (let i = 0; i < subscribedProducts.length; i++) {
+    const productInfo = subscribedProducts[i];
+    rows.push([
+      `${productInfo.productTitle} - ${productInfo.variantTitle}`,
+      BoldText(productInfo.customerSubscription?.length),
+      `$${productInfo.price}`,
+      `$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+    ]);
+  }
+
+  function BoldText(content: any) {
+    return (
+      <Text variant="headingSm" as="h6">
+        {content}
+      </Text>
+    )
+  }
 
   return (
     <div className="requests-wrapper">
@@ -35,6 +49,7 @@ export default function Report({title, rows, pagination} : {
           hasNext: true,
           onNext: () => { },
       } : undefined}
+
       />
 
     </div>

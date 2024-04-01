@@ -61,7 +61,7 @@ export default function Index() {
       <Layout>
         <Checklist />
         <NumRequest />
-        <Report title="Requests" rows={[]} pagination={false} />
+        <Report title="Requests" pagination={false} />
       </Layout>
     </Page>
   );

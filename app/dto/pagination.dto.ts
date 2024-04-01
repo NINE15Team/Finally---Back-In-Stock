@@ -1,4 +1,4 @@
-export interface BaseDTO {
+export interface Pagination {
     skip?: number;
     take?: number;
 }

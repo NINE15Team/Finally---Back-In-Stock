@@ -1,4 +1,4 @@
-import { CustomerSubscription } from "@prisma/client";
+import { CustomerSubscription, Prisma } from "@prisma/client";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
@@ -30,7 +30,6 @@ const findAll = async (params: CustomerSubscriptionDTO) => {
         take: params.take || 5,
         where: {
             productInfo: {
-                inStock: params.inStock,
                 store: {
                     shopifyURL: params.shopifyURL
                 }
@@ -169,6 +168,11 @@ const notifyToCustomer = async (subscriberList: CustomerSubscriptionDTO[]) => {
 
 }
 
+const unSubscribeProducts = async (subscribeItems: CustomerSubscriptionDTO[]) => {
+    let isSubscribed = false;
+    const ids = subscribeItems.map(item => item.id);
+    return await prisma.$executeRaw`UPDATE customer_subscription SET is_subscribed = ${isSubscribed} WHERE id IN (${Prisma.join(ids)})`;
+};
 
 
 export {
@@ -178,5 +182,6 @@ export {
     setCustomerNotified,
     findTotalPotentialRevenue,
     unSubscribeProduct,
-    countOfSubscribers
+    unSubscribeProducts,
+    countOfSubscribers,
 }
