@@ -22,24 +22,25 @@ import { sumNoOfNotifications } from "~/services/notification-history.service";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
-  if (false && !initilized) {
-    await activateWebPixel(admin);
+  let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
+  if (!initilized) {
+    // await activateWebPixel(admin);
+    await upsertEmail({
+      storeId: id,
+      shopifyURL: myshopify_domain,
+      title: name,
+      senderEmail: email
+    });
+    let shopInfo: any = await updateStoreInfo(admin);
   }
-  let { myshopify_domain, name }: any = await getStoreInfoShopify(admin);
   const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain });
   const totalNotifications = await sumNoOfNotifications(myshopify_domain);
   const newSubscribers = await countOfSubscribers(myshopify_domain);
-  const data2 = await findAllSubscribers({
-    shopifyURL: myshopify_domain,
-    isNotified: false,
-  });
-  const { potentialRevenue } = await findTotalPotentialRevenue(myshopify_domain);
-  return { subscribedProducts, data2, totalNotifications, newSubscribers, shopifyURL: myshopify_domain, storeName: name, potentialRevenue, initilized };
+  return { subscribedProducts, totalNotifications, newSubscribers, shopifyURL: myshopify_domain, storeName: name, initilized };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
-  let formData = await request.formData();
   let shopInfo: any = await updateStoreInfo(admin);
   await upsertEmail({
     storeId: shopInfo.id,
@@ -47,7 +48,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     title: shopInfo.name,
     senderEmail: shopInfo.email
   });
-  await activateWebPixel(admin);
+  // await activateWebPixel(admin);
   return await isInitilized(admin);
 };
 
