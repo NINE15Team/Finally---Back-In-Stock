@@ -109,7 +109,7 @@ model NotificationHistory {
 
 model CustomerActivity {
   id                    Int                 @id @default(autoincrement())
-  status                String              @default("") @map("no_of_notifications") @db.VarChar(20)
+  status                String              @default("") @map("activity") @db.VarChar(20)
   storeId               Int                 @map("store_id")
   productInfoId         Int                 @map("product_info_id")
   browserTrackId        String              @map("browser_track_id")

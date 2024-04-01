@@ -4,7 +4,7 @@ import {
     useLoaderData,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import { findAllNotificationHistory, saveNotificationHistory } from "../services/notification-history.service";
+import { findAllNotificationHistory, getConversionRate } from "../services/notification-history.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
@@ -13,7 +13,7 @@ import { DataTable, Page } from "@shopify/polaris";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     let { admin, session } = await authenticate.admin(request);
     let shopInfo: any = await getStoreInfoShopify(admin);
-    const data = await findAllNotificationHistory({ shopifyURL: shopInfo.myshopify_domain });
+    const data = await getConversionRate();
     return { data };
 };
 
@@ -35,7 +35,17 @@ export default function Index() {
     const { data } = useLoaderData<typeof loader>();
     const actionData = useActionData<typeof action>();
     let rows: any = [];
-    console.log(data);
+    for (let i = 0; i < data.length; i++) {
+        const item = data[i];
+        rows.push([
+            item.createdAt,
+            item.noOfNotifications,
+            item.completedCount,
+            item.addToCartCount,
+            item.noOfNotifications
+        ]);
+    }
+
 
     return (
         <Page>

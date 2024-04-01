@@ -4,6 +4,7 @@ import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { findNotificationHistoryByUUId } from "./notification-history.service";
+import { CustomerActivity } from "@prisma/client";
 
 const save = async (customerActivity: CustomerActivityDTO) => {
     console.log(customerActivity);
@@ -35,5 +36,27 @@ const save = async (customerActivity: CustomerActivityDTO) => {
     })
 };
 
+const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
+    const storeInfo = await findStoreByURL(customerActivities[0]?.shopifyURL);
+    let data = [] as CustomerActivity[];
+    for (const activity of customerActivities) {
+        const productInfo = await findByProductAndVariantId(activity.productId, activity.variantId);
+        const notificationHistory = await findNotificationHistoryByUUId(activity.uuid);
+        data.push({
+            status: activity.status!,
+            browserTrackId: activity.browserTrackId,
+            notificationHistoryId: notificationHistory?.id!,
+            productInfoId: productInfo?.id!,
+            storeId: storeInfo?.id!,
+            updatedAt: new Date(),
+            createdAt: new Date(),
+        } as CustomerActivity);
+    };
+    console.log('------saveAll-----', data);
+    return await prisma.customerActivity.createMany({
+        data: data
+    })
+};
 
-export { save as saveCustomerActivity }
+
+export { save as saveCustomerActivity, saveAll as saveCustomerActivities }

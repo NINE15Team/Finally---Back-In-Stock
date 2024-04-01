@@ -6,4 +6,7 @@ export interface NotificationHistoryDTO extends BaseDTO {
     productInfoId?: number;
     storeId?: number;
     uuid?: string;
+    viewCount:number;
+    addToCartCount:number;
+    completedCount:number;
 }
