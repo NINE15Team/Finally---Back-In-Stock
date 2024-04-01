@@ -28,7 +28,7 @@
     "vite": "vite",
     "logs:dev": "heroku logs --tail -a finally-back-in-stock-dev",
     "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev",
-    "logs:live": "heroku logs --tail -a finally-back-in-stock-live"
+    "logs:live": "heroku logs --tail -a finally-back-in-stock"
   },
   "type": "module",
   "dependencies": {
@@ -46,7 +46,6 @@
     "@shopify/shopify-app-remix": "^2.5.0",
     "@shopify/shopify-app-session-storage-prisma": "^4.0.1",
     "cors": "^2.8.5",
-    "express": "^4.18.3",
     "isbot": "^5.1.0",
     "prisma": "^5.8.0",
     "react": "^18.2.0",
@@ -60,7 +59,6 @@
     "@shopify/app-bridge-types": "^0.0.7",
     "@types/cors": "^2.8.17",
     "@types/eslint": "^8.40.0",
-    "@types/express": "^4.17.21",
     "@types/node": "^20.11.28",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",

@@ -3,6 +3,8 @@ import { findStoreByURL } from "../services/store-info.service";
 import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
+import { parsePrice } from "~/utils/app.util";
+import { json } from "@remix-run/node";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
@@ -19,15 +21,20 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
         },
         include: {
             customerSubscription: {
+                where: {
+                    isNotified: param.customerSubscribe?.isNotified
+                }
             }
         }
     });
 };
 
 const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
-    return await prisma.productInfo.findMany({
+    BigInt.prototype.toJSON = function () {
+        return this.toString();
+    };
+    let d = await prisma.productInfo.findMany({
         where: {
-            inStock: param.inStock,
             store: {
                 shopifyURL: param.shopifyURL
             },
@@ -42,6 +49,7 @@ const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
             }
         }
     });
+    return d;
 };
 
 
@@ -74,28 +82,28 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
     return await prisma.productInfo.upsert({
         where: {
             productId_variantId: {
-                productId: prodInfo.productId,
-                variantId: prodInfo.variantId
+                productId: prodInfo.productId!,
+                variantId: prodInfo.variantId!
             }
         },
         update: {
             productTitle: prodInfo.productTitle,
             variantTitle: prodInfo.variantTitle,
             imageURL: prodInfo.imageURL,
-            price: prodInfo.price,
+            price: parsePrice(prodInfo.price),
             status: true,
             inStock: false,
             updatedAt: new Date(),
             isActive: true,
         },
         create: {
-            productHandle: prodInfo.productHandle,
-            productId: prodInfo.productId,
-            productTitle: prodInfo.productTitle,
-            variantId: prodInfo.variantId,
-            variantTitle: prodInfo.variantTitle,
+            productHandle: prodInfo.productHandle!,
+            productId: prodInfo.productId!,
+            productTitle: prodInfo.productTitle!,
+            variantId: prodInfo.variantId!,
+            variantTitle: prodInfo.variantTitle!,
             imageURL: prodInfo.imageURL,
-            price: prodInfo.price,
+            price: parsePrice(prodInfo.price),
             status: true,
             inStock: false,
             createdAt: new Date(),
@@ -121,7 +129,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productHandle: req.handle,
                 variantId: elm.id + "",
                 variantTitle: elm.title,
-                price: Number(elm.price),
+                price: parsePrice(elm.price),
                 imageURL: req.image?.src,
                 status: true,
                 inStock: elm.inventory_quantity > 0 ? true : false,
@@ -144,7 +152,7 @@ const upsertProduct = async (req: any, store: string) => {
                 productTitle: elm.productTitle,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
-                price: elm.price,
+                price: parsePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
                 updatedAt: new Date(),
@@ -157,7 +165,7 @@ const upsertProduct = async (req: any, store: string) => {
                 variantId: elm.variantId,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
-                price: elm.price,
+                price: parsePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
                 createdAt: new Date(),
@@ -200,4 +208,7 @@ const findProductByIdShopify = async (request: Request) => {
     return data;
 }
 
-export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts }
+export {
+    findAll as findAllProducts,
+    upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts
+}
