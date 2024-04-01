@@ -23,6 +23,8 @@ const findById = async (params: CustomerSubscriptionDTO) => {
 
 const findAll = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findMany({
+        skip: params.skip || 0,
+        take: params.take || 5,
         where: {
             productInfo: {
                 inStock: params.inStock,
@@ -39,6 +41,9 @@ const findAll = async (params: CustomerSubscriptionDTO) => {
                 }
             },
         },
+        orderBy: {
+            updatedAt: 'desc',
+        }
     });
 };
 
@@ -122,4 +127,4 @@ const countOfSubscribers = async (storeURL: string) => {
 };
 
 
-export { findById, findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct, countOfSubscribers }
+export { findById, findAll as findAllSubscribers, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct, countOfSubscribers }

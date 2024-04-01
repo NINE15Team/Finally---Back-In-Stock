@@ -20,10 +20,10 @@ import { useState } from "react";
 export default function SubscriberList() {
     const shopifyBridge = useAppBridge();
     let { revalidate } = useRevalidator();
-    let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<any>();
+    let { data2,data, shopifyURL, storeName, potentialRevenue } = useLoaderData<any>();
     let rows: any = [];
     const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
-
+    console.log(data2);
 
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
