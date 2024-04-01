@@ -35,7 +35,7 @@ const findAll = async (historyDTO: NotificationHistoryDTO) => {
     })
 };
 
-const getConversionRate = async () => {
+const getConversionRate = async (shopifyURL: string) => {
     const results = await prisma.$queryRaw`SELECT 
     nh.id,nh.no_of_notifications,nh.created_at,
     COUNT(CASE WHEN ca.activity = 'view' THEN 1 END) AS view_count,
@@ -43,6 +43,8 @@ const getConversionRate = async () => {
     COUNT(CASE WHEN ca.activity = 'completed' THEN 1 END) AS completed_count
     FROM notification_history nh
     LEFT JOIN customer_activity ca ON ca.notification_history_id = nh.id
+    LEFT JOIN store_info si ON si.id = ca.store_id
+    WHERE si.shopify_url = ${shopifyURL}
     GROUP BY nh.id` as any[];
     let histories = [] as NotificationHistoryDTO[];
     for (const result of results) {
@@ -64,7 +66,6 @@ const findByUUID = async (uuid: any) => {
         }
     })
 };
-
 
 export {
     save as saveNotificationHistory,

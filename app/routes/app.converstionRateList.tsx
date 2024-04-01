@@ -13,7 +13,7 @@ import { DataTable, Page } from "@shopify/polaris";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
     let { admin, session } = await authenticate.admin(request);
     let shopInfo: any = await getStoreInfoShopify(admin);
-    const data = await getConversionRate();
+    const data = await getConversionRate(shopInfo.myshopify_domain);
     return { data };
 };
 
