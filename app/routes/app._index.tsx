@@ -21,7 +21,7 @@ import { useState } from "react";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
-  if (true || !initilized) {
+  if (false &&  !initilized) {
     await activateWebPixel(admin);
   }
   let shopInfo: any = await getStoreInfoShopify(admin);

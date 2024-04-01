@@ -2,12 +2,12 @@ import { register } from "@shopify/web-pixels-extension";
 
 const API_URL = "https://finally-back-in-stock-dev-2db9466211f6.herokuapp.com";
 
-register(({ configuration, analytics, browser }) => {
+register(({ configuration, analytics, browser, init }) => {
 
   // Sample subscribe to page view
   analytics.subscribe('product_viewed', async (event) => {
-    let params = new URL(document.location).searchParams;
-    console.log('i am viewied', event);
+    console.log('i am viewied local', init, browser);
+    let params = new URL(init.document.location).searchParams;
     if (params.get('fbis')) {
       let uuid = params.get('fbis');
       console.log('demo', event, isCookieExist(`${uuid}_view`));
