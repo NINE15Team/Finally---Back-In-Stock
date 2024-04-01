@@ -1,3 +1,5 @@
+import { CustomerSubscriptionDTO } from "./customer-subscription.dto";
+
 export interface ProductInfoDTO {
     id?: number;
     storeId?: string;
@@ -12,6 +14,7 @@ export interface ProductInfoDTO {
     imageURL?: string;
     status?: boolean;
     inStock?: boolean;
+    customerSubscribe: CustomerSubscriptionDTO;
     createdAt?: Date;
     updatedAt?: Date;
     isActive?: boolean;

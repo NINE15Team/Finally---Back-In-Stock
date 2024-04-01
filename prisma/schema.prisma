@@ -31,6 +31,7 @@ model ShopifyStoreInfo {
   isActive           Boolean             @default(true) @map("is_active")
   EmailConfiguartion EmailConfiguartion?
   productInfo        ProductInfo[]
+  CustomerActivity   CustomerActivity[]
 
   @@map("store_info")
 }
@@ -52,6 +53,8 @@ model ProductInfo {
   inStock              Boolean                @default(false)
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
+  NotificationHistory  NotificationHistory[]
+  CustomerActivity     CustomerActivity[]
 
   @@unique([productId, variantId])
   @@map("product_info")
@@ -89,4 +92,33 @@ model EmailConfiguartion {
   updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at")
 
   @@map("email_configuartion")
+}
+
+model NotificationHistory {
+  id                Int                @id @default(autoincrement())
+  noOfNotifications Int                @default(0) @map("no_of_notifications")
+  productInfoId     Int                @map("product_info_id")
+  productInfo       ProductInfo        @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
+  uuid              String             @default(uuid())
+  createdAt         DateTime           @default(now()) @map("created_at")
+  updatedAt         DateTime           @default(now()) @updatedAt @map("updated_at")
+  customerActivity  CustomerActivity[]
+
+  @@map("notification_history")
+}
+
+model CustomerActivity {
+  id                    Int                 @id @default(autoincrement())
+  status                String              @default("") @map("activity") @db.VarChar(20)
+  storeId               Int                 @map("store_id")
+  productInfoId         Int                 @map("product_info_id")
+  browserTrackId        String              @map("browser_track_id")
+  notificationHistoryId Int                 @map("notification_history_id")
+  createdAt             DateTime            @default(now()) @map("created_at")
+  updatedAt             DateTime            @default(now()) @updatedAt @map("updated_at")
+  store                 ShopifyStoreInfo    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  notificationHistory   NotificationHistory @relation(fields: [notificationHistoryId], references: [id], onDelete: Cascade)
+  productInfo           ProductInfo         @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
+
+  @@map("customer_activity")
 }

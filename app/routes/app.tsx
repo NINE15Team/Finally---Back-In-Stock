@@ -28,6 +28,9 @@ export default function App() {
             <Link to="/app/email" >
               Email
             </Link>
+            <Link to="/app/converstionRateList" >
+              Converstion Rate 
+            </Link>
             <Link to="/app/instructions">
               QuickSetup Guide
             </Link>

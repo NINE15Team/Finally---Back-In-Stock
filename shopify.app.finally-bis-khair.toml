@@ -1,6 +1,6 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "ac164153b025181d937b5907c40bd024"
+client_id = "8800ca44f2a3eeaa42dafeb829ea1c0b"
 name = "finally-bis-khair"
 application_url = "https://accident-feeding-consistently-hospitals.trycloudflare.com"
 embedded = true

@@ -10,10 +10,10 @@ import {
   ClientActionFunctionArgs,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
+import { findAllSubscribers, findTotalPotentialRevenue } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
 import Instructions from "./app.instructions";
 import SubscriberList from "./app.subscriberList";
 import { useState } from "react";
@@ -21,10 +21,17 @@ import { useState } from "react";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin, session } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
+  if (false && !initilized) {
+    await activateWebPixel(admin);
+  }
   let shopInfo: any = await getStoreInfoShopify(admin);
   const data = await findSubscribedProducts({ shopifyURL: shopInfo.myshopify_domain });
+  const data2 = await findAllSubscribers({
+    shopifyURL: shopInfo.myshopify_domain,
+    isNotified: false,
+  });
   const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
-  return { data, shopifyURL: shopInfo.myshopify_domain, storeName: shopInfo.name, potentialRevenue, initilized };
+  return { data, data2, shopifyURL: shopInfo.myshopify_domain, storeName: shopInfo.name, potentialRevenue, initilized };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -37,7 +44,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     title: shopInfo.name,
     senderEmail: shopInfo.email
   });
-  console.log("I am parrent");
+  await activateWebPixel(admin);
   return await isInitilized(admin);
 };
 
@@ -45,7 +52,6 @@ export default function Index() {
   const actionData = useActionData<typeof action>();
   let { initilized } = useLoaderData<typeof loader>();
   const [appInit, setAppInit] = useState(initilized);
-
   const renderContent = () => {
     if (initilized) {
       return <SubscriberList />;
