@@ -20,14 +20,13 @@ import { useState } from "react";
 export default function SubscriberList() {
     const shopifyBridge = useAppBridge();
     let { revalidate } = useRevalidator();
-    let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<any>();
+    let { data2,data, shopifyURL, storeName, potentialRevenue } = useLoaderData<any>();
     let rows: any = [];
     const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
-
+    console.log(data2);
 
     for (let i = 0; i < data.length; i++) {
         const productInfo = data[i];
-        console.log(productInfo);
         rows.push([
             `${productInfo.productTitle} - ${productInfo.variantTitle}`,
             `$${productInfo.price}`,
@@ -59,7 +58,6 @@ export default function SubscriberList() {
     function RenderLink(content: any, productInfoId: any) {
         const handleClick = () => {
             let productInfo: any = data.filter(d => d.id == productInfoId)[0];
-            console.log(productInfo);
             setSelectedProductInfo(productInfo)
             shopifyBridge.modal.show('email-list-modal');
         };

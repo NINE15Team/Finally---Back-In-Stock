@@ -21,6 +21,9 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
         },
         include: {
             customerSubscription: {
+                where: {
+                    isNotified: param.customerSubscribe?.isNotified
+                }
             }
         }
     });
@@ -30,7 +33,9 @@ const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
     BigInt.prototype.toJSON = function () {
         return this.toString();
     };
-    let d = await prisma.productInfo.findMany({
+    return await prisma.productInfo.findMany({
+        skip: param.skip || 0,
+        take: param.take || 10,
         where: {
             store: {
                 shopifyURL: param.shopifyURL
@@ -44,10 +49,11 @@ const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
         include: {
             customerSubscription: {
             }
+        },
+        orderBy: {
+            updatedAt: 'desc'
         }
     });
-    console.log(d);
-    return d;
 };
 
 
@@ -206,4 +212,7 @@ const findProductByIdShopify = async (request: Request) => {
     return data;
 }
 
-export { findAll, upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts }
+export {
+    findAll as findAllProducts,
+    upsertProduct, addProductInfo, findByProductAndVariantId, countProductAndVariantId, isProductAlreadyAdded, findSubscribedProducts
+}
