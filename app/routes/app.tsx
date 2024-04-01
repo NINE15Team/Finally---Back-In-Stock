@@ -21,18 +21,21 @@ export default function App() {
     <AppProvider isEmbeddedApp apiKey={apiKey}>
       <ui-nav-menu>
         <Link to="/app" rel="home">
-          Home 
+          Home
         </Link>
         {initilized && (
           <>
             <Link to="/app/email" >
-              Email 
+              Email
             </Link>
             <Link to="/app/converstionRateList" >
               Converstion Rate 
             </Link>
             <Link to="/app/instructions">
               QuickSetup Guide
+            </Link>
+            <Link to="/app/dashbaord">
+              Dashboard
             </Link>
           </>
         )

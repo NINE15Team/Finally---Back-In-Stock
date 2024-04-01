@@ -32,8 +32,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       console.log("CUSTOMERS_DATA_REQUEST", payload);
       break;
     case "SHOP_REDACT":
+      console.log("Starting shop data delete......");
       await deleteStoreByURL(payload.shop_domain);
-      console.log("All Shop Data Deleted");
+      console.log("End shop data delete......");
       break;
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });

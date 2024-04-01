@@ -6,6 +6,7 @@ import step1 from "../image/step_1.png";
 import step2 from "../image/step_2.png";
 import step3_4 from "../image/step_3_4.png";
 import step5_6 from "../image/step_5_6.png";
+import { DashboardUI } from './app.dashbaord';
 
 export default function Instructions({ showButton }) {
     const navigation = useNavigation();
