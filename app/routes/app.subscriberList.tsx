@@ -106,7 +106,7 @@ export default function SubscriberList() {
                             <BlockStack gap="200">
                                 <DataTable
                                     columnContentTypes={["text", "text", "text", "text", "text"]}
-                                    headings={["Product", "Price", "Subscribers", BoldText("Potential Revenue"), "In stock", "SKU"]}
+                                    headings={["Product", "Price", "Subscribers", BoldText("Potential Revenue"), "In stock", "sku"]}
                                     rows={rows}
                                     totals={['', '', '', `${potentialRevenue ? `$${Math.round(potentialRevenue)}` : 'No customers at this time'}`, '', '']}
                                     showTotalsInFooter
