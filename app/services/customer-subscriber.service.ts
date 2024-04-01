@@ -104,5 +104,22 @@ const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialR
     return { potentialRevenue: result[0].sum }
 };
 
+const countOfSubscribers = async (storeURL: string) => {
+    const count = await prisma.customerSubscription.count({
+        where: {
+            productInfo: {
+                store: {
+                    shopifyURL: storeURL
+                }
+            },
+            AND: [
+                { isSubscribed: true },
+                { isNotified: false },
+            ],
+        },
+    });
+    return count;
+};
 
-export { findById, findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct }
+
+export { findById, findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct, countOfSubscribers }
