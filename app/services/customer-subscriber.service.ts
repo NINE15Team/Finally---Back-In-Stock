@@ -4,6 +4,7 @@ import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { findEmailConfigByStoreURL, sendEmail } from "./email.service";
 import { randomUUID } from "crypto";
+import { saveNotificationHistory } from "./notification-history.service";
 
 const findById = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findFirst({
@@ -155,9 +156,27 @@ const notifyToCustomer = async (subscriberList: CustomerSubscriptionDTO[]) => {
                 variantTitle: productInfo.variantTitle
             }
         })
+        await setCustomerNotified(sub?.customerEmail!, productInfo.id);
+        console.log(`Notified to ${sub?.customerEmail}`, resp);
+        await saveNotificationHistory({
+            uuid: uuid,
+            noOfNotifications: 1,
+            productInfoId: productInfo.id
+        });
+
     }
 
 
 }
 
-export { findById, findAll as findAllSubscribers, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct, countOfSubscribers }
+
+
+export {
+    findById,
+    findAll as findAllSubscribers,
+    subscribeProduct,
+    setCustomerNotified,
+    findTotalPotentialRevenue,
+    unSubscribeProduct,
+    countOfSubscribers
+}
