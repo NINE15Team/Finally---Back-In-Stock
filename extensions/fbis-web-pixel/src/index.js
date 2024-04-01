@@ -4,12 +4,11 @@ const API_URL = "https://finally-back-in-stock-dev-2db9466211f6.herokuapp.com";
 
 register(({ configuration, analytics, browser }) => {
 
-  // Sample subscribe to page view
   analytics.subscribe('product_viewed', async (event) => {
-    let params = new URL(document.location).searchParams;
-    console.log('i am viewied', event);
-    if (params.get('fbis')) {
-      let uuid = params.get('fbis');
+    console.log('i am changed', init, browser);
+    let uuid = getParamVal(init.context.document.location.search, "fbis");
+    console.log(uuid)
+    if (uuid) {
       console.log('demo', event, isCookieExist(`${uuid}_view`));
       if (!isCookieExist(`${uuid}_view`)) {
         let variantId = event.data.productVariant.id;
@@ -25,9 +24,13 @@ register(({ configuration, analytics, browser }) => {
             status: 'view'
           }]),
         }).then(r => r.json());
-        setCookie(`${uuid}_view`, variantId, 30);
-        setCookie(variantId, uuid);
-        captureActivity(event.clientId, 'fbis_viewed', productId, variantId, uuid);
+        if (response.success) {
+          setCookie(`${uuid}_view`, variantId, 30);
+          setCookie(variantId, uuid);
+          captureActivity(event.clientId, 'fbis_viewed', productId, variantId, uuid);
+        } else {
+          console.error(response.message);
+        }
       } else {
         console.log("View!!")
       }
@@ -53,8 +56,12 @@ register(({ configuration, analytics, browser }) => {
           status: 'add_to_cart'
         }]),
       }).then(r => r.json());
-      setCookie(`${uuid}_cart`, variantId, 30);
-      captureActivity(event.clientId, 'fbis_added_to_cart', productId, variantId, uuid);
+      if (response.success) {
+        setCookie(`${uuid}_cart`, variantId, 30);
+        captureActivity(event.clientId, 'fbis_added_to_cart', productId, variantId, uuid);
+      } else {
+        console.error(response.message);
+      }
     } else {
       console.log("Add to Cart!!")
     }
@@ -87,6 +94,16 @@ register(({ configuration, analytics, browser }) => {
     }
     console.log(event);
   });
+
+  function getParamVal(queryString, key) {
+    const pairs = queryString.substring(1).split('&');
+    const params = {};
+    pairs.forEach(pair => {
+      const [key, value] = pair.split('=');
+      params[key] = value;
+    });
+    return params[key];
+  }
 
   function setCookie(name, value, daysToExpire, path = '/') {
     const date = new Date();
@@ -142,5 +159,8 @@ register(({ configuration, analytics, browser }) => {
   function deleteActivity(key) {
     sessionStorage.removeItem(key);
   }
+
+
+
 
 });

@@ -17,8 +17,14 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json() as CustomerActivityDTO[];
-        let result = await saveCustomerActivities(requstBody);
-        console.log(result);
+        try {
+            let result = await saveCustomerActivities(requstBody);
+        } catch (error) {
+            console.log(error);
+            return json(
+                { success: false, status: 404, message: 'bad request' },
+                { headers: { "Access-Control-Allow-Origin": "*" } })
+        }
     }
     return json(
         { success: true },
