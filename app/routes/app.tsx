@@ -9,7 +9,7 @@ import { authenticate } from "../shopify.server";
 import { isInitilized } from "~/services/store-info.service";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
+  let { admin } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "", initilized: initilized });
 };
@@ -29,13 +29,16 @@ export default function App() {
               Email
             </Link>
             <Link to="/app/converstionRateList" >
-              Converstion Rate 
+              Converstion Rate
             </Link>
             <Link to="/app/instructions">
               QuickSetup Guide
             </Link>
             <Link to="/app/dashbaord">
-              Dashboard
+              Finally
+            </Link>
+            <Link to="/app/reports">
+              Reports
             </Link>
           </>
         )

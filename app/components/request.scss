@@ -1,11 +1,62 @@
 .requests-wrapper {
   width: 100%;
   margin-top: 24px;
+  margin-bottom: 40px;
   h3 {
     margin-top: 28px;
     margin-bottom: 24px;
     font-size: 20px;
     line-height: 36px;
     font-weight: 700;
+    span {
+      font-size: 20px;
+      line-height: 36px;
+      font-weight: 400;
+      font-style: italic;
+    }
   }
+  .Polaris-DataTable__Table, .Polaris-IndexTable__Table {
+    padding: 24px 27px;
+    border-radius: 5px;
+    border-collapse: initial;
+    border-width: 0;
+    border-spacing: 0;
+  }
+  .Polaris-DataTable__Cell, .Polaris-IndexTable__TableRow  {
+    width: 25%;
+    text-align: center;
+    padding: 20px 0;
+
+    &:last-child {
+      text-align: right;
+      padding-right: 60px;
+    }
+
+    &:first-child {
+      text-align: left;
+    }
+    &:nth-child(2):not(th) {
+      font-weight: 600;
+    }
+    &.th {
+      font-size: 13px;
+      line-height: 20px;
+    }
+  }
+  td.Polaris-DataTable__Cell, td.Polaris-IndexTable__TableCell {
+    font-size: 15px;
+  }
+  tbody th {
+    font-size: 15px;
+    line-height: 20px;
+    color: #2EA603;
+    font-weight: 700;
+  }
+  &.second-underlined tbody .Polaris-IndexTable__TableCell:nth-child(2) {
+    text-decoration: underline;
+  }
+  tbody .Polaris-DataTable__Cell, .Polaris-IndexTable__TableCell {
+    border-top: var(--p-border-width-025) solid var(--p-color-border-secondary);
+  }
+
 }

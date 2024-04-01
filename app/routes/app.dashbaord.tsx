@@ -1,7 +1,7 @@
 import { Layout, Page } from "@shopify/polaris";
 import Checklist from "~/components/checklist";
 import NumRequest from "~/components/num-request";
-import Request from "~/components/request";
+import Report from "~/components/report";
 
 
 export default function Index() {
@@ -10,7 +10,7 @@ export default function Index() {
       <Layout>
         <Checklist />
         <NumRequest />
-        <Request />
+        <Report title="Requests" rows={[]} pagination={false} />
       </Layout>
     </Page>
   );
