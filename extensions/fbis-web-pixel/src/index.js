@@ -7,7 +7,7 @@ register(({ configuration, analytics, browser }) => {
   // Sample subscribe to page view
   analytics.subscribe('product_viewed', async (event) => {
     let params = new URL(document.location).searchParams;
-    console.log(event);
+    console.log('i am viewied', event);
     if (params.get('fbis')) {
       let uuid = params.get('fbis');
       console.log('demo', event, isCookieExist(`${uuid}_view`));
