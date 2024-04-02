@@ -165,16 +165,14 @@ const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
             })
             await setCustomerNotified(sub?.customerEmail!, productInfo.id);
             console.log(`Notified to ${sub?.customerEmail}`, resp);
-            return await saveNotificationHistory({
+            await saveNotificationHistory({
                 uuid: uuid,
                 noOfNotifications: 1,
                 productInfoId: productInfo.id
             });
         }
-
     }
-
-
+    return subscriberList;
 }
 
 const updateSubscribtionStatus = async (ids: number[], isSubscribed: boolean) => {

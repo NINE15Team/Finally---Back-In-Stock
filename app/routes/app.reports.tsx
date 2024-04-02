@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
 import { Layout, Page, Text } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 
@@ -30,23 +30,32 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   let obj = Object.fromEntries(formData) as any;
   if (formData.get('name') == 'SEND_EMAIL') {
     let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
-    return await notifyToCustomers(ids);
+    console.log(formData.get('name'), ids);
+    await notifyToCustomers(ids);
+    return json({ 'action': 'send_email', status: true });
+
   } else if (formData.get('name') == 'UNSUBSCRIBE') {
+
     let ids = obj['ids'].split(',').map((Number));
-    console.log(ids);
-    return await updateSubscribtionStatus(ids, false);
+    console.log(formData.get('name'), ids);
+    await updateSubscribtionStatus(ids, false);
+    return json({ 'action': 'unsubscribe', status: true });
+
   } else if (formData.get('name') == 'SUBSCRIBE') {
+
     let ids = obj['ids'].split(',').map((Number));
-    console.log(ids);
-    return await updateSubscribtionStatus(ids, false);
+    console.log(formData.get('name'), ids);
+    await updateSubscribtionStatus(ids, true);
+    return json({ 'action': 'subscribe', status: true });
+
   } else {
     console.log("Action Called", obj, formData.get('name'));
     if (obj.skip == undefined || isNaN(obj.skip)) {
       obj.skip = 0;
     }
+    return redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;
   }
-  return true;
-  // redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;
+
 };
 
 

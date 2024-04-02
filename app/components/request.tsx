@@ -1,8 +1,9 @@
-import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList } from "@shopify/polaris";
-import './request.scss'
-import { useState } from "react";
+import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList, Toast } from "@shopify/polaris";
+import { useCallback, useState } from "react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
-import { useSubmit } from "@remix-run/react";
+import { useActionData, useSubmit } from "@remix-run/react";
+import { TitleBar, useAppBridge, Modal } from "@shopify/app-bridge-react";
+import './request.scss'
 
 export default function Request({ title, label, data, type }: {
   title: string,
@@ -11,6 +12,8 @@ export default function Request({ title, label, data, type }: {
   type: string
 
 }) {
+  const shopifyBridge = useAppBridge();
+  let actionResponse: any = useActionData<any>();
   const resourceName = {
     singular: 'order',
     plural: 'orders',
@@ -76,12 +79,22 @@ export default function Request({ title, label, data, type }: {
   }
 
   const NotificationSentActionList = ({ selectedRow }: { selectedRow: any }) => {
-
+    const submit = useSubmit();
     const onSend = () => {
-      console.log("Send Again", selectedRow);
+      console.log("Re-Send", selectedRow);
+      const formData = new FormData();
+      formData.append("ids", selectedRow);
+      formData.set('name', 'SEND_EMAIL');
+      submit(formData, { method: "post" });
+
     }
     const onSubscribe = () => {
       console.log("Re subscribe", selectedRow);
+      const formData = new FormData();
+      formData.append("ids", selectedRow);
+      formData.set('name', 'SUBSCRIBE');
+      submit(formData, { method: "post" });
+
     }
     return (<ActionList
       actionRole="menuitem"
@@ -89,52 +102,65 @@ export default function Request({ title, label, data, type }: {
     />)
   }
 
+  const showToast = (message: string) => {
+    shopifyBridge.toast.show(message, { duration: 3000 });
+  }
+
+  if (actionResponse?.action == 'send_email') {
+    showToast('Message sent');
+  } else if (actionResponse?.action == 'subscribe') {
+    showToast('Customer Subscribed');
+  } else if (actionResponse?.action == 'unsubscribe') {
+    showToast('Customer Unsubscribed');
+  }
 
   return (
-    <div className="requests-wrapper second-underlined">
-      <Text as="h3" variant="bodyMd">{title} - <span>{label}</span></Text>
-      <IndexTable
-        itemCount={data.length}
-        resourceName={resourceName}
-        selectedItemsCount={
-          allResourcesSelected ? 'All' : selectedResources.length
-        }
-        onSelectionChange={handleSelectionChange}
-        headings={[
-          { title: 'Product' },
-          { title: 'Contact' },
-          { title: 'Request Date' }
-        ]}
-      >
-        {rowMarkup}
-      </IndexTable>
-      <div className="btnContainer">
-        <ButtonGroup variant="segmented">
-          <div className="my-button">
-            <Button variant="primary">Actions</Button>
-          </div>
+    <>
+      <div className="requests-wrapper second-underlined">
+        <Text as="h3" variant="bodyMd">{title} - <span>{label}</span></Text>
+        <IndexTable
+          itemCount={data.length}
+          resourceName={resourceName}
+          selectedItemsCount={
+            allResourcesSelected ? 'All' : selectedResources.length
+          }
+          onSelectionChange={handleSelectionChange}
+          headings={[
+            { title: 'Product' },
+            { title: 'Contact' },
+            { title: 'Request Date' }
+          ]}
+        >
+          {rowMarkup}
+        </IndexTable>
+        <div className="btnContainer">
+          <ButtonGroup variant="segmented">
+            <div className="my-button">
+              <Button variant="primary">Actions</Button>
+            </div>
 
-          <Popover
-            active={active}
-            preferredAlignment="right"
-            activator={
-              <Button
-                variant="primary"
-                onClick={() => toggleActive()}
-                icon={ChevronDownIcon}
-                accessibilityLabel="Other save actions"
-              />
-            }
-            autofocusTarget="first-node"
-            onClose={() => toggleActive()}
-          >
-            {type == 'pending' ?
-              <PendingActionList selectedRow={selectedResources} /> :
-              <NotificationSentActionList selectedRow={selectedResources} />
-            }
-          </Popover>
-        </ButtonGroup>
-      </div>
-    </div >
+            <Popover
+              active={active}
+              preferredAlignment="right"
+              activator={
+                <Button
+                  variant="primary"
+                  onClick={() => toggleActive()}
+                  icon={ChevronDownIcon}
+                  accessibilityLabel="Other save actions"
+                />
+              }
+              autofocusTarget="first-node"
+              onClose={() => toggleActive()}
+            >
+              {type == 'pending' ?
+                <PendingActionList selectedRow={selectedResources} /> :
+                <NotificationSentActionList selectedRow={selectedResources} />
+              }
+            </Popover>
+          </ButtonGroup>
+        </div>
+      </div >
+    </>
   );
 }
