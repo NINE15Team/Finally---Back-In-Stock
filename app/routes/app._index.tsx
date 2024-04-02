@@ -4,7 +4,7 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
-import { countOfSubscribers,  } from "../services/customer-subscriber.service";
+import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
@@ -52,7 +52,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
   const actionData = useActionData<typeof action>();
-  let { initilized } = useLoaderData<typeof loader>();
+  let { initilized, subscribedProducts } = useLoaderData<typeof loader>();
   const [appInit, setAppInit] = useState(initilized);
 
 
@@ -61,7 +61,7 @@ export default function Index() {
       <Layout>
         <Checklist />
         <NumRequest />
-        <Report title="Requests" pagination={false} />
+        <Report title="Requests" pagination={false} data={subscribedProducts} />
       </Layout>
     </Page>
   );

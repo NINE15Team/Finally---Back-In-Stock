@@ -1,24 +1,24 @@
 import { DataTable, Text } from "@shopify/polaris";
 import './request.scss'
-import { useLoaderData } from "@remix-run/react";
+import { useParams, useSearchParams, useSubmit } from "@remix-run/react";
 
-export default function Report({ title, pagination }: {
+export default function Report({ title, pagination, data }: {
   title: string,
   pagination: boolean | undefined,
+  data: any[]
 
 }) {
-  let { subscribedProducts } = useLoaderData<any>();
-  const rows: any = [
-  ];
-  for (let i = 0; i < subscribedProducts.length; i++) {
-    const productInfo = subscribedProducts[i];
+  const submit = useSubmit();
+  const [searchParams] = useSearchParams();
+  const rows: any = [];
+  data.forEach(prodInfo => {
     rows.push([
-      `${productInfo.productTitle} - ${productInfo.variantTitle}`,
-      BoldText(productInfo.customerSubscription?.length),
-      `$${productInfo.price}`,
-      `$${(Number(productInfo.price) * productInfo.customerSubscription?.length)}`,
+      `${prodInfo.productTitle} - ${prodInfo.variantTitle}`,
+      BoldText(prodInfo.customerSubscription?.length),
+      `$${prodInfo.price}`,
+      `$${(Number(prodInfo.price) * prodInfo.customerSubscription?.length)}`,
     ]);
-  }
+  });
 
   function BoldText(content: any) {
     return (
@@ -47,7 +47,22 @@ export default function Report({ title, pagination }: {
         rows={rows}
         pagination={pagination ? {
           hasNext: true,
-          onNext: () => { },
+          onNext: () => {
+            let take: any = searchParams.get('take') || 2;
+            let skip: any = searchParams.get('skip');
+            if (skip == null || isNaN(skip)) {
+              skip = 1;
+            }
+            console.log(take, skip);
+            skip = (skip * take);
+            if (isNaN(skip)) {
+              skip = 0
+            }
+            const formData = new FormData();
+            formData.append("take", take);
+            formData.append("skip", skip);
+            submit(formData, { method: "post" });
+          },
         } : undefined}
 
       />

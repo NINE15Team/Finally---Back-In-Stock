@@ -1,13 +1,18 @@
 import { IndexTable, useIndexResourceState, Text } from "@shopify/polaris";
 import './request.scss'
+import { useLoaderData } from "@remix-run/react";
 
-export default function Request({ title, label }: { title: string, label: string }) {
-  let rows = [
-    [{ id: '0ra', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
-    [{ id: '0rb', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
-    [{ id: '0rc', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
-    [{ id: '0rd', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
-  ];
+export default function Request({ title, label, data }: { title: string, label: string, data: any[] }) {
+
+  let rows = [] as any;
+  data.forEach((elm: any) => {
+    rows.push({
+      product: elm?.productInfo.productTitle,
+      email: elm?.customerEmail,
+      date: elm?.updatedAt
+    })
+
+  });
   const resourceName = {
     singular: 'order',
     plural: 'orders',

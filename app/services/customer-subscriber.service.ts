@@ -25,6 +25,10 @@ const findById = async (params: CustomerSubscriptionDTO) => {
 
 
 const findAll = async (params: CustomerSubscriptionDTO) => {
+    let clause = {} as Partial<CustomerSubscription>;
+    if (params.isNotified !== undefined) {
+        clause.isNotified = params.isNotified
+    }
     return await prisma.customerSubscription.findMany({
         skip: params.skip || 0,
         take: params.take || 5,
@@ -34,7 +38,7 @@ const findAll = async (params: CustomerSubscriptionDTO) => {
                     shopifyURL: params.shopifyURL
                 }
             },
-            isNotified: params?.isNotified,
+            ...clause
         },
         include: {
             productInfo: {
