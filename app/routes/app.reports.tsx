@@ -6,7 +6,7 @@ import Report from "~/components/report";
 import Request from "~/components/request";
 import { findSubscribedProducts } from "~/services/product-info.service";
 import { getStoreInfoShopify } from "~/services/store-info.service";
-import { findAllSubscribers } from "~/services/customer-subscriber.service";
+import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -16,18 +16,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const $skip = Number(url.searchParams.get("skip")) || 0;
   const $take = Number(url.searchParams.get("take")) || 2;
   const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain, take: $take, skip: $skip });
-  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false });
-  const notifiedSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: true });
+  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 100, skip: 0 });
+  const notifiedSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: true, take: 100, skip: 0 });
   console.log("loader Called");
   return { subscribedProducts, pendingSubscrbers, notifiedSubscrbers, shopifyURL: myshopify_domain };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
+  let { admin } = await authenticate.admin(request);
+  let { myshopify_domain }: any = await getStoreInfoShopify(admin);
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
-  console.log("Action Called", obj, formData.get('name'));
-  if (obj.skip == undefined || isNaN(obj.skip)) {
-    obj.skip = 0;
+  if (formData.get('name') == 'SEND_EMAIL') {
+    let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
+    return await notifyToCustomers(ids);
+  } else if (formData.get('name') == 'UNSUBSCRIBE') {
+    let ids = obj['ids'].split(',').map((Number));
+    console.log(ids);
+    return await updateSubscribtionStatus(ids, false);
+  } else if (formData.get('name') == 'SUBSCRIBE') {
+    let ids = obj['ids'].split(',').map((Number));
+    console.log(ids);
+    return await updateSubscribtionStatus(ids, false);
+  } else {
+    console.log("Action Called", obj, formData.get('name'));
+    if (obj.skip == undefined || isNaN(obj.skip)) {
+      obj.skip = 0;
+    }
   }
   return true;
   // redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;

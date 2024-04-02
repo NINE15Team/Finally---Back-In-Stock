@@ -54,15 +54,20 @@ export default function Request({ title, label, data, type }: {
   };
 
   const PendingActionList = ({ selectedRow }: { selectedRow: any }) => {
-
+    const submit = useSubmit();
     const onSend = () => {
-      const submit = useSubmit();
+      console.log("Send Manually", selectedRow);
       const formData = new FormData();
-      formData.append("pendingSubscribers", selectedRow);
-      formData.set('name', 'pendingSubscribers');
+      formData.append("ids", selectedRow);
+      formData.set('name', 'SEND_EMAIL');
       submit(formData, { method: "post" });
     }
     const onUnSubscribe = () => {
+      console.log("UnSubscribe", selectedRow);
+      const formData = new FormData();
+      formData.append("ids", selectedRow);
+      formData.set('name', 'UNSUBSCRIBE');
+      submit(formData, { method: "post" });
     }
     return (<ActionList
       actionRole="menuitem"
