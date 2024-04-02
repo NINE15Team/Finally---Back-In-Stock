@@ -1,6 +1,7 @@
 import { DataTable, Text } from "@shopify/polaris";
 import './request.scss'
 import { useParams, useSearchParams, useSubmit } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
 export default function Report({ title, pagination, data }: {
   title: string,

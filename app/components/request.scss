@@ -15,15 +15,36 @@
       font-style: italic;
     }
   }
-  .Polaris-DataTable__Table, .Polaris-IndexTable__Table {
+  .Polaris-DataTable__Cell--header,
+  .Polaris-IndexTable__TableHeading {
+    color: var(--p-color-text);
+    border-bottom: var(--p-border-width-025) solid var(--p-color-border);
+    border-top: 0;
+    background: #fafbfb;
+    padding: 20px 0;
+    text-align: center;
+    span.Polaris-Text--root {
+      font-size: 13px;
+      line-height: 20px;
+    }
+  }
+  .Polaris-DataTable__Table,
+  .Polaris-IndexTable__Table {
     padding: 24px 27px;
     border-radius: 5px;
     border-collapse: initial;
     border-width: 0;
     border-spacing: 0;
+    background-color: var(--p-color-bg-surface);
   }
-  .Polaris-DataTable__Cell, .Polaris-IndexTable__TableRow  {
+  .Polaris-DataTable__Cell {
     width: 25%;
+  }
+  .Polaris-IndexTable__TableCell:not(:first-child) {
+    width: 30%;
+  }
+  .Polaris-DataTable__Cell,
+  .Polaris-IndexTable__TableCell {
     text-align: center;
     padding: 20px 0;
 
@@ -43,20 +64,40 @@
       line-height: 20px;
     }
   }
-  td.Polaris-DataTable__Cell, td.Polaris-IndexTable__TableCell {
+  td.Polaris-DataTable__Cell,
+  td.Polaris-IndexTable__TableCell {
     font-size: 15px;
   }
   tbody th {
     font-size: 15px;
     line-height: 20px;
-    color: #2EA603;
+    color: #2ea603;
     font-weight: 700;
   }
-  &.second-underlined tbody .Polaris-IndexTable__TableCell:nth-child(2) {
+  &.second-underlined tbody .Polaris-IndexTable__TableCell:nth-child(3) {
     text-decoration: underline;
   }
-  tbody .Polaris-DataTable__Cell, .Polaris-IndexTable__TableCell {
+  tbody .Polaris-DataTable__Cell,
+  .Polaris-IndexTable__TableCell {
     border-top: var(--p-border-width-025) solid var(--p-color-border-secondary);
   }
-
+  .btnContainer {
+    width: fit-content;
+    margin: 40px auto 0;
+    padding: 14px;
+    background: #000;
+    border-radius: 15px;
+    .Polaris-ButtonGroup button {
+      border: none;
+      border-radius: 0;
+      background: transparent;
+      outline: none;
+      box-shadow: none;
+    }
+    .Polaris-ButtonGroup--variantSegmented {
+      border: 1px solid gray;
+      padding: 2px;
+      border-radius: 9px;
+    }
+  }
 }

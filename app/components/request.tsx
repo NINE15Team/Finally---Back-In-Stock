@@ -1,22 +1,29 @@
-import { IndexTable, useIndexResourceState, Text } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList } from "@shopify/polaris";
 import './request.scss'
-import { useLoaderData } from "@remix-run/react";
+import { useState } from "react";
+import { ChevronDownIcon } from '@shopify/polaris-icons';
 
-export default function Request({ title, label, data }: { title: string, label: string, data: any[] }) {
+export default function Request({ title, label, data, actions }: {
+  title: string,
+  label: string,
+  data: any[],
+  actions: any[]
 
-  let rows = [] as any;
-  data.forEach((elm: any) => {
-    rows.push({
-      product: elm?.productInfo.productTitle,
-      email: elm?.customerEmail,
-      date: elm?.updatedAt
-    })
-
-  });
+}) {
   const resourceName = {
     singular: 'order',
     plural: 'orders',
   };
+
+  let rows = [] as any;
+  data.forEach((elm: any) => {
+    rows.push({
+      id: elm.id,
+      product: elm?.productInfo.productTitle,
+      email: elm?.customerEmail,
+      date: elm?.updatedAt
+    })
+  });
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
 
@@ -42,12 +49,18 @@ export default function Request({ title, label, data }: { title: string, label: 
     ),
   );
 
+  const [active, setActive] = useState<boolean>(false);
+
+  const toggleActive = () => {
+    setActive(!active);
+  };
+
 
   return (
     <div className="requests-wrapper second-underlined">
       <Text as="h3" variant="bodyMd">{title} - <span>{label}</span></Text>
       <IndexTable
-        itemCount={rows.length}
+        itemCount={data.length}
         resourceName={resourceName}
         selectedItemsCount={
           allResourcesSelected ? 'All' : selectedResources.length
@@ -61,7 +74,33 @@ export default function Request({ title, label, data }: { title: string, label: 
       >
         {rowMarkup}
       </IndexTable>
+      <div className="btnContainer">
+        <ButtonGroup variant="segmented">
+          <div className="my-button">
+            <Button variant="primary">Actions</Button>
+          </div>
 
-    </div>
+          <Popover
+            active={active}
+            preferredAlignment="right"
+            activator={
+              <Button
+                variant="primary"
+                onClick={() => toggleActive()}
+                icon={ChevronDownIcon}
+                accessibilityLabel="Other save actions"
+              />
+            }
+            autofocusTarget="first-node"
+            onClose={() => toggleActive()}
+          >
+            <ActionList
+              actionRole="menuitem"
+              items={actions}
+            />
+          </Popover>
+        </ButtonGroup>
+      </div>
+    </div >
   );
 }

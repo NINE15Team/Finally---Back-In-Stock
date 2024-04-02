@@ -32,15 +32,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   return redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;
 };
 
+
 export default function Index() {
   let { pendingSubscrbers, notifiedSubscrbers, subscribedProducts } = useLoaderData<typeof loader>();
   return (
     <Page>
       <Layout>
-        <Text variant="heading3xl" as="h2">Reports</Text>
-        <Report title="Overview" pagination={true} data={subscribedProducts} />
-        <Request title="Requests" label="Pending" data={pendingSubscrbers} />
-        <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} />
+        <Text variant="heading3xl" as="h2" alignment="start">Reports</Text>
+        <Report title="Requests" pagination={true} data={subscribedProducts} />
+        <Request title="Requests" label="Pending" data={pendingSubscrbers} actions={[{ content: 'Send Manually' }, { content: 'Unsubscribe' }]} />
+        <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} actions={[{ content: 'Send Again' }, { content: 'Re-subscribe' }]} />
       </Layout>
     </Page>
   );
