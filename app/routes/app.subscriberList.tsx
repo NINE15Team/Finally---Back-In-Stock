@@ -1,4 +1,3 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
     useLoaderData,
     useRevalidator,
@@ -41,7 +40,7 @@ export default function SubscriberList() {
 
     const onNotifyCustomer = async () => {
         console.log("notify start");
-        const response = await fetch(`/api/notify`, {
+        await fetch(`/api/notify`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -57,7 +56,7 @@ export default function SubscriberList() {
 
     function RenderLink(content: any, productInfoId: any) {
         const handleClick = () => {
-            let productInfo: any = data.filter(d => d.id == productInfoId)[0];
+            let productInfo: any = data.filter((d: any) => d.id == productInfoId)[0];
             setSelectedProductInfo(productInfo)
             shopifyBridge.modal.show('email-list-modal');
         };

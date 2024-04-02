@@ -21,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  let { data, productURL } = useLoaderData<typeof loader>();
+  let { productURL } = useLoaderData<typeof loader>();
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', textAlign: 'center', padding: '20px' }}>
