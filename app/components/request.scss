@@ -77,6 +77,13 @@
     font-weight: 700;
     text-align: left;
   }
+  .Polaris-IndexTable__TableCell:nth-child(2) {
+    padding-left: 15px;
+  }
+  .Polaris-IndexTable__TableHeading:nth-child(2) {
+    text-align: left;
+    padding-left: 15px;
+  }
   &.second-underlined tbody .Polaris-IndexTable__TableCell:nth-child(3) {
     font-weight: 600;
     text-decoration: underline;
