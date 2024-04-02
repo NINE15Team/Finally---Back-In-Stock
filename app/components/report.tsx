@@ -53,7 +53,6 @@ export default function Report({ title, pagination, data }: {
             if (skip == null || isNaN(skip)) {
               skip = 1;
             }
-            console.log(take, skip);
             skip = (skip * take);
             if (isNaN(skip)) {
               skip = 0

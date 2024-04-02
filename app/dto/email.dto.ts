@@ -1,6 +1,5 @@
-import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
-import { ProductInfo } from "~/models/product-info.model";
-import { ProductInfoDTO } from "./product-info.dto";
+import type { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
+import type { ProductInfoDTO } from "./product-info.dto";
 
 export interface EmailDTO {
   id?: number;

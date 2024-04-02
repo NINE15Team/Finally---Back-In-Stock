@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
@@ -11,7 +11,6 @@ import Checklist from "~/components/checklist";
 import NumRequest from "~/components/num-request";
 import Report from "~/components/report";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
-import { useState } from "react";
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -47,9 +46,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const actionData = useActionData<typeof action>();
-  let { initilized, subscribedProducts } = useLoaderData<typeof loader>();
-  const [appInit, setAppInit] = useState(initilized);
+  let { subscribedProducts } = useLoaderData<typeof loader>();
 
 
   return (

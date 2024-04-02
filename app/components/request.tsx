@@ -56,7 +56,6 @@ export default function Request({ title, label, data, type }: {
   const PendingActionList = ({ selectedRow }: { selectedRow: any }) => {
 
     const onSend = () => {
-      console.log("Send Manually", selectedRow);
       const submit = useSubmit();
       const formData = new FormData();
       formData.append("pendingSubscribers", selectedRow);
@@ -64,7 +63,6 @@ export default function Request({ title, label, data, type }: {
       submit(formData, { method: "post" });
     }
     const onUnSubscribe = () => {
-      console.log("Unsubscribe", selectedRow);
     }
     return (<ActionList
       actionRole="menuitem"

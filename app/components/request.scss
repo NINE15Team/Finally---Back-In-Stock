@@ -56,25 +56,29 @@
     &:first-child {
       text-align: left;
     }
-    &:nth-child(2):not(th) {
-      font-weight: 600;
-    }
     &.th {
       font-size: 13px;
       line-height: 20px;
+    }
+  }
+  .Polaris-DataTable__Cell {
+    &:nth-child(2):not(th) {
+      font-weight: 600;
     }
   }
   td.Polaris-DataTable__Cell,
   td.Polaris-IndexTable__TableCell {
     font-size: 15px;
   }
-  tbody th {
+  tbody th, tbody td.Polaris-IndexTable__TableCell:nth-child(2) {
     font-size: 15px;
     line-height: 20px;
     color: #2ea603;
     font-weight: 700;
+    text-align: left;
   }
   &.second-underlined tbody .Polaris-IndexTable__TableCell:nth-child(3) {
+    font-weight: 600;
     text-decoration: underline;
   }
   tbody .Polaris-DataTable__Cell,

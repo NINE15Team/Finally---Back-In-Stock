@@ -1,4 +1,4 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, redirect } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { Layout, Page, Text } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 
@@ -7,7 +7,7 @@ import Request from "~/components/request";
 import { findSubscribedProducts } from "~/services/product-info.service";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers } from "~/services/customer-subscriber.service";
-import { useActionData, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -39,7 +39,7 @@ export default function Index() {
   return (
     <Page>
       <Layout>
-        <Text variant="heading3xl" as="h2" alignment="start">Reports</Text>
+        <Text variant="headingXl" as="h2" alignment="start">Reports</Text>
         <Report title="Requests" pagination={true} data={subscribedProducts} />
         <Request title="Requests" label="Pending" data={pendingSubscrbers} type="pending" />
         <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} type="sent" />

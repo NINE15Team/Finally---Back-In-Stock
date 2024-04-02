@@ -1,4 +1,4 @@
-import { CustomerActivity, ProductInfo } from "@prisma/client";
+import type { CustomerActivity, ProductInfo } from "@prisma/client";
 
 export class NotificationHistory {
     id: number;
