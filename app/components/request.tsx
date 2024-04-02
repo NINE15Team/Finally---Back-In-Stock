@@ -133,33 +133,36 @@ export default function Request({ title, label, data, type }: {
         >
           {rowMarkup}
         </IndexTable>
-        <div className="btnContainer">
-          <ButtonGroup variant="segmented">
-            <div className="my-button">
-              <Button variant="primary">Actions</Button>
-            </div>
+        {rows.length > 0 ?
+          <div className="btnContainer">
+            <ButtonGroup variant="segmented">
+              <div className="my-button">
+                <Button variant="primary">Actions</Button>
+              </div>
 
-            <Popover
-              active={active}
-              preferredAlignment="right"
-              activator={
-                <Button
-                  variant="primary"
-                  onClick={() => toggleActive()}
-                  icon={ChevronDownIcon}
-                  accessibilityLabel="Other save actions"
-                />
-              }
-              autofocusTarget="first-node"
-              onClose={() => toggleActive()}
-            >
-              {type == 'pending' ?
-                <PendingActionList selectedRow={selectedResources} /> :
-                <NotificationSentActionList selectedRow={selectedResources} />
-              }
-            </Popover>
-          </ButtonGroup>
-        </div>
+              <Popover
+                active={active}
+                preferredAlignment="right"
+                activator={
+                  <Button
+                    variant="primary"
+                    onClick={() => toggleActive()}
+                    icon={ChevronDownIcon}
+                    accessibilityLabel="Other save actions"
+                  />
+                }
+                autofocusTarget="first-node"
+                onClose={() => toggleActive()}
+              >
+                {type === 'pending' ? (
+                  <PendingActionList selectedRow={selectedResources} />
+                ) : (
+                  <NotificationSentActionList selectedRow={selectedResources} />
+                )}
+              </Popover>
+            </ButtonGroup>
+          </div>
+          : null}
       </div >
     </>
   );
