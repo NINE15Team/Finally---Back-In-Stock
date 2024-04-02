@@ -1,4 +1,4 @@
-import { BaseDTO } from "./base.dto";
+import type { BaseDTO } from "./base.dto";
 
 export interface NotificationHistoryDTO extends BaseDTO {
     id?: number;

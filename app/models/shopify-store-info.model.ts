@@ -1,4 +1,4 @@
-import { ProductInfo } from './product-info.model';
+import type { ProductInfo } from './product-info.model';
 
 export class ShopifyStoreInfo {
     id: number;
