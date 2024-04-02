@@ -19,6 +19,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
     // await activateWebPixel(admin);
+    let shopInfo: any = await updateStoreInfo(admin);
     await upsertEmail({
       storeId: id,
       shopifyURL: myshopify_domain,
