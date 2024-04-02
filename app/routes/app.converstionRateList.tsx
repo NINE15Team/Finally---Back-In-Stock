@@ -12,15 +12,15 @@ import { DataTable, Page } from "@shopify/polaris";
 import { getYYYMDD } from "~/utils/date.util";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-    let { admin, session } = await authenticate.admin(request);
+    let { admin } = await authenticate.admin(request);
     let shopInfo: any = await getStoreInfoShopify(admin);
     const data = await getConversionRate(shopInfo.myshopify_domain);
     return { data };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-    let { admin, session } = await authenticate.admin(request);
-    let formData = await request.formData();
+    let { admin } = await authenticate.admin(request);
+    await request.formData();
     let shopInfo: any = await getStoreInfoShopify(admin);
     await upsertEmail({
         storeId: shopInfo.id,
@@ -34,7 +34,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
     const { data } = useLoaderData<typeof loader>();
-    const actionData = useActionData<typeof action>();
+    useActionData<typeof action>();
     let { revalidate } = useRevalidator();
     let rows: any = [];
     for (let i = 0; i < data.length; i++) {

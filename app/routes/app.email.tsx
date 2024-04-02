@@ -16,7 +16,7 @@ import { Modal, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
+  let { admin } = await authenticate.admin(request);
   let shop = await getStoreInfoShopify(admin);
   let shopifyURL = shop.myshopify_domain;
   let emailConfig = await findEmailConfigByStoreURL(shopifyURL);
@@ -24,7 +24,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
+  await authenticate.admin(request);
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
   return await saveOrUpdate(obj);

@@ -1,4 +1,5 @@
-import { ActionFunction, LoaderFunction, json } from "@remix-run/node"; // or cloudflare/deno
+import type { ActionFunction, LoaderFunction} from "@remix-run/node";
+import { json } from "@remix-run/node"; // or cloudflare/deno
 import { deleteStoreByURL } from "../services/store-info.service";
 
 export const loader: LoaderFunction = async ({ request }) => {

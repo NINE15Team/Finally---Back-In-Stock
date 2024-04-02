@@ -6,7 +6,7 @@ export default function Checklist() {
   return (
     <>
       <div className="header"> {/* Use classNames for styling */}
-        <Text variant="heading3xl" as="h2">Welcome to Finally!</Text>
+        <Text variant="headingXl" as="h2">Welcome to Finally!</Text>
         <Link url="/app/instructions">View installation guide</Link>
       </div>
       <p className='section-p'>

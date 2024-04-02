@@ -1,5 +1,5 @@
-import { BaseDTO } from "./base.dto";
-import { CustomerSubscriptionDTO } from "./customer-subscription.dto";
+import type { BaseDTO } from "./base.dto";
+import type { CustomerSubscriptionDTO } from "./customer-subscription.dto";
 
 export interface ProductInfoDTO extends BaseDTO {
     id?: number;

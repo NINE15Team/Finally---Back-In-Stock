@@ -1,4 +1,4 @@
-import { BaseDTO } from "./base.dto";
+import type { BaseDTO } from "./base.dto";
 
 export interface CustomerSubscriptionDTO extends BaseDTO {
     id?: number;

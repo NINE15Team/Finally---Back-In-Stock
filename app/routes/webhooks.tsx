@@ -23,7 +23,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       break;
     case "PRODUCTS_UPDATE":
       console.log("_______________-PRODUCTS_UPDATE______________");
-      let result = await upsertProduct(payload, shop);
+      await upsertProduct(payload, shop);
       break;
     case "CUSTOMERS_DATA_REQUEST":
       console.log("CUSTOMERS_DATA_REQUEST", payload);

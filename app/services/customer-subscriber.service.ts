@@ -1,4 +1,4 @@
-import { CustomerSubscription } from "@prisma/client";
+import { CustomerSubscription, Prisma } from "@prisma/client";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
@@ -25,17 +25,20 @@ const findById = async (params: CustomerSubscriptionDTO) => {
 
 
 const findAll = async (params: CustomerSubscriptionDTO) => {
+    let clause = {} as Partial<CustomerSubscription>;
+    if (params.isNotified !== undefined) {
+        clause.isNotified = params.isNotified
+    }
     return await prisma.customerSubscription.findMany({
         skip: params.skip || 0,
         take: params.take || 5,
         where: {
             productInfo: {
-                inStock: params.inStock,
                 store: {
                     shopifyURL: params.shopifyURL
                 }
             },
-            isNotified: params?.isNotified,
+            ...clause
         },
         include: {
             productInfo: {
@@ -129,46 +132,52 @@ const countOfSubscribers = async (storeURL: string) => {
     return count;
 };
 
-const notifyToCustomer = async (subscriberList: CustomerSubscriptionDTO[]) => {
+const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
     let emailInfo = await findEmailConfigByStoreURL(subscriberList[0].shopifyURL);
     for (const subscriber of subscriberList) {
         let sub = await findById(subscriber);
         let uuid = randomUUID();
         let { productInfo } = sub;
-        let resp = await sendEmail({
-            title: `Product Restock ${productInfo.productTitle}`,
-            toEmail: sub?.customerEmail,
-            senderEmail: emailInfo?.senderEmail,
-            subscriberId: sub?.id,
-            bodyContent: emailInfo?.bodyContent,
-            headerContent: emailInfo?.headerContent,
-            footerContent: emailInfo?.footerContent,
-            buttonContent: emailInfo?.buttonContent,
-            shopifyURL: subscriberList[0].shopifyURL,
-            storeName: subscriberList[0].storeName,
-            uuid: uuid,
-            productInfo: {
-                productTitle: productInfo.productTitle,
-                productHandle: productInfo.productHandle,
-                variantId: productInfo.variantId,
-                price: productInfo.price,
-                imageURL: productInfo.imageURL,
-                variantTitle: productInfo.variantTitle
-            }
-        })
-        await setCustomerNotified(sub?.customerEmail!, productInfo.id);
-        console.log(`Notified to ${sub?.customerEmail}`, resp);
-        await saveNotificationHistory({
-            uuid: uuid,
-            noOfNotifications: 1,
-            productInfoId: productInfo.id
-        });
-
+        if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
+            console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
+            return false
+        } else {
+            let resp = await sendEmail({
+                title: `Product Restock ${productInfo.productTitle}`,
+                toEmail: sub?.customerEmail,
+                senderEmail: emailInfo?.senderEmail,
+                subscriberId: sub?.id,
+                bodyContent: emailInfo?.bodyContent,
+                headerContent: emailInfo?.headerContent,
+                footerContent: emailInfo?.footerContent,
+                buttonContent: emailInfo?.buttonContent,
+                shopifyURL: subscriberList[0].shopifyURL,
+                storeName: subscriberList[0].storeName,
+                uuid: uuid,
+                productInfo: {
+                    productTitle: productInfo.productTitle,
+                    productHandle: productInfo.productHandle,
+                    variantId: productInfo.variantId,
+                    price: productInfo.price,
+                    imageURL: productInfo.imageURL,
+                    variantTitle: productInfo.variantTitle
+                }
+            })
+            await setCustomerNotified(sub?.customerEmail!, productInfo.id);
+            console.log(`Notified to ${sub?.customerEmail}`, resp);
+            await saveNotificationHistory({
+                uuid: uuid,
+                noOfNotifications: 1,
+                productInfoId: productInfo.id
+            });
+        }
     }
-
-
+    return subscriberList;
 }
 
+const updateSubscribtionStatus = async (ids: number[], isSubscribed: boolean) => {
+    return await prisma.$executeRaw`UPDATE customer_subscription SET is_subscribed = ${isSubscribed} WHERE id IN (${Prisma.join(ids)})`;
+};
 
 
 export {
@@ -178,5 +187,7 @@ export {
     setCustomerNotified,
     findTotalPotentialRevenue,
     unSubscribeProduct,
-    countOfSubscribers
+    updateSubscribtionStatus,
+    countOfSubscribers,
+    notifyToCustomers
 }
