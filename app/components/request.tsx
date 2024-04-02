@@ -1,17 +1,20 @@
-import { IndexTable, useIndexResourceState, Text } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList } from "@shopify/polaris";
 import './request.scss'
+import { useState } from "react";
+import {ChevronDownIcon} from '@shopify/polaris-icons';
 
-export default function Request({title, label, rows} : {
+export default function Request({title, label, rows, actions} : {
   title: string,
   label: string,
   rows: any[],
+  actions: any[]
 
 }) {
   rows= [
-    [{id: '0ra', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
-    [{id: '0rb', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
-    [{id: '0rc', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
-    [{id: '0rd', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
+    {id: `0ra${label}`, product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'},
+    {id: `0rb${label}`, product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'},
+    {id: `0rc${label}`, product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'},
+    {id: `0rd${label}`, product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'},
   ];
   const resourceName = {
     singular: 'order',
@@ -42,6 +45,12 @@ export default function Request({title, label, rows} : {
     ),
   );
 
+  const [active, setActive] = useState<boolean>(false);
+
+  const toggleActive = () => {
+    setActive(!active);
+  };
+
 
   return (
     <div className="requests-wrapper second-underlined">
@@ -61,7 +70,33 @@ export default function Request({title, label, rows} : {
         >
           {rowMarkup}
         </IndexTable>
+        <div className="btnContainer">
+        <ButtonGroup variant="segmented">
+          <div className="my-button">
+            <Button variant="primary">Actions</Button>
+          </div>
 
+          <Popover
+            active={active}
+            preferredAlignment="right"
+            activator={
+              <Button
+                variant="primary"
+                onClick={() => toggleActive()}
+                icon={ChevronDownIcon}
+                accessibilityLabel="Other save actions"
+              />
+            }
+            autofocusTarget="first-node"
+            onClose={() => toggleActive()}
+          >
+            <ActionList
+              actionRole="menuitem"
+              items={actions}
+            />
+          </Popover>
+        </ButtonGroup>
+        </div>
     </div>
   );
 }

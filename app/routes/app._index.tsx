@@ -1,14 +1,11 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
-  useActionData,
-  useLoaderData,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { countOfSubscribers,  } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
-import { useState } from "react";
 
 import { Layout, Page } from "@shopify/polaris";
 import Checklist from "~/components/checklist";
@@ -18,7 +15,7 @@ import { sumNoOfNotifications } from "~/services/notification-history.service";
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
+  let { admin } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
   let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
@@ -29,7 +26,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       title: name,
       senderEmail: email
     });
-    let shopInfo: any = await updateStoreInfo(admin);
   }
   const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain });
   const totalNotifications = await sumNoOfNotifications(myshopify_domain);
@@ -38,7 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
+  let { admin } = await authenticate.admin(request);
   let shopInfo: any = await updateStoreInfo(admin);
   await upsertEmail({
     storeId: shopInfo.id,
@@ -51,11 +47,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const actionData = useActionData<typeof action>();
-  let { initilized } = useLoaderData<typeof loader>();
-  const [appInit, setAppInit] = useState(initilized);
-
-
   return (
     <Page>
       <Layout>
