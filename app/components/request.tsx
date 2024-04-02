@@ -1,28 +1,23 @@
 import { IndexTable, useIndexResourceState, Text } from "@shopify/polaris";
 import './request.scss'
 
-export default function Request({title, label, rows} : {
-  title: string,
-  label: string,
-  rows: any[],
-
-}) {
-  rows= [
-    [{id: '0ra', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
-    [{id: '0rb', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
-    [{id: '0rc', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
-    [{id: '0rd', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024'}],
+export default function Request({ title, label }: { title: string, label: string }) {
+  let rows = [
+    [{ id: '0ra', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
+    [{ id: '0rb', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
+    [{ id: '0rc', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
+    [{ id: '0rd', product: 'Product Name', email: 'amine@ouahidi.com', date: '1/1/2024' }],
   ];
   const resourceName = {
     singular: 'order',
     plural: 'orders',
   };
 
-  const {selectedResources, allResourcesSelected, handleSelectionChange} = useIndexResourceState(rows);
+  const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
 
   const rowMarkup = rows.map(
     (
-      {id, product, email, date},
+      { id, product, email, date },
       index,
     ) => (
       <IndexTable.Row
@@ -54,13 +49,13 @@ export default function Request({title, label, rows} : {
         }
         onSelectionChange={handleSelectionChange}
         headings={[
-          {title: 'Product'},
-          {title: 'Contact'},
-          {title: 'Request Date'}
+          { title: 'Product' },
+          { title: 'Contact' },
+          { title: 'Request Date' }
         ]}
-        >
-          {rowMarkup}
-        </IndexTable>
+      >
+        {rowMarkup}
+      </IndexTable>
 
     </div>
   );

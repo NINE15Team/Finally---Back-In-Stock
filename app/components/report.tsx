@@ -2,7 +2,7 @@ import { DataTable, Text } from "@shopify/polaris";
 import './request.scss'
 import { useLoaderData } from "@remix-run/react";
 
-export default function Report({title, pagination} : {
+export default function Report({ title, pagination }: {
   title: string,
   pagination: boolean | undefined,
 
@@ -48,7 +48,7 @@ export default function Report({title, pagination} : {
         pagination={pagination ? {
           hasNext: true,
           onNext: () => { },
-      } : undefined}
+        } : undefined}
 
       />
 
