@@ -14,7 +14,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { myshopify_domain }: any = await getStoreInfoShopify(admin);
   const url = new URL(request.url)
   const $skip = Number(url.searchParams.get("skip")) || 0;
-  const $take = Number(url.searchParams.get("take")) || 2;
+  const $take = Number(url.searchParams.get("take")) || 10;
   const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain, take: $take, skip: $skip });
   const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 100, skip: 0 });
   const notifiedSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: true, take: 100, skip: 0 });
