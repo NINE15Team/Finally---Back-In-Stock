@@ -25,11 +25,12 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
+  console.log("Action Called", obj, formData.get('name'));
   if (obj.skip == undefined || isNaN(obj.skip)) {
     obj.skip = 0;
   }
-  console.log("Action Called", obj);
-  return redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;
+  return true;
+  // redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;
 };
 
 
@@ -40,8 +41,8 @@ export default function Index() {
       <Layout>
         <Text variant="heading3xl" as="h2" alignment="start">Reports</Text>
         <Report title="Requests" pagination={true} data={subscribedProducts} />
-        <Request title="Requests" label="Pending" data={pendingSubscrbers} actions={[{ content: 'Send Manually' }, { content: 'Unsubscribe' }]} />
-        <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} actions={[{ content: 'Send Again' }, { content: 'Re-subscribe' }]} />
+        <Request title="Requests" label="Pending" data={pendingSubscrbers} type="pending" />
+        <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} type="sent" />
       </Layout>
     </Page>
   );
