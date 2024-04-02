@@ -1,13 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import {
-  useActionData,
-  useNavigation,
-  useSubmit,
   useLoaderData,
-  useRevalidator,
-  json,
-  Form,
-  ClientActionFunctionArgs,
 } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { findAllSubscribers, findTotalPotentialRevenue } from "../services/customer-subscriber.service";
@@ -16,10 +9,9 @@ import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
 import Instructions from "./app.instructions";
 import SubscriberList from "./app.subscriberList";
-import { useState } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
+  let { admin } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
   if (false && !initilized) {
     await activateWebPixel(admin);
@@ -35,8 +27,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
-  let formData = await request.formData();
+  let { admin } = await authenticate.admin(request);
+  await request.formData();
   let shopInfo: any = await updateStoreInfo(admin);
   await upsertEmail({
     storeId: shopInfo.id,
@@ -49,9 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  const actionData = useActionData<typeof action>();
   let { initilized } = useLoaderData<typeof loader>();
-  const [appInit, setAppInit] = useState(initilized);
   const renderContent = () => {
     if (initilized) {
       return <SubscriberList />;

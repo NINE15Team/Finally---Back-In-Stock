@@ -1,4 +1,4 @@
-import { CustomerSubscription, NotificationHistory, ProductInfo, ShopifyStoreInfo } from "@prisma/client";
+import type { ProductInfo, ShopifyStoreInfo } from "@prisma/client";
 
 export class CustomerActivity {
     id?: number = 0;

@@ -1,7 +1,6 @@
 import { DataTable, Text } from "@shopify/polaris";
 import './request.scss'
-import { useParams, useSearchParams, useSubmit } from "@remix-run/react";
-import { useLoaderData } from "@remix-run/react";
+import { useSearchParams, useSubmit } from "@remix-run/react";
 
 export default function Report({ title, pagination, data }: {
   title: string,
@@ -54,7 +53,6 @@ export default function Report({ title, pagination, data }: {
             if (skip == null || isNaN(skip)) {
               skip = 1;
             }
-            console.log(take, skip);
             skip = (skip * take);
             if (isNaN(skip)) {
               skip = 0

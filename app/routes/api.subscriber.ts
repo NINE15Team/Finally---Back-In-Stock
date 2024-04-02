@@ -1,7 +1,8 @@
-import { ActionFunction, json, LoaderFunction } from "@remix-run/node"; // or cloudflare/deno
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
-import { CustomerSubscriptionDTO } from "../dto/customer-subscription.dto";
+import type { CustomerSubscriptionDTO } from "../dto/customer-subscription.dto";
 
 export const loader: LoaderFunction = async ({ request }) => {
     return json(
@@ -21,7 +22,7 @@ export const action: ActionFunction = async ({ request }) => {
         console.log("****************Check If Product Exist");
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
         if (!isProductExist) {
-            let result = await addProductInfo(requstBody);
+            await addProductInfo(requstBody);
             console.log(`New Product ${requstBody.productTitle} - ${requstBody.variantTitle} aded`)
         }
         console.log("Finding Product By Variant Id");
@@ -30,11 +31,11 @@ export const action: ActionFunction = async ({ request }) => {
             customerEmail: requstBody.email,
             isNotified: false,
             isActive: false,
-            productInfoId: productInfo?.id!,
+            productInfoId: productInfo?.id,
         };
 
         console.log("Add to subscription", requstBody.email);
-        let result = await subscribeProduct(subscribeItem);
+        await subscribeProduct(subscribeItem);
         return json(
             { status: true },
             {
