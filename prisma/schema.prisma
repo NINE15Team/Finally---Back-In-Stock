@@ -44,13 +44,13 @@ model ProductInfo {
   variantId            BigInt                 @map("variant_id")
   variantTitle         String                 @default("Default Variant") @map("variant_title") @db.VarChar(50)
   status               Boolean                @default(false)
-  isActive             Boolean                @default(true)
+  isActive             Boolean                @default(true) @map("is_active")
   productHandle        String                 @map("product_handle") @db.VarChar(50)
   imageURL             String                 @default("Default Variant") @map("image_url")
   price                Float                  @default(0) @map("price")
   customerSubscription CustomerSubscription[]
   store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id], onDelete: Cascade)
-  inStock              Boolean                @default(false)
+  inStock              Boolean                @default(false) @map("in_stock")
   createdAt            DateTime               @default(now()) @map("created_at")
   updatedAt            DateTime               @default(now()) @updatedAt @map("updated_at")
   NotificationHistory  NotificationHistory[]
@@ -67,7 +67,7 @@ model CustomerSubscription {
   status        Boolean     @default(false) @map("status")
   isNotified    Boolean     @default(false) @map("is_notified")
   isSubscribed  Boolean     @default(true) @map("is_subscribed")
-  isActive      Boolean     @default(true)
+  isActive      Boolean     @default(true) @map("is_active")
   productInfo   ProductInfo @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now()) @map("created_at")
   updatedAt     DateTime    @default(now()) @updatedAt @map("updated_at")
@@ -91,7 +91,7 @@ model EmailConfiguartion {
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @default(now()) @updatedAt @map("updated_at")
 
-  @@map("email_configuartion")
+  @@map("email_configuration")
 }
 
 model NotificationHistory {

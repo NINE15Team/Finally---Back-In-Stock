@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+    show-sql: true
+
+email:
+  sendgrid:
+    api-url: 'https://api.sendgrid.com/v3'
+    api-key: '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'
+
+
+app:
+  url: "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com"
+  aes-secret-key: "password"
