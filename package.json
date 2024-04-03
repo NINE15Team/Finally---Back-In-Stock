@@ -28,7 +28,9 @@
     "vite": "vite",
     "logs:dev": "heroku logs --tail -a finally-back-in-stock-dev",
     "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev",
-    "logs:live": "heroku logs --tail -a finally-back-in-stock --ps web"
+    "logs:live:web": "heroku logs --tail -a finally-back-in-stock --ps web",
+    "logs:live:worker": "heroku logs --tail -a finally-back-in-stock --ps worker",
+    "bash:live:worker": "heroku run bash --app finally-back-in-stock --type=worker"
   },
   "type": "module",
   "dependencies": {
