@@ -1,2 +1,1 @@
-web: npm start
-worker: java -jar build/libs/finall-bis-cron.jar
+web: java -jar target/myapp-1.0.0.jar
