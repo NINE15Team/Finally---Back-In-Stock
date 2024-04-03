@@ -1,28 +1,16 @@
-import { Link, Text, Card } from '@shopify/polaris';
+import { Text } from '@shopify/polaris';
 import CustomCheckBox from './checkbox';
-import './Checklist.scss'; // Import the Sass file
 
 export default function Checklist() {
   return (
-    <>
-      <div className="header"> {/* Use classNames for styling */}
-        <Text variant="headingXl" as="h2">Welcome to Finally!</Text>
-        <Link url="/app/instructions">View installation guide</Link>
+    <div className='b-section checklist'>
+      <div className='full-width'>
+        <Text as='h2'>Checklist</Text>
       </div>
-      <p className='section-p'>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu.
-      </p>
-      <div className='checklist'>
-        <Card roundedAbove="xs" padding={'800'}>
-          <Text as="h3" variant="bodyMd">Checklist</Text>
-          <div className="checkbox-wrapper"> {/* Use classNames for styling */}
-            <CustomCheckBox label="Install the Finally! back in stock notification widget." />
-            <CustomCheckBox label="View and test the Finally! back in stock notification widget." />
-            <CustomCheckBox label="Install the Finally! back in stock notification widget." />
-            <CustomCheckBox label="Install the Finally! back in stock notification widget." />
-          </div>
-        </Card>
-      </div>
-    </>
+      <CustomCheckBox title="Widget configuration" description="Make sure you install and configure the Finally! widget on the product details page." />
+      <CustomCheckBox title="Email notification" description="Review and customize the email notification that gets sent to your customers when the products they are interested in are back in stock. " />
+      <CustomCheckBox title="Test your setup" description="Test and request to receive a notification when a product is back in stock, modify the stock or send a request manually to test what your customer’s experience would look like. " />
+      <CustomCheckBox title="Share your thoughts" description="Have questions? Comments? Or suggestions? We would love to hear for you. " />
+    </div>
   );
 }

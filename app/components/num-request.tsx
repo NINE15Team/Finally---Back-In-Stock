@@ -1,5 +1,4 @@
 import { Card, Text } from "@shopify/polaris";
-import './num-request.scss'
 import { useLoaderData } from "@remix-run/react";
 
 export default function NumRequest() {
@@ -7,15 +6,15 @@ export default function NumRequest() {
   let { totalNotifications, newSubscribers } = useLoaderData<any>();
 
   return (
-    <div className="num-wrapper">
+    <div className="b-section full-width num-wrapper">
       <Card roundedAbove="xs" padding={'800'}>
         <div>
-          <p>New Requests</p>
-          <Text as="h2" variant="bodyMd">{newSubscribers || 0}</Text>
+          <Text as="p">New Requests</Text>
+          <Text as="h1" variant="bodyMd">{newSubscribers || 0}</Text>
         </div>
         <div>
-          <p>Notification</p>
-          <Text as="h2" variant="bodyMd">{totalNotifications || 0}</Text>
+          <Text as="p">Sent Notifications</Text>
+          <Text as="h1" variant="bodyMd">{totalNotifications || 0}</Text>
         </div>
       </Card>
     </div>

@@ -1,36 +1,19 @@
 .requests-wrapper {
-  width: 100%;
-  margin-top: 24px;
-  margin-bottom: 40px;
-  h3 {
-    margin-top: 28px;
+  h2 {
     margin-bottom: 24px;
-    font-size: 20px;
-    line-height: 36px;
-    font-weight: 700;
-    span {
-      font-size: 20px;
-      line-height: 36px;
-      font-weight: 400;
-      font-style: italic;
-    }
   }
-  .Polaris-DataTable__Cell--header,
-  .Polaris-IndexTable__TableHeading {
+  .Polaris-DataTable__Cell--header {
     color: var(--p-color-text);
     border-bottom: var(--p-border-width-025) solid var(--p-color-border);
     border-top: 0;
     background: #fafbfb;
-    padding: 20px 0;
     text-align: center;
     span.Polaris-Text--root {
       font-size: 13px;
       line-height: 20px;
     }
   }
-  .Polaris-DataTable__Table,
-  .Polaris-IndexTable__Table {
-    padding: 24px 27px;
+  .Polaris-DataTable__Table {
     border-radius: 5px;
     border-collapse: initial;
     border-width: 0;
@@ -38,77 +21,42 @@
     background-color: var(--p-color-bg-surface);
   }
   .Polaris-DataTable__Cell {
-    width: 25%;
-  }
-  .Polaris-IndexTable__TableCell:not(:first-child) {
-    width: 30%;
-  }
-  .Polaris-DataTable__Cell,
-  .Polaris-IndexTable__TableCell {
     text-align: center;
-    padding: 20px 0;
-
-    &:last-child {
-      text-align: right;
-      padding-right: 60px;
-    }
-
+    padding: 8px;
+    width: 20%;
     &:first-child {
+      width: 40%;
       text-align: left;
     }
-    &.th {
-      font-size: 13px;
-      line-height: 20px;
+    &:last-child {
+      text-align: right;
     }
-  }
-  .Polaris-DataTable__Cell {
     &:nth-child(2):not(th) {
       font-weight: 600;
     }
   }
-  td.Polaris-DataTable__Cell,
-  td.Polaris-IndexTable__TableCell {
-    font-size: 15px;
-  }
-  tbody th, tbody td.Polaris-IndexTable__TableCell:nth-child(2) {
-    font-size: 15px;
-    line-height: 20px;
-    color: #2ea603;
-    font-weight: 700;
-    text-align: left;
-  }
-  .Polaris-IndexTable__TableCell:nth-child(2) {
-    padding-left: 15px;
-  }
-  .Polaris-IndexTable__TableHeading:nth-child(2) {
-    text-align: left;
-    padding-left: 15px;
-  }
-  &.second-underlined tbody .Polaris-IndexTable__TableCell:nth-child(3) {
+  thead .Polaris-DataTable__Cell {
+    padding: 8px 6px;
+    font-size: 12px;
+    color: #616161;
+    line-height: 16px;
     font-weight: 600;
-    text-decoration: underline;
   }
-  tbody .Polaris-DataTable__Cell,
-  .Polaris-IndexTable__TableCell {
+  td.Polaris-DataTable__Cell {
+    font-size: 13px;
+  }
+  tbody .Polaris-DataTable__Cell {
     border-top: var(--p-border-width-025) solid var(--p-color-border-secondary);
   }
-  .btnContainer {
-    width: fit-content;
-    margin: 40px auto 0;
-    padding: 14px;
-    background: #000;
-    border-radius: 15px;
-    .Polaris-ButtonGroup button {
-      border: none;
-      border-radius: 0;
-      background: transparent;
-      outline: none;
-      box-shadow: none;
-    }
-    .Polaris-ButtonGroup--variantSegmented {
-      border: 1px solid gray;
-      padding: 2px;
-      border-radius: 9px;
+  .row-image-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    img {
+      width: 40px;
+      display: block;
+      object-fit: cover;
+      height: auto;
     }
   }
 }
