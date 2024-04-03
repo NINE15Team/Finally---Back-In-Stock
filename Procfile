@@ -1,2 +1,2 @@
 web: npm start
-worker: java -jar build/libs/worker-all.jar
+worker: java -jar build/libs/finall-bis-cron.jar
