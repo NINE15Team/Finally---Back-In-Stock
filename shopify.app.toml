@@ -2,7 +2,7 @@
 
 client_id = "de0f56b0104cb0768f7a45702a92cc91"
 name = "Finally Back In Stock"
-application_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com/"
+application_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com"
 embedded = true
 
 [build]
