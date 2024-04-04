@@ -1,4 +1,4 @@
-const API_URL = "https://exactly-liver-salary-invoice.trycloudflare.com";
+const API_URL = "https://lock-monte-isolated-blue.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -15,7 +15,6 @@ class BackInStock extends HTMLElement {
   }
 
   initializeListeners() {
-    console.log(this.productInstance, this.hasVariantSelectElm());
     if (this.hasVariantSelectElm()) {
       let prodInstance = this.productInstance;
       let $form = this.form;

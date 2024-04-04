@@ -1,8 +1,8 @@
-import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList, Toast, IndexFilters, IndexFiltersProps, useSetIndexFiltersMode } from "@shopify/polaris";
+import type { IndexFiltersProps} from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode } from "@shopify/polaris";
 import { useCallback, useState } from "react";
-import { ChevronDownIcon } from '@shopify/polaris-icons';
 import { useActionData, useSubmit } from "@remix-run/react";
-import { TitleBar, useAppBridge, Modal } from "@shopify/app-bridge-react";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import './request.scss'
 
 export default function Request({ title, data, type }: {
@@ -54,14 +54,13 @@ export default function Request({ title, data, type }: {
 
   let rows = [] as any;
   data.forEach((elm: any) => {
-    console.log(elm);
-
     rows.push({
       id: elm.id,
       product: elm?.productInfo.productTitle,
       imageURL: elm?.productInfo.imageURL,
       email: elm?.customerEmail,
-      date: new Intl.DateTimeFormat('en-US', options).format(new Date(elm?.updatedAt))
+      date: new Intl.DateTimeFormat('en-US', options).format(new Date(elm?.updatedAt)),
+      vendor: elm?.productInfo.vendor
     })
   });
 
@@ -77,10 +76,8 @@ export default function Request({ title, data, type }: {
   }
 
 
-  // console.log(rows);
-
   const rowMarkup = rows.map(
-    ({ id, product, email, date, imageURL }: { id: any, product: any, email: any, date: any, imageURL: any }, index: any) => (
+    ({ id, product, email, date, imageURL, vendor }: { id: any, product: any, email: any, date: any, imageURL: any, vendor: any }, index: any) => (
       <IndexTable.Row
         id={id}
         key={id}
@@ -92,7 +89,7 @@ export default function Request({ title, data, type }: {
         </IndexTable.Cell>
         <IndexTable.Cell>{email}</IndexTable.Cell>
         <IndexTable.Cell>{date}</IndexTable.Cell>
-        <IndexTable.Cell>{'Vendor'}</IndexTable.Cell>
+        <IndexTable.Cell>{vendor}</IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
