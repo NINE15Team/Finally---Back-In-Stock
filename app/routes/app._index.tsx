@@ -3,7 +3,7 @@ import { authenticate } from "../shopify.server";
 import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
 import '../components/base.scss';
 
 import { Layout, Page } from "@shopify/polaris";
@@ -16,8 +16,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let initilized = await isInitilized(admin);
   let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
+    await activateWebPixel(admin);
     await updateStoreInfo(admin);
     await upsertEmail({
+      headerContent: 'Good News!',
+      bodyContent: 'Your product is back in stock and now available.',
+      footerContent: `If you have any questions, please feel free to ask by emailing ${email}`,
+      buttonContent: 'CHECKOUT NOW',
       storeId: id,
       shopifyURL: myshopify_domain,
       title: name,
@@ -39,7 +44,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     title: shopInfo.name,
     senderEmail: shopInfo.email
   });
-  // await activateWebPixel(admin);
   return await isInitilized(admin);
 };
 

@@ -58,7 +58,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
   }
   let token = EncryptionUtil.encrypt(JSON.stringify({ sid: email.subscriberId }), AES_SECRET_KEY);
   let unsubscribeLink = `${SHOPIFY_APP_URL}/public/unsubscribe?token=${token}`;
-  let productURL = `${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}&fbis=${email.uuid}`;
+  let productURL = `${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}&fbis=${email.uuid}&email=${email.senderEmail}`;
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
