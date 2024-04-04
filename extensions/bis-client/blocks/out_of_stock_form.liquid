@@ -24,6 +24,9 @@
 <script type="application/json" id="bis-product-json">
   {{ product | json }}
 </script>
+<script>
+  console.log({{ product | json }})
+</script>
 <back-in-stock
   data-store="{{ shop.permanent_domain }}"
   data-product-id="{{ product.id }}"
@@ -31,6 +34,7 @@
   data-product-title="{{ product.title }}"
   data-variant-id="{{ product.selected_or_first_available_variant.id }}"
   data-variant-title="{{ product.selected_or_first_available_variant.title }}"
+  data-vendor="{{ product.vendor }}"
   id="{{ block.id }}"
 >
   <form

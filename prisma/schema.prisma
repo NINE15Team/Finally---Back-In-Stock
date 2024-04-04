@@ -48,6 +48,7 @@ model ProductInfo {
   productHandle        String                 @map("product_handle") @db.VarChar(50)
   imageURL             String                 @default("Default Variant") @map("image_url")
   price                Float                  @default(0) @map("price")
+  vendor               String                 @default("")
   customerSubscription CustomerSubscription[]
   store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   inStock              Boolean                @default(false) @map("in_stock")

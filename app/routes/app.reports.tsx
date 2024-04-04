@@ -1,4 +1,5 @@
-import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
+import { json, redirect } from "@remix-run/node";
 import { Layout, Page, Text, Link } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 
@@ -18,7 +19,6 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain, take: $take, skip: $skip });
   const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 100, skip: 0 });
   const notifiedSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: true, take: 100, skip: 0 });
-  console.log("loader Called");
   return { subscribedProducts, pendingSubscrbers, notifiedSubscrbers, shopifyURL: myshopify_domain };
 };
 
@@ -29,26 +29,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   let obj = Object.fromEntries(formData) as any;
   if (formData.get('name') == 'SEND_EMAIL') {
     let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
-    console.log(formData.get('name'), ids);
     await notifyToCustomers(ids);
     return json({ 'action': 'send_email', status: true });
 
   } else if (formData.get('name') == 'UNSUBSCRIBE') {
 
     let ids = obj['ids'].split(',').map((Number));
-    console.log(formData.get('name'), ids);
     await updateSubscribtionStatus(ids, false);
     return json({ 'action': 'unsubscribe', status: true });
 
   } else if (formData.get('name') == 'SUBSCRIBE') {
 
     let ids = obj['ids'].split(',').map((Number));
-    console.log(formData.get('name'), ids);
     await updateSubscribtionStatus(ids, true);
     return json({ 'action': 'subscribe', status: true });
 
   } else {
-    console.log("Action Called", obj, formData.get('name'));
     if (obj.skip == undefined || isNaN(obj.skip)) {
       obj.skip = 0;
     }
@@ -59,7 +55,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 
 export default function Index() {
-  let { pendingSubscrbers, notifiedSubscrbers, subscribedProducts } = useLoaderData<typeof loader>();
+  let { pendingSubscrbers, notifiedSubscrbers } = useLoaderData<typeof loader>();
   return (
     <Page>
       <Layout>
@@ -73,7 +69,7 @@ export default function Index() {
         </div>
       </div>
         <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
-        <Request title="Requests" data={notifiedSubscrbers} type="sent" />
+        <Request title="Sent Requests" data={notifiedSubscrbers} type="sent" />
       </Layout>
     </Page>
   );

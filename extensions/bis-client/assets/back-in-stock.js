@@ -1,4 +1,4 @@
-const API_URL = "https://performances-friendship-herald-conclusions.trycloudflare.com";
+const API_URL = "https://lock-monte-isolated-blue.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -9,12 +9,12 @@ class BackInStock extends HTMLElement {
     this.productHandle = this.dataset.productHandle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
+    this.vendor = this.dataset.vendor;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
     this.initializeListeners();
   }
 
   initializeListeners() {
-    console.log(this.productInstance, this.hasVariantSelectElm());
     if (this.hasVariantSelectElm()) {
       let prodInstance = this.productInstance;
       let $form = this.form;
@@ -50,6 +50,7 @@ class BackInStock extends HTMLElement {
           productTitle: this.productTitle,
           variantId: variantId,
           imageURL: this.productInstance.featured_image,
+          vendor: this.vendor,
           price: Number(this.getVariant(variantId).price)/100,
           variantTitle: this.getVariant(variantId).title,
           email: formData.get("email")

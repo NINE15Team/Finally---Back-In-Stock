@@ -12,7 +12,6 @@ export default function Report({ title, pagination, data }: {
   const [searchParams] = useSearchParams();
   const rows: any = [];
   data.forEach(prodInfo => {
-    console.log(prodInfo);
     rows.push([
       ImageTitle(prodInfo.imageURL, prodInfo.productTitle),
       BoldText(prodInfo.customerSubscription?.length),

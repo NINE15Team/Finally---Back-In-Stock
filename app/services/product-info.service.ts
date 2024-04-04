@@ -1,8 +1,6 @@
 import prisma from "~/db.server";
 import { findStoreByURL } from "../services/store-info.service";
-import { ProductInfoDTO } from "~/dto/product-info.dto";
-import { createAdminApiClient } from '@shopify/admin-api-client';
-import { authenticate } from "../shopify.server";
+import type { ProductInfoDTO } from "~/dto/product-info.dto";
 import { parsePrice } from "~/utils/app.util";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
@@ -94,6 +92,7 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             variantTitle: prodInfo.variantTitle,
             imageURL: prodInfo.imageURL,
             price: parsePrice(prodInfo.price),
+            vendor: prodInfo.vendor,
             status: true,
             inStock: false,
             updatedAt: new Date(),
@@ -106,6 +105,7 @@ const addProductInfo = async (prodInfo: ProductInfoDTO) => {
             variantId: prodInfo.variantId!,
             variantTitle: prodInfo.variantTitle!,
             imageURL: prodInfo.imageURL,
+            vendor: prodInfo.vendor,
             price: parsePrice(prodInfo.price),
             status: true,
             inStock: false,
@@ -134,6 +134,7 @@ const upsertProduct = async (req: any, store: string) => {
                 variantTitle: elm.title,
                 price: parsePrice(elm.price),
                 imageURL: req.image?.src,
+                vendor: req.vendor,
                 status: true,
                 inStock: elm.inventory_quantity > 0 ? true : false,
                 createdAt: new Date(),
@@ -156,6 +157,7 @@ const upsertProduct = async (req: any, store: string) => {
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
                 price: parsePrice(elm.price),
+                vendor: elm.vendor,
                 status: true,
                 inStock: elm.inStock,
                 updatedAt: new Date(),
@@ -186,30 +188,6 @@ const upsertProduct = async (req: any, store: string) => {
     })
     return prodcutInfos;
 };
-
-const findProductByIdShopify = async (request: Request) => {
-    let { session } = await authenticate.admin(request);
-    const client = createAdminApiClient({
-        storeDomain: session.shop,
-        apiVersion: '2024-01',
-        accessToken: session.accessToken,
-    });
-    const operation = `
-      query ProductQuery($id: ID!) {
-        product(id: $id) {
-          id
-          title
-          handle
-        }
-      }
-    `;
-    const { data, errors, extensions } = await client.request(operation, {
-        variables: {
-            id: 'gid://shopify/Product/8339514851618',
-        },
-    });
-    return data;
-}
 
 export {
     findAll as findAllProducts,
