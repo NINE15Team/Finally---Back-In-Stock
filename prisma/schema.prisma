@@ -114,6 +114,7 @@ model CustomerActivity {
   productInfoId         Int                 @map("product_info_id")
   browserTrackId        String              @map("browser_track_id")
   notificationHistoryId Int                 @map("notification_history_id")
+  customerEmail         String              @default("") @map("customer_email")
   createdAt             DateTime            @default(now()) @map("created_at")
   updatedAt             DateTime            @default(now()) @updatedAt @map("updated_at")
   store                 ShopifyStoreInfo    @relation(fields: [storeId], references: [id], onDelete: Cascade)

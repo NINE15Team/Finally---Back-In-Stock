@@ -6,6 +6,7 @@ export class CustomerActivity {
     productInfo: ProductInfo;
     store: ShopifyStoreInfo;
     browserTrackId: string;
+    customerEmail: string;
     createdAt: Date;
     updatedAt: Date;
 
@@ -15,6 +16,7 @@ export class CustomerActivity {
         productInfo: ProductInfo,
         store: ShopifyStoreInfo,
         browserTrackId: string,
+        customerEmail: string,
         createdAt: Date,
         updatedAt: Date
     ) {
@@ -23,6 +25,7 @@ export class CustomerActivity {
         this.productInfo = productInfo;
         this.store = store;
         this.browserTrackId = browserTrackId;
+        this.customerEmail = customerEmail;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

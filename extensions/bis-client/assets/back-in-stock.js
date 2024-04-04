@@ -1,4 +1,4 @@
-const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
+const API_URL = "https://performances-friendship-herald-conclusions.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();

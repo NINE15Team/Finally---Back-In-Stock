@@ -56,6 +56,7 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
             notificationHistoryId: notificationHistory?.id!,
             productInfoId: productInfo?.id!,
             storeId: storeInfo?.id!,
+            customerEmail: activity.customerEmail,
             updatedAt: new Date(),
             createdAt: new Date(),
         } as CustomerActivity);
@@ -66,5 +67,22 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
     })
 };
 
+const findAll = async (customerActivity: CustomerActivityDTO) => {
+    const storeInfo = await findStoreByURL(customerActivity.shopifyURL);
+    return await prisma.customerActivity.findMany({
+        skip: customerActivity.skip || 0,
+        take: customerActivity.take || 10,
+        where: {
+            store: {
+                id: storeInfo?.id
+            },
+        },
+        include: {
+            productInfo: {
 
-export { save as saveCustomerActivity, saveAll as saveCustomerActivities }
+            }
+        }
+    })
+};
+
+export { save as saveCustomerActivity, saveAll as saveCustomerActivities, findAll as findAllActivities }

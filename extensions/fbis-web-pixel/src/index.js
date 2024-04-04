@@ -1,16 +1,15 @@
 import { register } from "@shopify/web-pixels-extension";
 
-const API_URL = "https://finally-back-in-stock-dev-2db9466211f6.herokuapp.com";
+const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
 
 register(({ configuration, analytics, browser, init }) => {
 
   analytics.subscribe('product_viewed', async (event) => {
-    console.log('i am changed', init, browser);
     let uuid = getParamVal(init.context.document.location.search, "fbis");
-    console.log(uuid)
+    let email = getParamVal(init.context.document.location.search, "email");
+    console.log(uuid,email)
     if (uuid) {
-      console.log('demo', event, isCookieExist(`${uuid}_view`));
-      if (!isCookieExist(`${uuid}_view`)) {
+      if (!isCookieExist(`${uuid}_view`) || true) {
         let variantId = event.data.productVariant.id;
         let productId = event.data.productVariant.product.id;
         const response = await fetch(`${API_URL}/api/customer_activity`, {
@@ -20,12 +19,14 @@ register(({ configuration, analytics, browser, init }) => {
             variantId: variantId,
             shopifyURL: location.host,
             uuid: uuid,
+            customerEmail:email,
             browserTrackId: event.clientId,
             status: 'view'
           }]),
         }).then(r => r.json());
         if (response.success) {
           setCookie(`${uuid}_view`, variantId, 30);
+          setCookie(`${uuid}_view_email`, email, 30);
           setCookie(variantId, uuid);
           captureActivity(event.clientId, 'fbis_viewed', productId, variantId, uuid);
         } else {
@@ -35,8 +36,9 @@ register(({ configuration, analytics, browser, init }) => {
         console.log("View!!")
       }
     }
-
+  
   });
+  
 
   analytics.subscribe('product_added_to_cart', async (event) => {
     console.log(event);
@@ -44,6 +46,7 @@ register(({ configuration, analytics, browser, init }) => {
     let productId = event.data.cartLine.merchandise.product.id;
     let uuid = getCookie(variantId);
     let targetVariant = getCookie(`${uuid}_view`);
+    let email =  setCookie(`${uuid}_view_email`);
     if (uuid && !isCookieExist(`${uuid}_cart`) && targetVariant == variantId) {
       const response = await fetch(`${API_URL}/api/customer_activity`, {
         method: "POST",
@@ -53,12 +56,13 @@ register(({ configuration, analytics, browser, init }) => {
           shopifyURL: location.host,
           uuid: uuid,
           browserTrackId: event.clientId,
+          email:email,
           status: 'add_to_cart'
         }]),
       }).then(r => r.json());
       if (response.success) {
         setCookie(`${uuid}_cart`, variantId, 30);
-        captureActivity(event.clientId, 'fbis_added_to_cart', productId, variantId, uuid);
+        captureActivity(event.clientId, 'fbis_added_to_cart', productId, variantId, uuid,email);
       } else {
         console.error(response.message);
       }
@@ -66,7 +70,7 @@ register(({ configuration, analytics, browser, init }) => {
       console.log("Add to Cart!!")
     }
   });
-
+  
   analytics.subscribe('product_removed_from_cart', (event) => {
     console.log('Product Removed!!', event);
   });
@@ -94,7 +98,7 @@ register(({ configuration, analytics, browser, init }) => {
     }
     console.log(event);
   });
-
+  
   function getParamVal(queryString, key) {
     const pairs = queryString.substring(1).split('&');
     const params = {};
