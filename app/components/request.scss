@@ -13,9 +13,13 @@
       line-height: 20px;
     }
   }
-  .Polaris-DataTable__Table {
+  .Polaris-IndexTable-ScrollContainer {
     border-radius: 5px;
-    border-collapse: initial;
+  }
+  .Polaris-DataTable__Table,
+  .Polaris-IndexTable__Table {
+    border-radius: 5px;
+    border-collapse: collapse;
     border-width: 0;
     border-spacing: 0;
     background-color: var(--p-color-bg-surface);
@@ -42,6 +46,10 @@
     line-height: 16px;
     font-weight: 600;
   }
+  td.Polaris-IndexTable__TableCell:not(:first-child) {
+    width: 20%;
+    padding: 8px;
+  }
   td.Polaris-DataTable__Cell {
     font-size: 13px;
   }
@@ -52,11 +60,18 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    img {
+    .image-container {
       width: 40px;
-      display: block;
-      object-fit: cover;
-      height: auto;
+      height: 40px;
+      img {
+        width: 40px;
+        display: block;
+        object-fit: cover;
+        height: 40px;
+      }
     }
+  }
+  div:has(.Polaris-Pagination__TablePaginationActions) {
+    justify-content: end;
   }
 }

@@ -13,8 +13,8 @@ export default function HomeBanner() {
     <>
       <div className='b-section'>
         <div className="header">
-          <Text variant="headingXl" as="h1">Dashboard</Text>
-          <Link url="/app/instructions">View installation guide</Link>
+          <Text variant="headingXl" as="h1">Reports</Text>
+          <Link url="/app/instructions">Use this page to navigate through different reports.</Link>
         </div>
         <div className='full-width'>
           <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>

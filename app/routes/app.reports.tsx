@@ -1,13 +1,13 @@
 import { ActionFunctionArgs, LoaderFunctionArgs, json, redirect } from "@remix-run/node";
-import { Layout, Page, Text } from "@shopify/polaris";
+import { Layout, Page, Text, Link } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 
-import Report from "~/components/report";
 import Request from "~/components/request";
 import { findSubscribedProducts } from "~/services/product-info.service";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { useLoaderData } from "@remix-run/react";
+import '../components/base.scss';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -63,10 +63,17 @@ export default function Index() {
   return (
     <Page>
       <Layout>
-        <Text variant="headingXl" as="h2" alignment="start">Reports</Text>
-        {/* <Report title="Requests" pagination={true} data={subscribedProducts} /> */}
-        {/* <Request title="Requests" label="Pending" data={pendingSubscrbers} type="pending" /> */}
-        {/* <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} type="sent" /> */}
+      <div className='b-section'>
+        <div className="header">
+          <Text variant="headingXl" as="h1">Dashboard</Text>
+          <Link url="/app/instructions">View installation guide</Link>
+        </div>
+        <div className='full-width'>
+          <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
+        </div>
+      </div>
+        <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
+        <Request title="Requests" data={notifiedSubscrbers} type="sent" />
       </Layout>
     </Page>
   );
