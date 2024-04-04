@@ -1,5 +1,4 @@
-import { DataTable, Text } from "@shopify/polaris";
-import './request.scss'
+import { Box, DataTable, Layout, Text } from "@shopify/polaris";
 import { useSearchParams, useSubmit } from "@remix-run/react";
 
 export default function Report({ title, pagination, data }: {
@@ -38,8 +37,11 @@ export default function Report({ title, pagination, data }: {
   }
 
   return (
-    <div className="requests-wrapper full-width b-section">
-      <Text as="h2" variant="bodyMd">{title}</Text>
+    <Layout.Section>
+      <Box paddingBlockStart="800" paddingBlockEnd="800">
+        <Text variant='headingLg' as='h2'>{title}</Text>
+      </Box>
+      <Box paddingBlockEnd="2000">
         <DataTable
           columnContentTypes={[
             'text',
@@ -74,6 +76,7 @@ export default function Report({ title, pagination, data }: {
           } : undefined}
 
         />
-    </div>
+      </Box>
+    </Layout.Section>
   );
 }

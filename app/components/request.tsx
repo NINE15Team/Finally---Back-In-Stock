@@ -3,7 +3,6 @@ import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useS
 import { useCallback, useState } from "react";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import './request.scss'
 
 export default function Request({ title, data, type }: {
   title: string,

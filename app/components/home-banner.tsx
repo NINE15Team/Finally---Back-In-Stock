@@ -1,5 +1,4 @@
-import { Text, Link } from '@shopify/polaris';
-import '../components/home.scss';
+import { Text, Link, Layout, InlineStack } from '@shopify/polaris';
 import { useLoaderData } from "@remix-run/react";
 import NumRequest from './num-request';
 import NoRequest from './no_request';
@@ -11,15 +10,17 @@ export default function HomeBanner() {
   const isRequested = totalNotifications || newSubscribers;
   return (
     <>
-      <div className='b-section'>
-        <div className="header">
-          <Text variant="headingXl" as="h1">Reports</Text>
-          <Link url="/app/instructions">Use this page to navigate through different reports.</Link>
-        </div>
-        <div className='full-width'>
+      <Layout.Section>
+        <InlineStack align='space-between'>
+          <Text variant="heading2xl" as="h1">Dashboard</Text>
+          <div style={{color: '#005BD3'}}>
+            <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
+          </div>
+        </InlineStack>
+        <div style={{marginBottom: "32px"}}>
           <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
         </div>
-      </div>
+      </Layout.Section>
       {isRequested ?
         <>
           <NumRequest />

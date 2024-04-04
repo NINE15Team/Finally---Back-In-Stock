@@ -8,7 +8,6 @@ import { findSubscribedProducts } from "~/services/product-info.service";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { useLoaderData } from "@remix-run/react";
-import '../components/base.scss';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
