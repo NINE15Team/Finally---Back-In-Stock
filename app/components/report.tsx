@@ -23,7 +23,9 @@ export default function Report({ title, pagination, data }: {
 
   function ImageTitle(url: string, title: string) {
     return <div className="row-image-container">
-      <img src={url} height="40px" width="40px" alt="product"/>
+      <div className="image-container">
+        <img src={url} height="40px" width="40px" alt="product"/>
+      </div>
       <Text as="p">{title}</Text>
     </div>
   }
