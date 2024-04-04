@@ -4,7 +4,6 @@ import { ProductInfoDTO } from "~/dto/product-info.dto";
 import { createAdminApiClient } from '@shopify/admin-api-client';
 import { authenticate } from "../shopify.server";
 import { parsePrice } from "~/utils/app.util";
-import { json } from "@remix-run/node";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
@@ -33,7 +32,9 @@ const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
     BigInt.prototype.toJSON = function () {
         return this.toString();
     };
-    let d = await prisma.productInfo.findMany({
+    return await prisma.productInfo.findMany({
+        skip: param.skip || 0,
+        take: param.take || 10,
         where: {
             store: {
                 shopifyURL: param.shopifyURL
@@ -47,9 +48,11 @@ const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
         include: {
             customerSubscription: {
             }
+        },
+        orderBy: {
+            updatedAt: 'desc'
         }
     });
-    return d;
 };
 
 

@@ -1,5 +1,5 @@
-import { CustomerSubscription } from "./customer-subscription.model";
-import { ShopifyStoreInfo } from "./shopify-store-info.model";
+import type { CustomerSubscription } from "./customer-subscription.model";
+import type { ShopifyStoreInfo } from "./shopify-store-info.model";
 
 export class ProductInfo {
     id: number;

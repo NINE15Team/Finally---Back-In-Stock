@@ -1,13 +1,12 @@
-import { BlockStack, Box, Button, Card, Frame, List, Loading, Page, Scrollable, Spinner, Text } from '@shopify/polaris';
-import { PlusIcon } from '@shopify/polaris-icons';
-import { Form, unstable_useViewTransitionState, useNavigation } from '@remix-run/react';
+import { BlockStack, Box, Button, Card, List, Page, Spinner, Text } from '@shopify/polaris';
+import { Form, useNavigation } from '@remix-run/react';
 
 import step1 from "../image/step_1.png";
 import step2 from "../image/step_2.png";
 import step3_4 from "../image/step_3_4.png";
 import step5_6 from "../image/step_5_6.png";
 
-export default function Instructions({ showButton }) {
+export default function Instructions({ showButton }: { showButton: boolean }) {
     const navigation = useNavigation();
 
     return (
@@ -21,25 +20,25 @@ export default function Instructions({ showButton }) {
                                 Step 1: Click "customize" on your theme
                             </Text>
                         </List.Item>
-                        <img src={step1} height="100%" width="100%"></img>
+                        <img src={step1} height="100%" width="100%" alt="customize"></img>
                         <List.Item>
                             <Text variant="headingMd" as="p">
                                 Step 2: On the left hand side, click "Add Block"
                             </Text>
                         </List.Item>
-                        <img src={step2} height="100%" width="100%"></img>
+                        <img src={step2} height="100%" width="100%" alt="customize"></img>
                         <List.Item>
                             <Text variant="headingMd" as="p">
                                 Step 3/4: Click on Apps and select "Back in Stock Form"
                             </Text>
                         </List.Item>
-                        <img src={step3_4} height="100%" width="100%"></img>
+                        <img src={step3_4} height="100%" width="100%" alt="customize"></img>
                         <List.Item>
                             <Text variant="headingMd" as="p">
                                 Step 5/6: Choose customization options of how the widget will display"
                             </Text>
                         </List.Item>
-                        <img src={step5_6} height="100%" width="100%"></img>
+                        <img src={step5_6} height="100%" width="100%" alt="customize"></img>
                     </List>
                 </Card>
                 {showButton &&

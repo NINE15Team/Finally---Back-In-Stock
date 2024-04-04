@@ -28,7 +28,9 @@
     "vite": "vite",
     "logs:dev": "heroku logs --tail -a finally-back-in-stock-dev",
     "logs:staging": "heroku logs --tail -a finally-back-in-stock-dev",
-    "logs:live": "heroku logs --tail -a finally-back-in-stock"
+    "logs:live:web": "heroku logs --tail -a finally-back-in-stock --ps web",
+    "logs:live:worker": "heroku logs --tail -a finally-back-in-stock --ps worker",
+    "bash:live:worker": "heroku run bash --app finally-back-in-stock --type=worker"
   },
   "type": "module",
   "dependencies": {
@@ -64,7 +66,11 @@
     "@types/react-dom": "^18.2.14",
     "eslint": "^8.42.0",
     "eslint-config-prettier": "^9.1.0",
+    "node-sass": "^9.0.0",
     "prettier": "^3.2.4",
+    "sass": "^1.72.0",
+    "sass-loader": "^14.1.1",
+    "style-loader": "^3.3.4",
     "typescript": "^5.2.2",
     "vite": "^5.1.3"
   },

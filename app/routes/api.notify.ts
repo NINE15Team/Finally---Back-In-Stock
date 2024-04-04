@@ -1,8 +1,8 @@
-import { ActionFunction, json } from "@remix-run/node"; // or cloudflare/deno
-import { setCustomerNotified, findAll as findAllSubscribers, subscribeProduct } from "~/services/customer-subscriber.service";
+import type { ActionFunction} from "@remix-run/node";
+import { json } from "@remix-run/node"; // or cloudflare/deno
+import { setCustomerNotified } from "~/services/customer-subscriber.service";
 import { findAllProducts } from "~/services/product-info.service";
-import { findEmailConfigByStoreURL } from "~/services/email.service";
-import { sendEmail } from "../services/email.service";
+import { findEmailConfigByStoreURL , sendEmail } from "~/services/email.service";
 import { saveNotificationHistory } from "../services/notification-history.service";
 import { randomUUID } from "crypto";
 

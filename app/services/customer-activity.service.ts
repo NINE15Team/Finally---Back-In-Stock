@@ -5,6 +5,7 @@ import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { findNotificationHistoryByUUId } from "./notification-history.service";
 import { CustomerActivity } from "@prisma/client";
+import { json } from "@remix-run/node";
 
 const save = async (customerActivity: CustomerActivityDTO) => {
     console.log(customerActivity);
@@ -42,6 +43,13 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
     for (const activity of customerActivities) {
         const productInfo = await findByProductAndVariantId(activity.productId, activity.variantId);
         const notificationHistory = await findNotificationHistoryByUUId(activity.uuid);
+        console.log("______________________", notificationHistory)
+        if (notificationHistory == null) {
+            throw new Error('Invalid UUID');
+        }
+        if (productInfo == null) {
+            throw new Error('Product Not Found');
+        }
         data.push({
             status: activity.status!,
             browserTrackId: activity.browserTrackId,
@@ -51,8 +59,8 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
             updatedAt: new Date(),
             createdAt: new Date(),
         } as CustomerActivity);
-    };
-    console.log('------saveAll-----', data);
+        console.log('------saveAll-----', data);
+    }
     return await prisma.customerActivity.createMany({
         data: data
     })

@@ -53,7 +53,6 @@ const shopify = shopifyApp({
         updatedAt: new Date(),
         isActive: true
       });
-      console.log("***********************APP Initilized**************************************", storeInfo)
     },
   },
   future: {
