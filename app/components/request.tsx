@@ -1,38 +1,86 @@
-import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList, Toast } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList, Toast, IndexFilters, IndexFiltersProps, useSetIndexFiltersMode } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
 import { useActionData, useSubmit } from "@remix-run/react";
 import { TitleBar, useAppBridge, Modal } from "@shopify/app-bridge-react";
 import './request.scss'
 
-export default function Request({ title, label, data, type }: {
+export default function Request({ title, data, type }: {
   title: string,
-  label: string,
   data: any[],
   type: string
 
 }) {
   const shopifyBridge = useAppBridge();
   let actionResponse: any = useActionData<any>();
+  const [sortSelected, setSortSelected] = useState(["A-Z"]);
+  const [queryValue, setQueryValue] = useState("");
+  const [selected, setSelected] = useState(0);
+  const { mode, setMode } = useSetIndexFiltersMode();
+
+  const handleFiltersQueryChange = useCallback(
+    (value: string) => setQueryValue(value),
+    []
+  );
+
+  const primaryAction: IndexFiltersProps["primaryAction"] =
+    selected === 0
+      ? {
+          type: "save-as",
+          onAction: () => {},
+          disabled: false,
+          loading: false,
+        }
+      : {
+          type: "save",
+          onAction: () => {},
+          disabled: false,
+          loading: false,
+        };
+
   const resourceName = {
     singular: 'order',
     plural: 'orders',
   };
 
+  const options: any = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+
+  const filters: any[] = [
+  ];
+
   let rows = [] as any;
   data.forEach((elm: any) => {
+    console.log(elm);
+
     rows.push({
       id: elm.id,
       product: elm?.productInfo.productTitle,
+      imageURL: elm?.productInfo.imageURL,
       email: elm?.customerEmail,
-      date: elm?.updatedAt
+      date: new Intl.DateTimeFormat('en-US', options).format(new Date(elm?.updatedAt))
     })
   });
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
 
+  function ImageTitle(url: string, title: string) {
+    return <div className="row-image-container">
+      <div className="image-container">
+        <img src={url} height="40px" width="40px" alt="product"/>
+      </div>
+      <Text as="p">{title}</Text>
+    </div>
+  }
+
+
+  // console.log(rows);
+
   const rowMarkup = rows.map(
-    ({ id, product, email, date }: { id: any, product: any, email: any, date: any }, index: any) => (
+    ({ id, product, email, date, imageURL }: { id: any, product: any, email: any, date: any, imageURL: any }, index: any) => (
       <IndexTable.Row
         id={id}
         key={id}
@@ -40,12 +88,11 @@ export default function Request({ title, label, data, type }: {
         position={index}
       >
         <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {product}
-          </Text>
+          {ImageTitle(imageURL, product)}
         </IndexTable.Cell>
         <IndexTable.Cell>{email}</IndexTable.Cell>
         <IndexTable.Cell>{date}</IndexTable.Cell>
+        <IndexTable.Cell>{'Vendor'}</IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
@@ -114,10 +161,46 @@ export default function Request({ title, label, data, type }: {
     showToast('Customer Unsubscribed');
   }
 
+  const sortOptions: IndexFiltersProps["sortOptions"] = [
+    { label: "Product", value: "Product asc", directionLabel: "A-Z" },
+    { label: "Product", value: "Product desc", directionLabel: "Z-A" },
+    { label: "Contact", value: "Contact asc", directionLabel: "A-Z" },
+    { label: "Contact", value: "Contact desc", directionLabel: "Z-A" },
+    { label: "Requested On", value: "Requested On asc", directionLabel: "A-Z" },
+    { label: "Requested On", value: "Requested On desc", directionLabel: "Z-A" },
+    { label: "Vendor", value: "Vendor asc", directionLabel: "A-Z" },
+    { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
+  ];
+
   return (
     <>
-      <div className="requests-wrapper second-underlined">
-        <Text as="h3" variant="bodyMd">{title} - <span>{label}</span></Text>
+      <div className="requests-wrapper full-width b-section">
+        <Text as="h2" variant="bodyMd">{title}</Text>
+        <IndexFilters
+        sortOptions={sortOptions}
+        sortSelected={sortSelected}
+        queryValue={queryValue}
+        queryPlaceholder="Searching in all"
+        onQueryChange={handleFiltersQueryChange}
+        onQueryClear={() => setQueryValue("")}
+        onSort={setSortSelected}
+        primaryAction={primaryAction}
+        cancelAction={{
+          onAction: () => {},
+          disabled: false,
+          loading: false,
+        }}
+        tabs={[]}
+        selected={selected}
+        onSelect={setSelected}
+        canCreateNewView
+        onCreateNewView={async (name) =>  false}
+        filters={filters}
+        appliedFilters={[]}
+        onClearAll={() => {}}
+        mode={mode}
+        setMode={setMode}
+      />
         <IndexTable
           itemCount={data.length}
           resourceName={resourceName}
@@ -128,41 +211,31 @@ export default function Request({ title, label, data, type }: {
           headings={[
             { title: 'Product' },
             { title: 'Contact' },
-            { title: 'Request Date' }
+            { title: 'Requested On' },
+            { title: 'Vendor' }
           ]}
+          pagination={{
+            hasNext: true,
+            onNext: () => {
+              let take: any = searchParams.get('take') || 2;
+              let skip: any = searchParams.get('skip');
+              if (skip == null || isNaN(skip)) {
+                skip = 1;
+              }
+              skip = (skip * take);
+              if (isNaN(skip)) {
+                skip = 0
+              }
+              const formData = new FormData();
+              formData.append("take", take);
+              formData.append("skip", skip);
+              submit(formData, { method: "post" });
+            }
+            }}
         >
           {rowMarkup}
         </IndexTable>
-        {rows.length > 0 ?
-          <div className="btnContainer">
-            <ButtonGroup variant="segmented">
-              <div className="my-button">
-                <Button variant="primary">Actions</Button>
-              </div>
 
-              <Popover
-                active={active}
-                preferredAlignment="right"
-                activator={
-                  <Button
-                    variant="primary"
-                    onClick={() => toggleActive()}
-                    icon={ChevronDownIcon}
-                    accessibilityLabel="Other save actions"
-                  />
-                }
-                autofocusTarget="first-node"
-                onClose={() => toggleActive()}
-              >
-                {type === 'pending' ? (
-                  <PendingActionList selectedRow={selectedResources} />
-                ) : (
-                  <NotificationSentActionList selectedRow={selectedResources} />
-                )}
-              </Popover>
-            </ButtonGroup>
-          </div>
-          : null}
       </div >
     </>
   );
