@@ -339,7 +339,7 @@ const upsertEmail = async (email: Partial<EmailDTO>) => {
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
-      buttonContent: 'CHECKOUT NOW',
+      buttonContent: email.buttonContent,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
