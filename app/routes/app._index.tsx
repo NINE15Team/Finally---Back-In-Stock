@@ -1,16 +1,14 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
 import { authenticate } from "../shopify.server";
 import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
+import '../components/base.scss';
 
 import { Layout, Page } from "@shopify/polaris";
-import Checklist from "~/components/checklist";
-import NumRequest from "~/components/num-request";
-import Report from "~/components/report";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
+import HomeBanner from "~/components/home-banner";
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -18,8 +16,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let initilized = await isInitilized(admin);
   let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
-    // await activateWebPixel(admin);
-    let shopInfo: any = await updateStoreInfo(admin);
+    await updateStoreInfo(admin);
     await upsertEmail({
       storeId: id,
       shopifyURL: myshopify_domain,
@@ -47,15 +44,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  let { subscribedProducts } = useLoaderData<typeof loader>();
 
 
   return (
     <Page>
       <Layout>
-        <Checklist />
-        <NumRequest />
-        <Report title="Requests" pagination={false} data={subscribedProducts} />
+        <HomeBanner />
       </Layout>
     </Page>
   );

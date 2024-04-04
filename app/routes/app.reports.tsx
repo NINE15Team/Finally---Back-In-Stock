@@ -64,9 +64,9 @@ export default function Index() {
     <Page>
       <Layout>
         <Text variant="headingXl" as="h2" alignment="start">Reports</Text>
-        <Report title="Requests" pagination={true} data={subscribedProducts} />
-        <Request title="Requests" label="Pending" data={pendingSubscrbers} type="pending" />
-        <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} type="sent" />
+        {/* <Report title="Requests" pagination={true} data={subscribedProducts} /> */}
+        {/* <Request title="Requests" label="Pending" data={pendingSubscrbers} type="pending" /> */}
+        {/* <Request title="Requests" label="Notification Sent" data={notifiedSubscrbers} type="sent" /> */}
       </Layout>
     </Page>
   );
