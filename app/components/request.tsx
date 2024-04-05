@@ -1,16 +1,22 @@
 import type { IndexFiltersProps } from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Box, InlineStack, ButtonGroup, Popover, Button} from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button} from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
-import { count } from "console";
+// import { count } from "console";
 
-export default function Request({ title, data, type }: {
+export default function Request({ title, data, type, dateAttribute, attributeName, lastColName, lastColValue, lastColKey, actionsList }: {
   title: string,
   data: any[],
   type: string,
   count: number,
+  dateAttribute: string,
+  attributeName: string,
+  lastColName: string,
+  lastColValue: (value:any) => any,
+  lastColKey: string,
+  actionsList: (selectedRow: any[]) => any,
 
 }) {
   const shopifyBridge = useAppBridge();
@@ -22,12 +28,11 @@ export default function Request({ title, data, type }: {
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
 
-
-
   const handleFiltersQueryChange = useCallback(
     (value: string) => setQueryValue(value),
     []
   );
+
   const resourceName = {
     singular: 'Request',
     plural: 'Requests',
@@ -43,8 +48,9 @@ export default function Request({ title, data, type }: {
   ];
 
   let rows = [] as any;
+
   data.forEach((elm: any) => {
-    const date: any = type == 'sent' ? elm?.updatedAt : elm?.createdAt;
+    const date: any = elm[dateAttribute];
     rows.push({
       id: elm.id,
       product: elm?.productInfo.productTitle,
@@ -68,34 +74,20 @@ export default function Request({ title, data, type }: {
     );
   }
 
-  function StatusBadge({ status }: { status: string }) {
-    switch (status) {
-      case 'view':
-        return <Badge>View</Badge>
-      case 'add_to_cart':
-        return <Badge tone="info">Added to Cart</Badge>
-      case 'completed':
-        return <Badge tone="success">Completed</Badge>
-      default:
-        return <></>
-    }
-  }
-
-
   const rowMarkup = rows.map(
-    ({ id, product, email, date, imageURL, vendor }: { id: any, product: any, email: any, date: any, imageURL: any, vendor: any }, index: any) => (
+    (element: any, index: any) => (
       <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
+        id={element.id}
+        key={element.id}
+        selected={selectedResources.includes(element.id)}
         position={index}
       >
         <IndexTable.Cell>
-          {ImageTitle(imageURL, product)}
+          {ImageTitle(element.imageURL, element.product)}
         </IndexTable.Cell>
-        <IndexTable.Cell>{email}</IndexTable.Cell>
-        <IndexTable.Cell>{date}</IndexTable.Cell>
-        <IndexTable.Cell>{type == 'sent' ? <StatusBadge status="completed" /> : vendor}</IndexTable.Cell>
+        <IndexTable.Cell>{element.email}</IndexTable.Cell>
+        <IndexTable.Cell>{element.date}</IndexTable.Cell>
+        <IndexTable.Cell>{lastColValue(element[lastColKey])}</IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
@@ -105,52 +97,6 @@ export default function Request({ title, data, type }: {
   const toggleActive = () => {
     setActive(!active);
   };
-
-  const PendingActionList = ({ selectedRow }: { selectedRow: any }) => {
-    const submit = useSubmit();
-    const onSend = () => {
-      console.log("Send Manually", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'SEND_EMAIL');
-      submit(formData, { method: "post" });
-    }
-    const onUnSubscribe = () => {
-      console.log("UnSubscribe", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'UNSUBSCRIBE');
-      submit(formData, { method: "post" });
-    }
-    return (<ActionList
-      actionRole="menuitem"
-      items={[{ content: 'Send Manually', onAction: onSend }, { content: 'Unsubscribe', onAction: onUnSubscribe }]}
-    />)
-  }
-
-  const NotificationSentActionList = ({ selectedRow }: { selectedRow: any }) => {
-    const submit = useSubmit();
-    const onSend = () => {
-      console.log("Re-Send", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'SEND_EMAIL');
-      submit(formData, { method: "post" });
-
-    }
-    const onSubscribe = () => {
-      console.log("Re subscribe", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'SUBSCRIBE');
-      submit(formData, { method: "post" });
-
-    }
-    return (<ActionList
-      actionRole="menuitem"
-      items={[{ content: 'Send Again', onAction: onSend }, { content: 'Re-subscribe', onAction: onSubscribe }]}
-    />)
-  }
 
   const showToast = (message: string) => {
     shopifyBridge.toast.show(message, { duration: 3000 });
@@ -176,7 +122,6 @@ export default function Request({ title, data, type }: {
   ];
 
   function fetchNext(type: string) {
-    console.log(count);
     let pageParam = 'ppage';
     if (type == 'sent') {
       pageParam = 'spage';
@@ -251,14 +196,10 @@ export default function Request({ title, data, type }: {
                   autofocusTarget="first-node"
                   onClose={() => toggleActive()}
                 >
-                  {type === 'pending' ? (
-                    <PendingActionList selectedRow={selectedResources} />
-                  ) : (
-                    <NotificationSentActionList selectedRow={selectedResources} />
-                  )}
+                  {actionsList(selectedResources)}
                 </Popover>
               </ButtonGroup> </Box> : <></>}
-          <IndexFilters
+          {data.length ? <IndexFilters
             sortOptions={sortOptions}
             sortSelected={sortSelected}
             queryValue={queryValue}
@@ -280,7 +221,7 @@ export default function Request({ title, data, type }: {
             onClearAll={() => { }}
             mode={mode}
             setMode={setMode}
-          />
+          /> : <></>}
         </InlineStack>
       </Box>
       <IndexTable
@@ -294,8 +235,8 @@ export default function Request({ title, data, type }: {
         headings={[
           { title: 'Product' },
           { title: 'Contact' },
-          { title: type == 'sent' ? 'Sent On' : 'Requested On' },
-          { title: type == 'sent' ? 'Status' : 'Vendor' }
+          { title: dateAttribute },
+          { title: lastColName }
         ]}
         pagination={{
           hasNext: true,
