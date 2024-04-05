@@ -186,7 +186,7 @@ export default function Request({ title, data, type }: {
   ];
 
   return (
-    <Layout.Section>
+    <>
       <Box paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
@@ -250,7 +250,6 @@ export default function Request({ title, data, type }: {
       >
         {rowMarkup}
       </IndexTable>
-
-    </Layout.Section >
+    </ >
   );
 }
