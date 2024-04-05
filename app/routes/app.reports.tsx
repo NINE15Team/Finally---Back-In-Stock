@@ -59,7 +59,7 @@ export default function Index() {
     <Page>
       <Layout>
         <Layout.Section>
-          <Box paddingBlockEnd="800">
+          <Box>
             <InlineStack align='space-between'>
               <Text variant="heading2xl" as="h1">Reports</Text>
               <div style={{ color: '#005BD3' }}>
@@ -71,8 +71,12 @@ export default function Index() {
             </Text>
           </Box>
         </Layout.Section>
-        <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
-        <Request title="Sent Requests" data={notifiedSubscrbers} type="sent" />
+        <Layout.Section>
+          <Box paddingBlockEnd="2000">
+            <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
+            <Request title="Sent Requests" data={notifiedSubscrbers} type="sent" />
+          </Box>
+        </Layout.Section>
       </Layout>
     </Page>
   );
