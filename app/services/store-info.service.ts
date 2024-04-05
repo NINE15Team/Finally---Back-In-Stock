@@ -93,7 +93,7 @@ const activateWebPixel = async (admin: any) => {
             }`, {
         variables: {
             webPixel: {
-                settings: JSON.stringify({ accountID: randomInt(5) + "" })
+                settings: JSON.stringify({ accountID: "nine15" })
             }
         }
     },

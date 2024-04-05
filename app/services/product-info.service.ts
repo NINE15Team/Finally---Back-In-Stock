@@ -170,6 +170,7 @@ const upsertProduct = async (req: any, store: string) => {
                 variantId: elm.variantId,
                 variantTitle: elm.variantTitle,
                 imageURL: elm.imageURL,
+                vendor: elm.vendor,
                 price: parsePrice(elm.price),
                 status: true,
                 inStock: elm.inStock,
