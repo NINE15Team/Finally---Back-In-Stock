@@ -1,4 +1,4 @@
-import type { ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
+import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { Layout, Page, Text, Link, Box, InlineStack } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
@@ -8,17 +8,17 @@ import { findSubscribedProducts } from "~/services/product-info.service";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { useLoaderData } from "@remix-run/react";
+import { findAllActivities } from "~/services/customer-activity.service";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
   let { myshopify_domain }: any = await getStoreInfoShopify(admin);
   const url = new URL(request.url)
-  const $skip = Number(url.searchParams.get("skip")) || 0;
-  const $take = Number(url.searchParams.get("take")) || 10;
-  const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain, take: $take, skip: $skip });
-  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 100, skip: 0 });
-  const notifiedSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: true, take: 100, skip: 0 });
-  return { subscribedProducts, pendingSubscrbers, notifiedSubscrbers, shopifyURL: myshopify_domain };
+  const pendingPage = Number(url.searchParams.get("ppage")) || 0;
+  const sentPage = Number(url.searchParams.get("spage")) || 0;
+  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage * 5 });
+  const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: 5, skip: sentPage });
+  return { pendingSubscrbers, customerActivities, shopifyURL: myshopify_domain };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -43,18 +43,23 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     await updateSubscribtionStatus(ids, true);
     return json({ 'action': 'subscribe', status: true });
 
-  } else {
+  } else if (formData.get('name') == 'PENDING') {
     if (obj.skip == undefined || isNaN(obj.skip)) {
       obj.skip = 0;
     }
-    return redirect(`/app/reports?take=${obj.take}&skip=${obj.skip}`);;
+    return redirect(`/app/reports?ppage=${obj.page}`);
+  } else if (formData.get('name') == 'SENT') {
+    if (obj.skip == undefined || isNaN(obj.skip)) {
+      obj.skip = 0;
+    }
+    return redirect(`/app/reports?spage=${obj.page}`);
   }
 
 };
 
 
 export default function Index() {
-  let { pendingSubscrbers, notifiedSubscrbers } = useLoaderData<typeof loader>();
+  let { pendingSubscrbers, customerActivities } = useLoaderData<typeof loader>();
   return (
     <Page>
       <Layout>
@@ -73,8 +78,8 @@ export default function Index() {
         </Layout.Section>
         <Layout.Section>
           <Box paddingBlockEnd="2000">
-            <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
-            <Request title="Sent Requests" data={notifiedSubscrbers} type="sent" />
+            <Request title="Pending Requests" data={pendingSubscrbers.items} count={pendingSubscrbers.count} type="pending" />
+            <Request title="Sent Requests" data={customerActivities.items} count={customerActivities.count} type="sent" />
           </Box>
         </Layout.Section>
       </Layout>

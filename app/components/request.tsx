@@ -3,11 +3,14 @@ import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useS
 import { useCallback, useState } from "react";
 import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import { ChevronDownIcon } from '@shopify/polaris-icons';
+import { count } from "console";
 
 export default function Request({ title, data, type }: {
   title: string,
   data: any[],
-  type: string
+  type: string,
+  count: number,
 
 }) {
   const shopifyBridge = useAppBridge();
@@ -16,8 +19,10 @@ export default function Request({ title, data, type }: {
   const [queryValue, setQueryValue] = useState("");
   const [selected, setSelected] = useState(0);
   const { mode, setMode } = useSetIndexFiltersMode();
-  const submit = useSubmit();
   const [searchParams] = useSearchParams();
+  const submit = useSubmit();
+
+
 
   const handleFiltersQueryChange = useCallback(
     (value: string) => setQueryValue(value),
@@ -170,6 +175,48 @@ export default function Request({ title, data, type }: {
     { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
   ];
 
+  function fetchNext(type: string) {
+    console.log(count);
+    let pageParam = 'ppage';
+    if (type == 'sent') {
+      pageParam = 'spage';
+    }
+    let page: any = searchParams.get(pageParam);
+    if (page == null || isNaN(page)) {
+      page = 1;
+    } else {
+      ++page;
+    }
+    const formData = new FormData();
+    formData.append("page", page);
+    formData.set('name', type.toUpperCase());
+    submit(formData, { method: "post" });
+  }
+
+  function fetchPrev(type: string) {
+    let takeParam = 'ptake';
+    let skipParam = 'pskip';
+    let take: any, skip: any;
+    if (type == 'sent') {
+      takeParam = 'stake';
+      skipParam = 'sskip';
+    }
+
+    take = searchParams.get(takeParam) || 5;
+    skip = searchParams.get(skipParam);
+    if (skip == null || isNaN(skip)) {
+      skip = 1;
+    } else {
+      ++skip;
+    }
+    skip = take * skip;
+    const formData = new FormData();
+    formData.append("take", take);
+    formData.append("skip", skip);
+    formData.set('name', type.toUpperCase());
+    submit(formData, { method: "post" });
+  }
+
   return (
     <>
       <Box paddingBlockEnd="800">
@@ -180,60 +227,61 @@ export default function Request({ title, data, type }: {
         borderStartEndRadius="200"
         borderStartStartRadius="200"
       >
-      <InlineStack align="space-between" wrap={false}>
-        {selectedResources.length ?
-        <Box
-          borderBlockEndWidth="025"
-          borderColor="border"
-          padding="200"
-        >
-         <ButtonGroup variant="segmented">
-          <Popover
-            active={active}
-            preferredAlignment="right"
-            activator={
-              <Button
-                variant="secondary"
-                onClick={() => toggleActive()}
-                disclosure={active ? 'up' : 'down'}
-              >
-                Actions
-              </Button>
-            }
-            autofocusTarget="first-node"
-            onClose={() => toggleActive()}
-          >
-            {type === 'pending' ? (
-              <PendingActionList selectedRow={selectedResources} />
-            ) : (
-              <NotificationSentActionList selectedRow={selectedResources} />
-            )}
-          </Popover>
-        </ButtonGroup> </Box> : <></>}
-        <IndexFilters
-          sortOptions={sortOptions}
-          sortSelected={sortSelected}
-          queryValue={queryValue}
-          queryPlaceholder="Searching in all"
-          onQueryChange={handleFiltersQueryChange}
-          onQueryClear={() => setQueryValue("")}
-          onSort={setSortSelected}
-          canCreateNewView={false}
-          cancelAction={{
-            onAction: () => { },
-            disabled: false,
-            loading: false,
-          }}
-          tabs={[]}
-          selected={selected}
-          onSelect={setSelected}
-          filters={filters}
-          appliedFilters={[]}
-          onClearAll={() => { }}
-          mode={mode}
-          setMode={setMode}
-        />
-      </InlineStack>
+        <InlineStack align="space-between" wrap={false}>
+          {selectedResources.length ?
+            <Box
+              borderBlockEndWidth="050"
+              borderColor="border"
+              padding="200"
+            >
+              <ButtonGroup variant="segmented">
+                <Button onClick={() => toggleActive()} variant="primary">Actions</Button>
+
+                <Popover
+                  active={active}
+                  preferredAlignment="right"
+                  activator={
+                    <Button
+                      variant="primary"
+                      onClick={() => toggleActive()}
+                      icon={ChevronDownIcon}
+                      accessibilityLabel="Other save actions"
+                    />
+                  }
+                  autofocusTarget="first-node"
+                  onClose={() => toggleActive()}
+                >
+                  {type === 'pending' ? (
+                    <PendingActionList selectedRow={selectedResources} />
+                  ) : (
+                    <NotificationSentActionList selectedRow={selectedResources} />
+                  )}
+                </Popover>
+              </ButtonGroup> </Box> : <></>}
+          <IndexFilters
+            sortOptions={sortOptions}
+            sortSelected={sortSelected}
+            queryValue={queryValue}
+            queryPlaceholder="Searching in all"
+            onQueryChange={handleFiltersQueryChange}
+            onQueryClear={() => setQueryValue("")}
+            onSort={setSortSelected}
+            canCreateNewView={false}
+            cancelAction={{
+              onAction: () => { },
+              disabled: false,
+              loading: false,
+            }}
+            tabs={[]}
+            selected={selected}
+            onSelect={setSelected}
+            filters={filters}
+            appliedFilters={[]}
+            onClearAll={() => { }}
+            mode={mode}
+            setMode={setMode}
+          />
+        </InlineStack>
       </Box>
       <IndexTable
         itemCount={data.length}
@@ -251,20 +299,12 @@ export default function Request({ title, data, type }: {
         ]}
         pagination={{
           hasNext: true,
+          hasPrevious: true,
           onNext: () => {
-            let take: any = searchParams.get('take') || 2;
-            let skip: any = searchParams.get('skip');
-            if (skip == null || isNaN(skip)) {
-              skip = 1;
-            }
-            skip = (skip * take);
-            if (isNaN(skip)) {
-              skip = 0
-            }
-            const formData = new FormData();
-            formData.append("take", take);
-            formData.append("skip", skip);
-            submit(formData, { method: "post" });
+            fetchNext(type);
+          },
+          onPrevious: () => {
+            fetchPrev(type);
           }
         }}
       >
