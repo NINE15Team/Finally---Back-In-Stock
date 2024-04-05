@@ -16,7 +16,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const pendingPage = Number(url.searchParams.get("ppage")) || 0;
   const sentPage = Number(url.searchParams.get("spage")) || 0;
   const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage * 5 });
-  const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: 5, skip: sentPage });
+  const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: 5, skip: sentPage * 5 });
   return { pendingSubscrbers, customerActivities, shopifyURL: myshopify_domain };
 };
 
