@@ -208,25 +208,18 @@ export default function Request({ title, data, type }: {
   }
 
   function fetchPrev(type: string) {
-    let takeParam = 'ptake';
-    let skipParam = 'pskip';
-    let take: any, skip: any;
+    let pageParam = 'ppage';
     if (type == 'sent') {
-      takeParam = 'stake';
-      skipParam = 'sskip';
+      pageParam = 'spage';
     }
-
-    take = searchParams.get(takeParam) || 5;
-    skip = searchParams.get(skipParam);
-    if (skip == null || isNaN(skip)) {
-      skip = 1;
+    let page: any = searchParams.get(pageParam);
+    if (page == null || isNaN(page)) {
+      page = 1;
     } else {
-      ++skip;
+      --page;
     }
-    skip = take * skip;
     const formData = new FormData();
-    formData.append("take", take);
-    formData.append("skip", skip);
+    formData.append("page", page);
     formData.set('name', type.toUpperCase());
     submit(formData, { method: "post" });
   }
