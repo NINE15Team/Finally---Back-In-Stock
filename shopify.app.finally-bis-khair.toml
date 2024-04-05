@@ -2,7 +2,7 @@
 
 client_id = "8800ca44f2a3eeaa42dafeb829ea1c0b"
 name = "finally-bis-khair"
-application_url = "https://newest-rolls-jackie-eagles.trycloudflare.com"
+application_url = "https://websites-final-street-types.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://newest-rolls-jackie-eagles.trycloudflare.com/auth/callback",
-  "https://newest-rolls-jackie-eagles.trycloudflare.com/auth/shopify/callback",
-  "https://newest-rolls-jackie-eagles.trycloudflare.com/api/auth/callback"
+  "https://websites-final-street-types.trycloudflare.com/auth/callback",
+  "https://websites-final-street-types.trycloudflare.com/auth/shopify/callback",
+  "https://websites-final-street-types.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

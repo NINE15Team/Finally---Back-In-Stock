@@ -69,9 +69,16 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
 
 const findAll = async (customerActivity: CustomerActivityDTO) => {
     const storeInfo = await findStoreByURL(customerActivity.shopifyURL);
-    return await prisma.customerActivity.findMany({
+    let count = await prisma.customerActivity.count({
+        where: {
+            store: {
+                id: storeInfo?.id
+            },
+        },
+    })
+    let items = await prisma.customerActivity.findMany({
         skip: customerActivity.skip || 0,
-        take: customerActivity.take || 10,
+        take: customerActivity.take || 5,
         where: {
             store: {
                 id: storeInfo?.id
@@ -83,6 +90,7 @@ const findAll = async (customerActivity: CustomerActivityDTO) => {
             }
         }
     })
+    return { count, items }
 };
 
 export { save as saveCustomerActivity, saveAll as saveCustomerActivities, findAll as findAllActivities }

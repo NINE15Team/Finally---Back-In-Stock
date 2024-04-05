@@ -1,13 +1,14 @@
-import type { IndexFiltersProps} from "@shopify/polaris";
+import type { IndexFiltersProps } from "@shopify/polaris";
 import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack } from "@shopify/polaris";
 import { useCallback, useState } from "react";
-import { useActionData, useSubmit } from "@remix-run/react";
+import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 
 export default function Request({ title, data, type }: {
   title: string,
   data: any[],
-  type: string
+  type: string,
+  count: number,
 
 }) {
   const shopifyBridge = useAppBridge();
@@ -16,6 +17,10 @@ export default function Request({ title, data, type }: {
   const [queryValue, setQueryValue] = useState("");
   const [selected, setSelected] = useState(0);
   const { mode, setMode } = useSetIndexFiltersMode();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const submit = useSubmit();
+
+
 
   const handleFiltersQueryChange = useCallback(
     (value: string) => setQueryValue(value),
@@ -25,17 +30,17 @@ export default function Request({ title, data, type }: {
   const primaryAction: IndexFiltersProps["primaryAction"] =
     selected === 0
       ? {
-          type: "save-as",
-          onAction: () => {},
-          disabled: false,
-          loading: false,
-        }
+        type: "save-as",
+        onAction: () => { },
+        disabled: false,
+        loading: false,
+      }
       : {
-          type: "save",
-          onAction: () => {},
-          disabled: false,
-          loading: false,
-        };
+        type: "save",
+        onAction: () => { },
+        disabled: false,
+        loading: false,
+      };
 
   const resourceName = {
     singular: 'Request',
@@ -53,7 +58,6 @@ export default function Request({ title, data, type }: {
 
   let rows = [] as any;
   data.forEach((elm: any) => {
-    console.log(elm);
     const date: any = type == 'sent' ? elm?.updatedAt : elm?.createdAt;
     rows.push({
       id: elm.id,
@@ -71,20 +75,20 @@ export default function Request({ title, data, type }: {
     return (
       <InlineStack gap="300" blockAlign="center">
         <Box>
-          <img src={url} height="40px" width="40px" alt="product"/>
+          <img src={url} height="40px" width="40px" alt="product" />
         </Box>
         <Text as="p">{title}</Text>
       </InlineStack>
     );
   }
 
-  function StatusBadge({ status } : { status: string }) {
+  function StatusBadge({ status }: { status: string }) {
     switch (status) {
       case 'view':
         return <Badge>View</Badge>
       case 'add_to_cart':
         return <Badge tone="info">Added to Cart</Badge>
-        case 'completed':
+      case 'completed':
         return <Badge tone="success">Completed</Badge>
       default:
         return <></>
@@ -185,36 +189,80 @@ export default function Request({ title, data, type }: {
     { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
   ];
 
+  function fetchNext(type: string) {
+    let pageParam = 'ppage';
+    let page: any;
+    if (type == 'sent') {
+      pageParam = 'ppage';
+    }
+
+    page = searchParams.get(pageParam);
+    if (page == null || isNaN(page)) {
+      page = 0;
+    } else {
+      ++page;
+    }
+    let skip: any = 5 * page;
+    const formData = new FormData();
+    formData.append("page", page);
+    formData.set('name', type.toUpperCase());
+    submit(formData, { method: "post" });
+  }
+
+  function fetchPrev(type: string) {
+    let takeParam = 'ptake';
+    let skipParam = 'pskip';
+    let take: any, skip: any;
+    if (type == 'sent') {
+      takeParam = 'stake';
+      skipParam = 'sskip';
+    }
+
+    take = searchParams.get(takeParam) || 5;
+    skip = searchParams.get(skipParam);
+    if (skip == null || isNaN(skip)) {
+      skip = 1;
+    } else {
+      ++skip;
+    }
+    skip = take * skip;
+    const formData = new FormData();
+    formData.append("take", take);
+    formData.append("skip", skip);
+    formData.set('name', type.toUpperCase());
+    submit(formData, { method: "post" });
+  }
+
   return (
     <Layout.Section>
       <Box paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
       <IndexFilters
-      sortOptions={sortOptions}
-      sortSelected={sortSelected}
-      queryValue={queryValue}
-      queryPlaceholder="Searching in all"
-      onQueryChange={handleFiltersQueryChange}
-      onQueryClear={() => setQueryValue("")}
-      onSort={setSortSelected}
-      primaryAction={primaryAction}
-      cancelAction={{
-        onAction: () => {},
-        disabled: false,
-        loading: false,
-      }}
-      tabs={[]}
-      selected={selected}
-      onSelect={setSelected}
-      canCreateNewView
-      onCreateNewView={async (name) =>  false}
-      filters={filters}
-      appliedFilters={[]}
-      onClearAll={() => {}}
-      mode={mode}
-      setMode={setMode}
-    />
+        sortOptions={sortOptions}
+        sortSelected={sortSelected}
+        queryValue={queryValue}
+        queryPlaceholder="Searching in all"
+        onQueryChange={handleFiltersQueryChange}
+        onQueryClear={() => setQueryValue("")}
+        onSort={setSortSelected}
+        primaryAction={primaryAction}
+        cancelAction={{
+          onAction: () => { },
+          disabled: false,
+          loading: false,
+        }}
+        tabs={[]}
+        selected={selected}
+        onSelect={setSelected}
+        canCreateNewView
+        onCreateNewView={async (name) => false}
+        filters={filters}
+        appliedFilters={[]}
+        onClearAll={() => { }}
+        mode={mode}
+        setMode={setMode}
+      />
       <IndexTable
         itemCount={data.length}
         resourceName={resourceName}
@@ -231,22 +279,14 @@ export default function Request({ title, data, type }: {
         ]}
         pagination={{
           hasNext: true,
+          hasPrevious: true,
           onNext: () => {
-            let take: any = searchParams.get('take') || 2;
-            let skip: any = searchParams.get('skip');
-            if (skip == null || isNaN(skip)) {
-              skip = 1;
-            }
-            skip = (skip * take);
-            if (isNaN(skip)) {
-              skip = 0
-            }
-            const formData = new FormData();
-            formData.append("take", take);
-            formData.append("skip", skip);
-            submit(formData, { method: "post" });
+            fetchNext(type);
+          },
+          onPrevious: () => {
+            fetchPrev(type);
           }
-          }}
+        }}
       >
         {rowMarkup}
       </IndexTable>
