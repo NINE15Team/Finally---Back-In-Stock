@@ -9,7 +9,7 @@ export default function CustomCheckBox({ title, description } : { title: string,
           <Text as='p'>{description}</Text>
         </BlockStack>
       </Box>
-      <Box borderRadius="100" background="bg-surface">
+      <Box borderRadius="100" background="bg-fill-secondary-hover">
         <div style={{height: '92px'}}></div>
       </Box>
     </InlineGrid>

@@ -4,7 +4,7 @@ import no_request from "../image/no-request.png";
 export default function NoRequest() {
   return (
     <Layout.Section>
-      <Box borderRadius="300" background="bg-surface" paddingBlockEnd="1200">
+      <Box borderRadius="300" borderWidth="025" borderColor="border" paddingBlockEnd="1200">
         <BlockStack gap="150" align='center' inlineAlign='center'>
           <img className='home-image' src={no_request} height="226px" width="226px" alt="customize" />
           <Text variant="headingMd" as="h2">You haven't had any requests yet.</Text>

@@ -1,4 +1,4 @@
-import { Box, DataTable, Layout, Text } from "@shopify/polaris";
+import { Box, DataTable, InlineStack, Layout, Text } from "@shopify/polaris";
 import { useSearchParams, useSubmit } from "@remix-run/react";
 
 export default function Report({ title, pagination, data }: {
@@ -10,27 +10,29 @@ export default function Report({ title, pagination, data }: {
   const submit = useSubmit();
   const [searchParams] = useSearchParams();
   const rows: any = [];
-  data.forEach(prodInfo => {
+  data.forEach((prodInfo, index) => {
     rows.push([
       ImageTitle(prodInfo.imageURL, prodInfo.productTitle),
       BoldText(prodInfo.customerSubscription?.length),
-      `$${prodInfo.price}`,
-      `$${(Number(prodInfo.price) * prodInfo.customerSubscription?.length)}`,
+      <Text key={index} as="p" alignment="center">{prodInfo.price}</Text>,
+      <Text key={index} as="p" alignment="end">{(Number(prodInfo.price) * prodInfo.customerSubscription?.length)}</Text>,
     ]);
   });
 
   function ImageTitle(url: string, title: string) {
-    return <div className="row-image-container">
-      <div className="image-container">
-        <img src={url} height="40px" width="40px" alt="product"/>
-      </div>
-      <Text as="p">{title}</Text>
-    </div>
+    return (
+      <InlineStack gap="300" blockAlign="center">
+        <Box>
+          <img src={url} height="40px" width="40px" alt="product"/>
+        </Box>
+        <Text as="p">{title}</Text>
+      </InlineStack>
+    );
   }
 
   function BoldText(content: any) {
     return (
-      <Text variant="headingSm" as="h6">
+      <Text variant="headingSm" as="h6" alignment="center">
         {content}
       </Text>
     )
@@ -51,9 +53,9 @@ export default function Report({ title, pagination, data }: {
           ]}
           headings={[
             'Product',
-            'Requests',
-            'Price',
-            'Potential Income',
+            <Text key={1} as="p" alignment="center">Requests</Text>,
+            <Text key={1} as="p" alignment="center">Price</Text>,
+            <Text key={1} as="p" alignment="end">Potential Income</Text>
           ]}
           rows={rows}
           pagination={pagination ? {
