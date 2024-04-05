@@ -1,4 +1,4 @@
-import { BlockStack, Box, Button, Layout, Page, Spinner, Text } from '@shopify/polaris';
+import { BlockStack, Box, Button, InlineStack, Layout, Page, Spinner, Text } from '@shopify/polaris';
 import { useNavigation } from '@remix-run/react';
 
 import step1 from "../image/step_1.png";
@@ -18,10 +18,10 @@ export default function Instructions({ showButton }: { showButton: boolean }) {
     },
     {
       title: '2. Navigate to the PDP',
-      description: <div className="instruction-info">
+      description: <BlockStack gap="300">
         <Text as='p'>Navigate to the Product page from the top nav.</Text>
         <Text as='p'>Then click <Text as='strong'>Add Block</Text> on the left panel.</Text>
-      </div>,
+      </BlockStack>,
       img_url: step2,
     },
     {
@@ -39,6 +39,17 @@ export default function Instructions({ showButton }: { showButton: boolean }) {
   return (
     <Page>
       <Layout>
+        <Layout.Section>
+          <Box paddingBlockEnd="800">
+            <InlineStack align='start'>
+              <Text variant="heading2xl" as="h1">Support</Text>
+            </InlineStack>
+            <Text as="p">
+              Use this page as a reference to our installation guide, or to reach out to us if you have any questions or comments.
+            </Text>
+          </Box>
+        </Layout.Section>
+
         {instructionList.map((e: any, index: number) => (
           <InstructionCard key={index} title={e.title} description={e.description} img_url={e.img_url} />
         ))}

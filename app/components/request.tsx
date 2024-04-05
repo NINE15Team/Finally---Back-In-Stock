@@ -1,5 +1,5 @@
 import type { IndexFiltersProps} from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
@@ -38,8 +38,8 @@ export default function Request({ title, data, type }: {
         };
 
   const resourceName = {
-    singular: 'order',
-    plural: 'orders',
+    singular: 'Request',
+    plural: 'Requests',
   };
 
   const options: any = {
@@ -68,12 +68,14 @@ export default function Request({ title, data, type }: {
   const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
 
   function ImageTitle(url: string, title: string) {
-    return <div className="row-image-container">
-      <div className="image-container">
-        <img src={url} height="40px" width="40px" alt="product"/>
-      </div>
-      <Text as="p">{title}</Text>
-    </div>
+    return (
+      <InlineStack gap="300" blockAlign="center">
+        <Box>
+          <img src={url} height="40px" width="40px" alt="product"/>
+        </Box>
+        <Text as="p">{title}</Text>
+      </InlineStack>
+    );
   }
 
   function StatusBadge({ status } : { status: string }) {
@@ -184,70 +186,71 @@ export default function Request({ title, data, type }: {
   ];
 
   return (
-    <>
-      <div className="requests-wrapper full-width b-section">
-        <Text as="h2" variant="bodyMd">{title}</Text>
-        <IndexFilters
-        sortOptions={sortOptions}
-        sortSelected={sortSelected}
-        queryValue={queryValue}
-        queryPlaceholder="Searching in all"
-        onQueryChange={handleFiltersQueryChange}
-        onQueryClear={() => setQueryValue("")}
-        onSort={setSortSelected}
-        primaryAction={primaryAction}
-        cancelAction={{
-          onAction: () => {},
-          disabled: false,
-          loading: false,
-        }}
-        tabs={[]}
-        selected={selected}
-        onSelect={setSelected}
-        canCreateNewView
-        onCreateNewView={async (name) =>  false}
-        filters={filters}
-        appliedFilters={[]}
-        onClearAll={() => {}}
-        mode={mode}
-        setMode={setMode}
-      />
-        <IndexTable
-          itemCount={data.length}
-          resourceName={resourceName}
-          selectedItemsCount={
-            allResourcesSelected ? 'All' : selectedResources.length
-          }
-          onSelectionChange={handleSelectionChange}
-          headings={[
-            { title: 'Product' },
-            { title: 'Contact' },
-            { title: type == 'sent' ? 'Sent On' : 'Requested On' },
-            { title: type == 'sent' ? 'Status' : 'Vendor' }
-          ]}
-          pagination={{
-            hasNext: true,
-            onNext: () => {
-              let take: any = searchParams.get('take') || 2;
-              let skip: any = searchParams.get('skip');
-              if (skip == null || isNaN(skip)) {
-                skip = 1;
-              }
-              skip = (skip * take);
-              if (isNaN(skip)) {
-                skip = 0
-              }
-              const formData = new FormData();
-              formData.append("take", take);
-              formData.append("skip", skip);
-              submit(formData, { method: "post" });
+    <Layout.Section>
+      <Box paddingBlockEnd="800">
+        <Text variant='headingLg' as='h2'>{title}</Text>
+      </Box>
+      <IndexFilters
+      sortOptions={sortOptions}
+      sortSelected={sortSelected}
+      queryValue={queryValue}
+      queryPlaceholder="Searching in all"
+      onQueryChange={handleFiltersQueryChange}
+      onQueryClear={() => setQueryValue("")}
+      onSort={setSortSelected}
+      primaryAction={primaryAction}
+      cancelAction={{
+        onAction: () => {},
+        disabled: false,
+        loading: false,
+      }}
+      tabs={[]}
+      selected={selected}
+      onSelect={setSelected}
+      canCreateNewView
+      onCreateNewView={async (name) =>  false}
+      filters={filters}
+      appliedFilters={[]}
+      onClearAll={() => {}}
+      mode={mode}
+      setMode={setMode}
+    />
+      <IndexTable
+        itemCount={data.length}
+        resourceName={resourceName}
+        sortColumnIndex={0}
+        selectedItemsCount={
+          allResourcesSelected ? 'All' : selectedResources.length
+        }
+        onSelectionChange={handleSelectionChange}
+        headings={[
+          { title: 'Product' },
+          { title: 'Contact' },
+          { title: type == 'sent' ? 'Sent On' : 'Requested On' },
+          { title: type == 'sent' ? 'Status' : 'Vendor' }
+        ]}
+        pagination={{
+          hasNext: true,
+          onNext: () => {
+            let take: any = searchParams.get('take') || 2;
+            let skip: any = searchParams.get('skip');
+            if (skip == null || isNaN(skip)) {
+              skip = 1;
             }
-            }}
-        >
-          {rowMarkup}
-        </IndexTable>
+            skip = (skip * take);
+            if (isNaN(skip)) {
+              skip = 0
+            }
+            const formData = new FormData();
+            formData.append("take", take);
+            formData.append("skip", skip);
+            submit(formData, { method: "post" });
+          }
+          }}
+      >
+        {rowMarkup}
+      </IndexTable>
 
-      </div >
-    </>
+    </Layout.Section >
   );
 }

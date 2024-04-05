@@ -8,7 +8,9 @@ import {
   Button,
   Link,
   Layout,
-  Card,
+  InlineGrid,
+  InlineStack,
+  Divider,
 } from "@shopify/polaris";
 import { useState } from "react";
 import { findEmailConfigByStoreURL, saveOrUpdate } from "../services/email.service";
@@ -50,79 +52,90 @@ export default function Index() {
 
   return (
     <Page>
-       <Layout>
-       <div className='b-section'>
-        <div className="header">
-          <Text variant="headingXl" as="h1">Settings</Text>
-          <Link url="/app/instructions">View installation guide</Link>
-        </div>
-        <div className='full-width'>
-          <Text alignment='start' as='p'>Use this page to customize the notification email customers receive as well as future settings.</Text>
-        </div>
-      </div>
-      <div className="b-section form-wrapper">
-        <div className="form-info">
-          <Text as='h2'>Notification Email</Text>
-          <Text as="p">Customize notification emails customers receive when products are back in stock.</Text>
-        </div>
-        <div className="full-width">
-          <Card roundedAbove="xs" padding={'800'}>
-            <Form method="POST">
-              <input type="hidden" name="shopifyURL" value={shopifyURL} />
-              <BlockStack gap="200">
-                <TextField
-                  value={form.title}
-                  onChange={(val) => handleChange("title", val)}
-                  label="Email Subject"
-                  autoComplete="off"
-                  name="title"
-                />
-                <hr />
-                <TextField
-                  value={form.headerContent}
-                  onChange={(val) => handleChange("headerContent", val)}
-                  label="Header Content"
-                  placeholder="Good News!"
-                  autoComplete="off"
-                  name="headerContent"
-                />
-                <TextField
-                  value={form.bodyContent}
-                  onChange={(val) => handleChange("bodyContent", val)}
-                  label="Body Message"
-                  placeholder="Your product is back in stock"
-                  autoComplete="off"
-                  multiline={true}
-                  name="bodyContent"
-                />
-                <TextField
-                  value={form.footerContent}
-                  onChange={(val) => handleChange("footerContent", val)}
-                  label="Footer Content"
-                  placeholder="If you have any concerns,please email xyz"
-                  autoComplete="off"
-                  name="footerContent"
-                />
-                <TextField
-                  value={form.buttonContent}
-                  onChange={(val) => handleChange("buttonContent", val)}
-                  label="Buy Button Label"
-                  placeholder="Checkout Now!"
-                  autoComplete="off"
-                  name="buttonContent"
-                />
-                <Box paddingBlockStart="200">
-                  <Button variant="primary" submit={true}>Save</Button>
+      <Layout>
+        <Layout.Section>
+          <Box paddingBlockEnd="800">
+            <InlineStack align='space-between'>
+              <Text variant="heading2xl" as="h1">Settings</Text>
+              <div style={{ color: '#005BD3' }}>
+                <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
+              </div>
+            </InlineStack>
+            <Text as="p">
+              Use this page to customize the notification email customers receive as well as future settings
+            </Text>
+          </Box>
+          <Box paddingBlockEnd="2000">
+            <InlineGrid columns={['oneThird', 'twoThirds']}>
+              <Box paddingInlineEnd="2000">
+                <Box paddingBlockEnd="800">
+                  <Text variant='headingLg' as='h2'>Notification Email</Text>
                 </Box>
-              </BlockStack>
-            </Form>
-          </Card>
-        </div>
-      </div>
-      <Modal id="info-modal">
-        <p style={{ padding: '20px' }}>Email Configuration Updated!</p>
-        <TitleBar title="Info Message"></TitleBar>
-      </Modal>
+                <Text as="p">Customize notification emails customers receive when products are back in stock.</Text>
+              </Box>
+              <Box borderColor="border" borderWidth="025" borderRadius="300" paddingBlock="500" paddingInline="1200">
+                <Form method="POST">
+                  <input type="hidden" name="shopifyURL" value={shopifyURL} />
+                  <BlockStack gap="200">
+                    <TextField
+                      value={form.title}
+                      onChange={(val) => handleChange("title", val)}
+                      label="Email Subject"
+                      autoComplete="off"
+                      name="title"
+                    />
+                    <Box paddingBlock="1200">
+                      <Divider borderColor="border" borderWidth="025" />
+                    </Box>
+                    <TextField
+                      value={form.headerContent}
+                      onChange={(val) => handleChange("headerContent", val)}
+                      label="Header Content"
+                      placeholder="Good News!"
+                      autoComplete="off"
+                      name="headerContent"
+                    />
+                    <div style={{height: "155px"}}>
+                      <TextField
+                        value={form.bodyContent}
+                        onChange={(val) => handleChange("bodyContent", val)}
+                        label="Body Message"
+                        placeholder="Your product is back in stock"
+                        autoComplete="off"
+                        multiline={true}
+                        name="bodyContent"
+                        ariaExpanded
+                      />
+                    </div>
+                    <TextField
+                      value={form.footerContent}
+                      onChange={(val) => handleChange("footerContent", val)}
+                      label="Footer Content"
+                      placeholder="If you have any concerns,please email xyz"
+                      autoComplete="off"
+                      name="footerContent"
+                    />
+                    <TextField
+                      value={form.buttonContent}
+                      onChange={(val) => handleChange("buttonContent", val)}
+                      label="Buy Button Label"
+                      placeholder="Checkout Now!"
+                      autoComplete="off"
+                      name="buttonContent"
+                    />
+                    <Box paddingBlockStart="200">
+                      <Button variant="primary" submit={true}>Save</Button>
+                    </Box>
+                  </BlockStack>
+                </Form>
+              </Box>
+            </InlineGrid>
+          </Box>
+        </Layout.Section>
+        <Modal id="info-modal">
+          <p style={{ padding: '20px' }}>Email Configuration Updated!</p>
+          <TitleBar title="Info Message"></TitleBar>
+        </Modal>
       </Layout>
     </Page >
   );

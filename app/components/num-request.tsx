@@ -7,15 +7,15 @@ export default function NumRequest() {
 
   return (
     <Layout.Section>
-      <Box padding="500" borderRadius="150" background="bg-surface">
+      <Box borderRadius="150" borderColor="border" borderWidth="025">
         <InlineGrid gap="400" columns={2}>
-          <Box minHeight="100px">
+          <Box  padding="500" minHeight="179px" borderInlineEndWidth="025" borderColor="border">
             <Text as="p">New Requests</Text>
             <Box paddingBlockStart="500">
               <Text as="h1" variant="heading3xl">{newSubscribers || 0}</Text>
             </Box>
           </Box>
-          <Box minHeight="100px">
+          <Box  padding="500" minHeight="179px">
             <Text as="p">Sent Notifications</Text>
             <Box paddingBlockStart="500">
               <Text as="h1" variant="heading3xl">{totalNotifications || 0}</Text>

@@ -1,6 +1,6 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs} from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Layout, Page, Text, Link } from "@shopify/polaris";
+import { Layout, Page, Text, Link, Box, InlineStack } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 
 import Request from "~/components/request";
@@ -58,17 +58,25 @@ export default function Index() {
   return (
     <Page>
       <Layout>
-      <div className='b-section'>
-        <div className="header">
-          <Text variant="headingXl" as="h1">Dashboard</Text>
-          <Link url="/app/instructions">View installation guide</Link>
-        </div>
-        <div className='full-width'>
-          <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
-        </div>
-      </div>
-        <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
-        <Request title="Sent Requests" data={notifiedSubscrbers} type="sent" />
+        <Layout.Section>
+          <Box>
+            <InlineStack align='space-between'>
+              <Text variant="heading2xl" as="h1">Reports</Text>
+              <div style={{ color: '#005BD3' }}>
+                <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
+              </div>
+            </InlineStack>
+            <Text as="p">
+              Use this page to navigate through different reports.
+            </Text>
+          </Box>
+        </Layout.Section>
+        <Layout.Section>
+          <Box paddingBlockEnd="2000">
+            <Request title="Pending Requests" data={pendingSubscrbers} type="pending" />
+            <Request title="Sent Requests" data={notifiedSubscrbers} type="sent" />
+          </Box>
+        </Layout.Section>
       </Layout>
     </Page>
   );
