@@ -1,8 +1,9 @@
-import type { IndexFiltersProps} from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack } from "@shopify/polaris";
+import type { IndexFiltersProps, TabProps } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack, InlineGrid, ButtonGroup, Popover, Button } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import { ChevronDownIcon } from '@shopify/polaris-icons';
 
 export default function Request({ title, data, type }: {
   title: string,
@@ -25,17 +26,17 @@ export default function Request({ title, data, type }: {
   const primaryAction: IndexFiltersProps["primaryAction"] =
     selected === 0
       ? {
-          type: "save-as",
-          onAction: () => {},
-          disabled: false,
-          loading: false,
-        }
+        type: "save-as",
+        onAction: () => { },
+        disabled: false,
+        loading: false,
+      }
       : {
-          type: "save",
-          onAction: () => {},
-          disabled: false,
-          loading: false,
-        };
+        type: "save",
+        onAction: () => { },
+        disabled: false,
+        loading: false,
+      };
 
   const resourceName = {
     singular: 'Request',
@@ -53,7 +54,6 @@ export default function Request({ title, data, type }: {
 
   let rows = [] as any;
   data.forEach((elm: any) => {
-    console.log(elm);
     const date: any = type == 'sent' ? elm?.updatedAt : elm?.createdAt;
     rows.push({
       id: elm.id,
@@ -71,20 +71,20 @@ export default function Request({ title, data, type }: {
     return (
       <InlineStack gap="300" blockAlign="center">
         <Box>
-          <img src={url} height="40px" width="40px" alt="product"/>
+          <img src={url} height="40px" width="40px" alt="product" />
         </Box>
         <Text as="p">{title}</Text>
       </InlineStack>
     );
   }
 
-  function StatusBadge({ status } : { status: string }) {
+  function StatusBadge({ status }: { status: string }) {
     switch (status) {
       case 'view':
         return <Badge>View</Badge>
       case 'add_to_cart':
         return <Badge tone="info">Added to Cart</Badge>
-        case 'completed':
+      case 'completed':
         return <Badge tone="success">Completed</Badge>
       default:
         return <></>
@@ -186,39 +186,77 @@ export default function Request({ title, data, type }: {
   ];
 
   return (
-    <Layout.Section>
+    <>
       <Box paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
-      <IndexFilters
-      sortOptions={sortOptions}
-      sortSelected={sortSelected}
-      queryValue={queryValue}
-      queryPlaceholder="Searching in all"
-      onQueryChange={handleFiltersQueryChange}
-      onQueryClear={() => setQueryValue("")}
-      onSort={setSortSelected}
-      primaryAction={primaryAction}
-      cancelAction={{
-        onAction: () => {},
-        disabled: false,
-        loading: false,
-      }}
-      tabs={[]}
-      selected={selected}
-      onSelect={setSelected}
-      canCreateNewView
-      onCreateNewView={async (name) =>  false}
-      filters={filters}
-      appliedFilters={[]}
-      onClearAll={() => {}}
-      mode={mode}
-      setMode={setMode}
-    />
+      <Box
+        background="bg-surface"
+        borderStartEndRadius="200"
+        borderStartStartRadius="200"
+      >
+      <InlineStack align="space-between" wrap={false}>
+        {selectedResources.length ?
+        <Box
+          borderBlockEndWidth="050"
+          borderColor="border"
+          padding="200"
+        >
+         <ButtonGroup variant="segmented">
+          <Button onClick={() => toggleActive()} variant="primary">Actions</Button>
+
+          <Popover
+            active={active}
+            preferredAlignment="right"
+            activator={
+              <Button
+                variant="primary"
+                onClick={() => toggleActive()}
+                icon={ChevronDownIcon}
+                accessibilityLabel="Other save actions"
+              />
+            }
+            autofocusTarget="first-node"
+            onClose={() => toggleActive()}
+          >
+            {type === 'pending' ? (
+              <PendingActionList selectedRow={selectedResources} />
+            ) : (
+              <NotificationSentActionList selectedRow={selectedResources} />
+            )}
+          </Popover>
+        </ButtonGroup> </Box> : <></>}
+        <IndexFilters
+          sortOptions={sortOptions}
+          sortSelected={sortSelected}
+          queryValue={queryValue}
+          queryPlaceholder="Searching in all"
+          onQueryChange={handleFiltersQueryChange}
+          onQueryClear={() => setQueryValue("")}
+          onSort={setSortSelected}
+          primaryAction={primaryAction}
+          canCreateNewView={false}
+          cancelAction={{
+            onAction: () => { },
+            disabled: false,
+            loading: false,
+          }}
+          tabs={[]}
+          selected={selected}
+          onSelect={setSelected}
+          filters={filters}
+          appliedFilters={[]}
+          onClearAll={() => { }}
+          mode={mode}
+          setMode={setMode}
+        />
+      </InlineStack>
+      </Box>
       <IndexTable
         itemCount={data.length}
         resourceName={resourceName}
         sortColumnIndex={0}
+        filterCon
         selectedItemsCount={
           allResourcesSelected ? 'All' : selectedResources.length
         }
@@ -246,11 +284,11 @@ export default function Request({ title, data, type }: {
             formData.append("skip", skip);
             submit(formData, { method: "post" });
           }
-          }}
+        }}
       >
         {rowMarkup}
       </IndexTable>
 
-    </Layout.Section >
+    </>
   );
 }
