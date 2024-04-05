@@ -191,7 +191,6 @@ export default function Request({ title, data, type }: {
   ];
 
   function fetchNext(type: string) {
-    console.log(count);
     let pageParam = 'ppage';
     if (type == 'sent') {
       pageParam = 'spage';
