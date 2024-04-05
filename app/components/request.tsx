@@ -1,9 +1,8 @@
 import type { IndexFiltersProps} from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import { useActionData, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import './request.scss'
 
 export default function Request({ title, data, type }: {
   title: string,
@@ -54,12 +53,14 @@ export default function Request({ title, data, type }: {
 
   let rows = [] as any;
   data.forEach((elm: any) => {
+    console.log(elm);
+    const date: any = type == 'sent' ? elm?.updatedAt : elm?.createdAt;
     rows.push({
       id: elm.id,
       product: elm?.productInfo.productTitle,
       imageURL: elm?.productInfo.imageURL,
       email: elm?.customerEmail,
-      date: new Intl.DateTimeFormat('en-US', options).format(new Date(elm?.updatedAt)),
+      date: new Intl.DateTimeFormat('en-US', options).format(new Date(date)),
       vendor: elm?.productInfo.vendor
     })
   });
@@ -73,6 +74,19 @@ export default function Request({ title, data, type }: {
       </div>
       <Text as="p">{title}</Text>
     </div>
+  }
+
+  function StatusBadge({ status } : { status: string }) {
+    switch (status) {
+      case 'view':
+        return <Badge>View</Badge>
+      case 'add_to_cart':
+        return <Badge tone="info">Added to Cart</Badge>
+        case 'completed':
+        return <Badge tone="success">Completed</Badge>
+      default:
+        return <></>
+    }
   }
 
 
@@ -89,7 +103,7 @@ export default function Request({ title, data, type }: {
         </IndexTable.Cell>
         <IndexTable.Cell>{email}</IndexTable.Cell>
         <IndexTable.Cell>{date}</IndexTable.Cell>
-        <IndexTable.Cell>{vendor}</IndexTable.Cell>
+        <IndexTable.Cell>{type == 'sent' ? <StatusBadge status="completed" /> : vendor}</IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
@@ -208,8 +222,8 @@ export default function Request({ title, data, type }: {
           headings={[
             { title: 'Product' },
             { title: 'Contact' },
-            { title: 'Requested On' },
-            { title: 'Vendor' }
+            { title: type == 'sent' ? 'Sent On' : 'Requested On' },
+            { title: type == 'sent' ? 'Status' : 'Vendor' }
           ]}
           pagination={{
             hasNext: true,

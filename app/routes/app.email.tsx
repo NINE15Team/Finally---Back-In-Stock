@@ -16,8 +16,6 @@ import { getStoreInfoShopify } from "../services/store-info.service";
 import { authenticate } from "../shopify.server";
 import { Form, useActionData, useLoaderData } from "@remix-run/react";
 import { Modal, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
-import '../components/base.scss';
-import '../components/form.scss';
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {

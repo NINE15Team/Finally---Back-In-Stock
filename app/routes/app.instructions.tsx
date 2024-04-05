@@ -1,7 +1,5 @@
 import { BlockStack, Box, Button, Layout, Page, Spinner, Text } from '@shopify/polaris';
 import { useNavigation } from '@remix-run/react';
-import '../components/base.scss';
-import '../components/instruction.scss';
 
 import step1 from "../image/step_1.png";
 import step2 from "../image/step_2.png";

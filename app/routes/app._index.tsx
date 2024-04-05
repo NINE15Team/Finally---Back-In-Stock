@@ -4,7 +4,6 @@ import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
-import '../components/base.scss';
 
 import { Layout, Page } from "@shopify/polaris";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
