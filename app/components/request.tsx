@@ -4,7 +4,6 @@ import { useCallback, useState } from "react";
 import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
-import { count } from "console";
 
 export default function Request({ title, data, type }: {
   title: string,
