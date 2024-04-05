@@ -1,14 +1,13 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Layout, Page, Text, Link, Box, InlineStack } from "@shopify/polaris";
+import { Layout, Page, Text, Link, Box, InlineStack, BlockStack } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
 
-import Request from "~/components/request";
-import { findSubscribedProducts } from "~/services/product-info.service";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
-import { useLoaderData } from "@remix-run/react";
 import { findAllActivities } from "~/services/customer-activity.service";
+import PendingRequest from "~/components/pending-request";
+import SentRequest from "~/components/sent-request";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -59,7 +58,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 
 export default function Index() {
-  let { pendingSubscrbers, customerActivities } = useLoaderData<typeof loader>();
   return (
     <Page>
       <Layout>
@@ -78,8 +76,10 @@ export default function Index() {
         </Layout.Section>
         <Layout.Section>
           <Box paddingBlockEnd="2000">
-            <Request title="Pending Requests" data={pendingSubscrbers.items} count={pendingSubscrbers.count} type="pending" />
-            <Request title="Sent Requests" data={customerActivities.items} count={customerActivities.count} type="sent" />
+            <BlockStack gap="300">
+              <PendingRequest />
+              <SentRequest />
+            </BlockStack>
           </Box>
         </Layout.Section>
       </Layout>
