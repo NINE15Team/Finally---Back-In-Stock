@@ -1,9 +1,8 @@
-import type { IndexFiltersProps, TabProps } from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack, InlineGrid, ButtonGroup, Popover, Button } from "@shopify/polaris";
+import type { IndexFiltersProps } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Box, InlineStack, ButtonGroup, Popover, Button} from "@shopify/polaris";
 import { useCallback, useState } from "react";
-import { useActionData, useSubmit } from "@remix-run/react";
+import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
-import { ChevronDownIcon } from '@shopify/polaris-icons';
 
 export default function Request({ title, data, type }: {
   title: string,
@@ -17,27 +16,13 @@ export default function Request({ title, data, type }: {
   const [queryValue, setQueryValue] = useState("");
   const [selected, setSelected] = useState(0);
   const { mode, setMode } = useSetIndexFiltersMode();
+  const submit = useSubmit();
+  const [searchParams] = useSearchParams();
 
   const handleFiltersQueryChange = useCallback(
     (value: string) => setQueryValue(value),
     []
   );
-
-  const primaryAction: IndexFiltersProps["primaryAction"] =
-    selected === 0
-      ? {
-        type: "save-as",
-        onAction: () => { },
-        disabled: false,
-        loading: false,
-      }
-      : {
-        type: "save",
-        onAction: () => { },
-        disabled: false,
-        loading: false,
-      };
-
   const resourceName = {
     singular: 'Request',
     plural: 'Requests',
@@ -198,23 +183,22 @@ export default function Request({ title, data, type }: {
       <InlineStack align="space-between" wrap={false}>
         {selectedResources.length ?
         <Box
-          borderBlockEndWidth="050"
+          borderBlockEndWidth="025"
           borderColor="border"
           padding="200"
         >
          <ButtonGroup variant="segmented">
-          <Button onClick={() => toggleActive()} variant="primary">Actions</Button>
-
           <Popover
             active={active}
             preferredAlignment="right"
             activator={
               <Button
-                variant="primary"
+                variant="secondary"
                 onClick={() => toggleActive()}
-                icon={ChevronDownIcon}
-                accessibilityLabel="Other save actions"
-              />
+                disclosure={active ? 'up' : 'down'}
+              >
+                Actions
+              </Button>
             }
             autofocusTarget="first-node"
             onClose={() => toggleActive()}
@@ -234,7 +218,6 @@ export default function Request({ title, data, type }: {
           onQueryChange={handleFiltersQueryChange}
           onQueryClear={() => setQueryValue("")}
           onSort={setSortSelected}
-          primaryAction={primaryAction}
           canCreateNewView={false}
           cancelAction={{
             onAction: () => { },
@@ -256,7 +239,6 @@ export default function Request({ title, data, type }: {
         itemCount={data.length}
         resourceName={resourceName}
         sortColumnIndex={0}
-        filterCon
         selectedItemsCount={
           allResourcesSelected ? 'All' : selectedResources.length
         }
