@@ -1,4 +1,4 @@
-const API_URL = "https://lock-monte-isolated-blue.trycloudflare.com";
+const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
