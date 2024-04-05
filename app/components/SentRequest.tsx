@@ -57,15 +57,12 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
 
   const onSend = (selectedRow: any) => {
     let selected = [];
-
-    console.log(selectedRow, data)
     for (let d of data) {
       let idx = selectedRow.findIndex((sr: any) => d.id == sr);
       if (idx != -1) {
         selected.push(data[idx]);
       }
     }
-    console.log(selected);
     const formData = new FormData();
     formData.append("data", JSON.stringify(selected));
     formData.set('name', 'SEND_EMAIL_AGAIN');
@@ -75,9 +72,16 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
 
   const onSubscribe = (selectedRow: any) => {
     console.log("Re-Subscribe", selectedRow);
+    let selected = [];
+    for (let d of data) {
+      let idx = selectedRow.findIndex((sr: any) => d.id == sr);
+      if (idx != -1) {
+        selected.push(data[idx]);
+      }
+    }
     const formData = new FormData();
-    formData.append("ids", selectedRow);
-    formData.set('name', 'UNSUBSCRIBE');
+    formData.append("data", JSON.stringify(selected));
+    formData.set('name', 'SUBSCRIBE');
     submit(formData, { method: "post" });
     showToast('Customer Subscribed');
   }
@@ -204,12 +208,12 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
                   autofocusTarget="first-node"
                   onClose={() => toggleActive()}
                 >
-                  {/* <ActionList
+                  <ActionList
                     actionRole="menuitem"
                     items={[
                       { content: 'Send again', onAction: () => onSend(selectedResources) },
                       { content: 'Re-subscribe', onAction: () => onSubscribe(selectedResources) }]}
-                  /> */}
+                  />
                 </Popover>
               </ButtonGroup> </Box> : <></>}
           {data.length ? <IndexFilters

@@ -4,12 +4,13 @@ import { Layout, Page, Text, Link, Box, InlineStack, BlockStack } from "@shopify
 import { authenticate } from "../shopify.server";
 
 import { getStoreInfoShopify } from "~/services/store-info.service";
-import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
+import { findAllSubscribers, findByEmailAndProductInfo, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { findAllActivities } from "~/services/customer-activity.service";
 import PendingRequest from "~/components/PendingRequest";
 import { useLoaderData } from "@remix-run/react";
 import SentRequest from "~/components/SentRequest";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
+import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -24,21 +25,26 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
-  let { myshopify_domain }: any = await getStoreInfoShopify(admin);
+  let { myshopify_domain, name }: any = await getStoreInfoShopify(admin);
   let formData = await request.formData();
   let obj = Object.fromEntries(formData) as any;
   if (formData.get('name') == 'SEND_EMAIL') {
-    let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
+    let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain, storeName: name }))
     await notifyToCustomers(ids);
     return json({ 'action': 'send_email', status: true });
 
   } else if (formData.get('name') == 'SEND_EMAIL_AGAIN') {
-    let activities = obj['data'] as CustomerActivityDTO[];
-    let subscription = [];
-    // activities.forEach(elm=>{
-    // })
-    // let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
-    // await notifyToCustomers(ids);
+    let activities = JSON.parse(obj['data']) as CustomerActivityDTO[];
+    let subscriptions = [] as CustomerSubscriptionDTO[];
+    for (let elm of activities) {
+      subscriptions.push({
+        customerEmail: elm.customerEmail,
+        productInfoId: elm.productId,
+        shopifyURL: myshopify_domain,
+        storeName: name
+      })
+    }
+    await notifyToCustomers(subscriptions);
     return json({ 'action': 'send_email', status: true });
 
   } else if (formData.get('name') == 'UNSUBSCRIBE') {
@@ -48,9 +54,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return json({ 'action': 'unsubscribe', status: true });
 
   } else if (formData.get('name') == 'SUBSCRIBE') {
+    let activities = JSON.parse(obj['data']) as CustomerActivityDTO[];
+    let subscriptionIds = [] as any[];
+    for (let elm of activities) {
+      let subscription = await findByEmailAndProductInfo({ customerEmail: elm.customerEmail, productInfoId: elm.productId })
+      subscriptionIds.push(subscription?.id);
+    }
 
-    let ids = obj['ids'].split(',').map((Number));
-    await updateSubscribtionStatus(ids, true);
+    await updateSubscribtionStatus(subscriptionIds, true);
     return json({ 'action': 'subscribe', status: true });
 
   } else if (formData.get('name') == 'PENDING') {

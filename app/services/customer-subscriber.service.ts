@@ -224,5 +224,6 @@ export {
     unSubscribeProduct,
     updateSubscribtionStatus,
     countOfSubscribers,
-    notifyToCustomers
+    notifyToCustomers,
+    findByEmailAndProductInfo
 }
