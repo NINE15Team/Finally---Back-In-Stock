@@ -6,8 +6,10 @@ import { authenticate } from "../shopify.server";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { findAllActivities } from "~/services/customer-activity.service";
-import PendingRequest from "~/components/pending-request";
-import SentRequest from "~/components/sent-request";
+import PendingRequest from "~/components/PendingRequest";
+import { useLoaderData } from "@remix-run/react";
+import SentRequest from "~/components/SentRequest";
+import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -28,6 +30,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (formData.get('name') == 'SEND_EMAIL') {
     let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
     await notifyToCustomers(ids);
+    return json({ 'action': 'send_email', status: true });
+
+  } else if (formData.get('name') == 'SEND_EMAIL_AGAIN') {
+    let activities = obj['data'] as CustomerActivityDTO[];
+    let subscription = [];
+    // activities.forEach(elm=>{
+    // })
+    // let ids = obj['ids'].split(',').map((d: any) => ({ id: Number(d), shopifyURL: myshopify_domain }))
+    // await notifyToCustomers(ids);
     return json({ 'action': 'send_email', status: true });
 
   } else if (formData.get('name') == 'UNSUBSCRIBE') {
@@ -58,6 +69,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 
 export default function Index() {
+  let { pendingSubscrbers, customerActivities } = useLoaderData<any>();
+
   return (
     <Page>
       <Layout>
@@ -77,8 +90,8 @@ export default function Index() {
         <Layout.Section>
           <Box paddingBlockEnd="2000">
             <BlockStack gap="300">
-              <PendingRequest />
-              <SentRequest />
+              <PendingRequest data={pendingSubscrbers.items} count={pendingSubscrbers.count} />
+              <SentRequest data={customerActivities.items} count={customerActivities.count} />
             </BlockStack>
           </Box>
         </Layout.Section>

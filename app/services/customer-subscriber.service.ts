@@ -23,6 +23,26 @@ const findById = async (params: CustomerSubscriptionDTO) => {
     });
 };
 
+const findByEmailAndProductInfo = async (params: CustomerSubscriptionDTO) => {
+    return await prisma.customerSubscription.findFirst({
+        where: {
+            productInfo: {
+                id: params.productInfoId
+            },
+            customerEmail: params.customerEmail,
+        },
+        include: {
+            productInfo: {
+                include: {
+                    store: {
+
+                    }
+                }
+            }
+        }
+    });
+};
+
 const findAll = async (params: CustomerSubscriptionDTO) => {
     let clause = {} as Partial<CustomerSubscription>;
     if (params.isNotified !== undefined) {
@@ -145,7 +165,12 @@ const countOfSubscribers = async (storeURL: string) => {
 const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
     let emailInfo = await findEmailConfigByStoreURL(subscriberList[0].shopifyURL);
     for (const subscriber of subscriberList) {
-        let sub = await findById(subscriber);
+        let sub;
+        if (subscriber.id) {
+            sub = await findById(subscriber);
+        } else if (subscriber.customerEmail) {
+            sub = await findByEmailAndProductInfo(subscriber);
+        }
         let uuid = randomUUID();
         let { productInfo } = sub;
         if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {

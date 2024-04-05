@@ -1,23 +1,17 @@
+import { useLoaderData, useSubmit, useActionData, useSearchParams } from "@remix-run/react";
+import Request from "./request";
+import { ActionList, Badge } from "@shopify/polaris";
+
 import type { IndexFiltersProps } from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button} from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button } from "@shopify/polaris";
 import { useCallback, useState } from "react";
-import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
+import { } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
 
-export default function Request({ title, data, type, dateAttribute, attributeName, lastColName, lastColValue, lastColKey, actionsList }: {
-  title: string,
-  data: any[],
-  type: string,
-  count: number,
-  dateAttribute: string,
-  attributeName: string,
-  lastColName: string,
-  lastColValue: (value:any) => any,
-  lastColKey: string,
-  actionsList: (selectedRow: any[]) => any,
 
-}) {
+export default function PendingRequest({ data, count }: { data: any[], count: any }) {
+
   const shopifyBridge = useAppBridge();
   let actionResponse: any = useActionData<any>();
   const [sortSelected, setSortSelected] = useState(["A-Z"]);
@@ -26,12 +20,26 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
   const { mode, setMode } = useSetIndexFiltersMode();
   const [searchParams] = useSearchParams();
   const submit = useSubmit();
+  const [active, setActive] = useState<boolean>(false);
+  const hasNext = false;
+  const sortOptions: IndexFiltersProps["sortOptions"] = [
+    { label: "Product", value: "Product asc", directionLabel: "A-Z" },
+    { label: "Product", value: "Product desc", directionLabel: "Z-A" },
+    { label: "Contact", value: "Contact asc", directionLabel: "A-Z" },
+    { label: "Contact", value: "Contact desc", directionLabel: "Z-A" },
+    { label: "Requested On", value: "Requested On asc", directionLabel: "A-Z" },
+    { label: "Requested On", value: "Requested On desc", directionLabel: "Z-A" },
+    { label: "Vendor", value: "Vendor asc", directionLabel: "A-Z" },
+    { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
+  ];
 
   const handleFiltersQueryChange = useCallback(
     (value: string) => setQueryValue(value),
     []
   );
-
+  const showToast = (message: string) => {
+    shopifyBridge.toast.show(message, { duration: 3000 });
+  }
   const resourceName = {
     singular: 'Request',
     plural: 'Requests',
@@ -49,18 +57,37 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
   let rows = [] as any;
 
   data.forEach((elm: any) => {
-    const date: any = elm[dateAttribute];
     rows.push({
       id: elm.id,
       product: elm?.productInfo.productTitle,
       imageURL: elm?.productInfo.imageURL,
       email: elm?.customerEmail,
-      date: new Intl.DateTimeFormat('en-US', options).format(new Date(date)),
+      date: new Intl.DateTimeFormat('en-US', options).format(new Date(elm.updatedAt)),
       vendor: elm?.productInfo.vendor
     })
   });
-
   const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
+
+
+
+  const onSend = (selectedRow: any) => {
+    console.log("Send Manually", selectedRow);
+    const formData = new FormData();
+    formData.append("ids", selectedRow);
+    formData.set('name', 'SEND_EMAIL');
+    submit(formData, { method: "post" });
+    showToast('Message sent');
+  }
+
+  const onUnSubscribe = (selectedRow: any) => {
+    console.log("UnSubscribe", selectedRow);
+    const formData = new FormData();
+    formData.append("ids", selectedRow);
+    formData.set('name', 'UNSUBSCRIBE');
+    submit(formData, { method: "post" });
+    showToast('Customer Unsubscribed');
+  }
+
 
   function ImageTitle(url: string, title: string) {
     return (
@@ -86,41 +113,16 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
         </IndexTable.Cell>
         <IndexTable.Cell>{element.email}</IndexTable.Cell>
         <IndexTable.Cell>{element.date}</IndexTable.Cell>
-        <IndexTable.Cell>{lastColValue(element[lastColKey])} -  {lastColKey}</IndexTable.Cell>
+        <IndexTable.Cell> {element.vendor} </IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
-
-  const [active, setActive] = useState<boolean>(false);
 
   const toggleActive = () => {
     setActive(!active);
   };
 
-  const showToast = (message: string) => {
-    shopifyBridge.toast.show(message, { duration: 3000 });
-  }
-
-  if (actionResponse?.action == 'send_email') {
-    showToast('Message sent');
-  } else if (actionResponse?.action == 'subscribe') {
-    showToast('Customer Subscribed');
-  } else if (actionResponse?.action == 'unsubscribe') {
-    showToast('Customer Unsubscribed');
-  }
-
-  const sortOptions: IndexFiltersProps["sortOptions"] = [
-    { label: "Product", value: "Product asc", directionLabel: "A-Z" },
-    { label: "Product", value: "Product desc", directionLabel: "Z-A" },
-    { label: "Contact", value: "Contact asc", directionLabel: "A-Z" },
-    { label: "Contact", value: "Contact desc", directionLabel: "Z-A" },
-    { label: "Requested On", value: "Requested On asc", directionLabel: "A-Z" },
-    { label: "Requested On", value: "Requested On desc", directionLabel: "Z-A" },
-    { label: "Vendor", value: "Vendor asc", directionLabel: "A-Z" },
-    { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
-  ];
-
-  function fetchNext(type: string) {
+  function triggerPagination(type: string, operation: string) {
     let pageParam = 'ppage';
     if (type == 'sent') {
       pageParam = 'spage';
@@ -129,24 +131,11 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
     if (page == null || isNaN(page)) {
       page = 1;
     } else {
-      ++page;
-    }
-    const formData = new FormData();
-    formData.append("page", page);
-    formData.set('name', type.toUpperCase());
-    submit(formData, { method: "post" });
-  }
-
-  function fetchPrev(type: string) {
-    let pageParam = 'ppage';
-    if (type == 'sent') {
-      pageParam = 'spage';
-    }
-    let page: any = searchParams.get(pageParam);
-    if (page == null || isNaN(page)) {
-      page = 1;
-    } else {
-      --page;
+      if (operation == "+") {
+        ++page;
+      } else {
+        --page;
+      }
     }
     const formData = new FormData();
     formData.append("page", page);
@@ -157,7 +146,7 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
   return (
     <>
       <Box paddingBlockEnd="800">
-        <Text variant='headingLg' as='h2'>{title}</Text>
+        <Text variant='headingLg' as='h2'>Pending Requests</Text>
       </Box>
       <Box
         background="bg-surface"
@@ -188,7 +177,12 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
                   autofocusTarget="first-node"
                   onClose={() => toggleActive()}
                 >
-                  {actionsList(selectedResources)}
+                  <ActionList
+                    actionRole="menuitem"
+                    items={[
+                      { content: 'Send Manually', onAction: () => onSend(selectedResources) },
+                      { content: 'Unsubscribe', onAction: () => onUnSubscribe(selectedResources) }]}
+                  />
                 </Popover>
               </ButtonGroup> </Box> : <></>}
           {data.length ? <IndexFilters
@@ -227,18 +221,18 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
         headings={[
           { title: 'Product' },
           { title: 'Contact' },
-          { title: dateAttribute },
-          { title: lastColName }
+          { title: 'createdAt' },
+          { title: 'Vendor' }
         ]}
         pagination={{
           hasNext: true,
           hasPrevious: true,
           onNext: () => {
-            fetchNext(type);
+            triggerPagination("pending", "+");
           },
           onPrevious: () => {
-            fetchPrev(type);
-          }
+            triggerPagination("pending", "-");
+          },
         }}
       >
         {rowMarkup}
@@ -246,4 +240,7 @@ export default function Request({ title, data, type, dateAttribute, attributeNam
 
     </>
   );
+
+
+
 }
