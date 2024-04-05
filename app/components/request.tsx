@@ -1,8 +1,10 @@
-import type { IndexFiltersProps } from "@shopify/polaris";
-import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack } from "@shopify/polaris";
+import type { IndexFiltersProps, TabProps } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, ActionList, IndexFilters, useSetIndexFiltersMode, Badge, Layout, Box, InlineStack, InlineGrid, ButtonGroup, Popover, Button } from "@shopify/polaris";
 import { useCallback, useState } from "react";
 import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
+import { ChevronDownIcon } from '@shopify/polaris-icons';
+import { count } from "console";
 
 export default function Request({ title, data, type }: {
   title: string,
@@ -190,19 +192,17 @@ export default function Request({ title, data, type }: {
   ];
 
   function fetchNext(type: string) {
+    console.log(count);
     let pageParam = 'ppage';
-    let page: any;
     if (type == 'sent') {
-      pageParam = 'ppage';
+      pageParam = 'spage';
     }
-
-    page = searchParams.get(pageParam);
+    let page: any = searchParams.get(pageParam);
     if (page == null || isNaN(page)) {
-      page = 0;
+      page = 1;
     } else {
       ++page;
     }
-    let skip: any = 5 * page;
     const formData = new FormData();
     formData.append("page", page);
     formData.set('name', type.toUpperCase());
@@ -234,39 +234,77 @@ export default function Request({ title, data, type }: {
   }
 
   return (
-    <Layout.Section>
+    <>
       <Box paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
-      <IndexFilters
-        sortOptions={sortOptions}
-        sortSelected={sortSelected}
-        queryValue={queryValue}
-        queryPlaceholder="Searching in all"
-        onQueryChange={handleFiltersQueryChange}
-        onQueryClear={() => setQueryValue("")}
-        onSort={setSortSelected}
-        primaryAction={primaryAction}
-        cancelAction={{
-          onAction: () => { },
-          disabled: false,
-          loading: false,
-        }}
-        tabs={[]}
-        selected={selected}
-        onSelect={setSelected}
-        canCreateNewView
-        onCreateNewView={async (name) => false}
-        filters={filters}
-        appliedFilters={[]}
-        onClearAll={() => { }}
-        mode={mode}
-        setMode={setMode}
-      />
+      <Box
+        background="bg-surface"
+        borderStartEndRadius="200"
+        borderStartStartRadius="200"
+      >
+        <InlineStack align="space-between" wrap={false}>
+          {selectedResources.length ?
+            <Box
+              borderBlockEndWidth="050"
+              borderColor="border"
+              padding="200"
+            >
+              <ButtonGroup variant="segmented">
+                <Button onClick={() => toggleActive()} variant="primary">Actions</Button>
+
+                <Popover
+                  active={active}
+                  preferredAlignment="right"
+                  activator={
+                    <Button
+                      variant="primary"
+                      onClick={() => toggleActive()}
+                      icon={ChevronDownIcon}
+                      accessibilityLabel="Other save actions"
+                    />
+                  }
+                  autofocusTarget="first-node"
+                  onClose={() => toggleActive()}
+                >
+                  {type === 'pending' ? (
+                    <PendingActionList selectedRow={selectedResources} />
+                  ) : (
+                    <NotificationSentActionList selectedRow={selectedResources} />
+                  )}
+                </Popover>
+              </ButtonGroup> </Box> : <></>}
+          <IndexFilters
+            sortOptions={sortOptions}
+            sortSelected={sortSelected}
+            queryValue={queryValue}
+            queryPlaceholder="Searching in all"
+            onQueryChange={handleFiltersQueryChange}
+            onQueryClear={() => setQueryValue("")}
+            onSort={setSortSelected}
+            primaryAction={primaryAction}
+            canCreateNewView={false}
+            cancelAction={{
+              onAction: () => { },
+              disabled: false,
+              loading: false,
+            }}
+            tabs={[]}
+            selected={selected}
+            onSelect={setSelected}
+            filters={filters}
+            appliedFilters={[]}
+            onClearAll={() => { }}
+            mode={mode}
+            setMode={setMode}
+          />
+        </InlineStack>
+      </Box>
       <IndexTable
         itemCount={data.length}
         resourceName={resourceName}
         sortColumnIndex={0}
+        filterCon
         selectedItemsCount={
           allResourcesSelected ? 'All' : selectedResources.length
         }
@@ -291,6 +329,6 @@ export default function Request({ title, data, type }: {
         {rowMarkup}
       </IndexTable>
 
-    </Layout.Section >
+    </>
   );
 }

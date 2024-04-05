@@ -16,7 +16,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url)
   const pendingPage = Number(url.searchParams.get("ppage")) || 0;
   const sentPage = Number(url.searchParams.get("spage")) || 0;
-  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage });
+  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage * 5 });
   const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: 5, skip: sentPage });
   return { pendingSubscrbers, customerActivities, shopifyURL: myshopify_domain };
 };
@@ -78,7 +78,7 @@ export default function Index() {
         </Layout.Section>
         <Layout.Section>
           <Box paddingBlockEnd="2000">
-            <Request title="Pending Requests" data={pendingSubscrbers.items} count={pendingSubscrbers.count}  type="pending" />
+            <Request title="Pending Requests" data={pendingSubscrbers.items} count={pendingSubscrbers.count} type="pending" />
             <Request title="Sent Requests" data={customerActivities.items} count={customerActivities.count} type="sent" />
           </Box>
         </Layout.Section>
