@@ -176,19 +176,15 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
 
   return (
     <>
-      <Box paddingBlockEnd="800">
+      <Box>
         <Text variant='headingLg' as='h2'>Sent Requests</Text>
       </Box>
       <Box
         background="bg-surface"
-        borderStartEndRadius="200"
-        borderStartStartRadius="200"
       >
         <InlineStack align="space-between" wrap={false}>
           {selectedResources.length ?
             <Box
-              borderBlockEndWidth="050"
-              borderColor="border"
               padding="200"
             >
               <ButtonGroup variant="segmented">

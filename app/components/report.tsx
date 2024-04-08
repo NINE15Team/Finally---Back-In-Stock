@@ -50,7 +50,7 @@ export default function Report({ title, pagination, data }: {
   }
 
   return (
-    <Layout.Section>
+    <>
       <Box paddingBlockStart="800" paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
@@ -72,6 +72,7 @@ export default function Report({ title, pagination, data }: {
           rows={rows}
         />
       </Box>
-    </Layout.Section>
+    </>
+
   );
 }

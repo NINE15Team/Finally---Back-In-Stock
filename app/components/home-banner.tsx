@@ -20,20 +20,18 @@ export default function HomeBanner() {
         <div style={{ marginBottom: "32px" }}>
           <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
         </div>
+        {isRequested ?
+          <>
+            <CountRequest countPending={newSubscribers} countSentNotification={totalNotifications} />
+            <Report title="Popular Products" pagination={false} data={subscribedProducts} />
+          </>
+          :
+          <>
+            <NoRequest />
+            <Checklist />
+          </>
+        }
       </Layout.Section>
-      {isRequested ?
-        <>
-          <CountRequest />
-          <Report title="Popular Products" pagination={false} data={subscribedProducts} />
-
-        </>
-        :
-        <>
-          <NoRequest />
-          <Checklist />
-        </>
-      }
-
     </>
   );
 }
