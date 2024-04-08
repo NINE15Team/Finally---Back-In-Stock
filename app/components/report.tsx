@@ -1,4 +1,4 @@
-import { Box, DataTable, IndexTable, InlineStack, Text } from "@shopify/polaris";
+import { Box, Card, DataTable, IndexTable, InlineStack, Text } from "@shopify/polaris";
 import { useI18n } from '@shopify/react-i18n';
 
 export default function Report({ title, pagination, data }: {
@@ -10,14 +10,8 @@ export default function Report({ title, pagination, data }: {
   const [i18n] = useI18n();
   const rows: any = [];
   const resourceName = {
-    singular: 'Request',
-    plural: 'Requests',
-  };
-
-  const options: any = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+    singular: 'Report',
+    plural: 'Reports',
   };
 
   data.forEach((prodInfo, index) => {
@@ -72,7 +66,7 @@ export default function Report({ title, pagination, data }: {
       <Box paddingBlockStart="800" paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
-      <Box paddingBlockEnd="2000">
+      <Card padding="0">
         <IndexTable
           resourceName={resourceName}
           itemCount={data.length}
@@ -86,7 +80,7 @@ export default function Report({ title, pagination, data }: {
         >
           {rowMarkup}
         </IndexTable>
-      </Box>
+      </Card>
     </>
 
   );

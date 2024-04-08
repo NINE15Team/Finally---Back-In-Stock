@@ -1,6 +1,6 @@
 import { useLoaderData, useSubmit, useActionData, useSearchParams } from "@remix-run/react";
 import Request from "./request";
-import { ActionList, Badge } from "@shopify/polaris";
+import { ActionList, Badge, Card } from "@shopify/polaris";
 
 import type { IndexFiltersProps } from "@shopify/polaris";
 import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button } from "@shopify/polaris";
@@ -145,9 +145,10 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
 
   return (
     <>
-      <Box paddingBlockEnd="800">
+      <Box paddingBlockEnd="500" paddingBlockStart="500">
         <Text variant='headingLg' as='h2'>Pending Requests</Text>
       </Box>
+
       <Box
         background="bg-surface"
         borderStartEndRadius="200"
@@ -187,34 +188,35 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
               </ButtonGroup> </Box> : <></>}
         </InlineStack>
       </Box>
-      <IndexTable
-        itemCount={data.length}
-        resourceName={resourceName}
-        sortColumnIndex={0}
-        selectedItemsCount={
-          allResourcesSelected ? 'All' : selectedResources.length
-        }
-        onSelectionChange={handleSelectionChange}
-        headings={[
-          { title: 'Product', alignment: 'start' },
-          { title: 'Contact', alignment: 'start' },
-          { title: 'createdAt', alignment: 'start' },
-          { title: 'Vendor', alignment: 'start' }
-        ]}
-        pagination={{
-          hasNext: true,
-          hasPrevious: true,
-          onNext: () => {
-            triggerPagination("pending", "+");
-          },
-          onPrevious: () => {
-            triggerPagination("pending", "-");
-          },
-        }}
-      >
-        {rowMarkup}
-      </IndexTable>
-
+      <Card padding="0">
+        <IndexTable
+          itemCount={data.length}
+          resourceName={resourceName}
+          sortColumnIndex={0}
+          selectedItemsCount={
+            allResourcesSelected ? 'All' : selectedResources.length
+          }
+          onSelectionChange={handleSelectionChange}
+          headings={[
+            { title: 'Product', alignment: 'start' },
+            { title: 'Contact', alignment: 'start' },
+            { title: 'createdAt', alignment: 'start' },
+            { title: 'Vendor', alignment: 'start' }
+          ]}
+          pagination={{
+            hasNext: true,
+            hasPrevious: true,
+            onNext: () => {
+              triggerPagination("pending", "+");
+            },
+            onPrevious: () => {
+              triggerPagination("pending", "-");
+            },
+          }}
+        >
+          {rowMarkup}
+        </IndexTable>
+      </Card>
     </>
   );
 

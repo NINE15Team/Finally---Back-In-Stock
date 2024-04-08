@@ -1,5 +1,5 @@
 import { useSubmit, useActionData, useSearchParams } from "@remix-run/react";
-import { ActionList, Badge } from "@shopify/polaris";
+import { ActionList, Badge, Card } from "@shopify/polaris";
 
 import type { IndexFiltersProps } from "@shopify/polaris";
 import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button } from "@shopify/polaris";
@@ -176,7 +176,7 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
 
   return (
     <>
-      <Box>
+      <Box paddingBlockEnd="500" paddingBlockStart="500">
         <Text variant='headingLg' as='h2'>Sent Requests</Text>
       </Box>
       <Box
@@ -214,33 +214,35 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
               </ButtonGroup> </Box> : <></>}
         </InlineStack>
       </Box>
-      <IndexTable
-        itemCount={data.length}
-        resourceName={resourceName}
-        sortColumnIndex={0}
-        selectedItemsCount={
-          allResourcesSelected ? 'All' : selectedResources.length
-        }
-        onSelectionChange={handleSelectionChange}
-        headings={[
-          { title: 'Product' },
-          { title: 'Contact' },
-          { title: 'Sent On' },
-          { title: 'Status' }
-        ]}
-        pagination={{
-          hasNext: hasNext('sent', count),
-          hasPrevious: true,
-          onNext: () => {
-            triggerPagination("sent", "+");
-          },
-          onPrevious: () => {
-            triggerPagination("sent", "-");
-          },
-        }}
-      >
-        {rowMarkup}
-      </IndexTable>
+      <Card padding="0">
+        <IndexTable
+          itemCount={data.length}
+          resourceName={resourceName}
+          sortColumnIndex={0}
+          selectedItemsCount={
+            allResourcesSelected ? 'All' : selectedResources.length
+          }
+          onSelectionChange={handleSelectionChange}
+          headings={[
+            { title: 'Product' },
+            { title: 'Contact' },
+            { title: 'Sent On' },
+            { title: 'Status' }
+          ]}
+          pagination={{
+            hasNext: hasNext('sent', count),
+            hasPrevious: true,
+            onNext: () => {
+              triggerPagination("sent", "+");
+            },
+            onPrevious: () => {
+              triggerPagination("sent", "-");
+            },
+          }}
+        >
+          {rowMarkup}
+        </IndexTable>
+      </Card>
 
     </>
   );
