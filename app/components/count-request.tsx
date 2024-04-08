@@ -4,7 +4,7 @@ import { useLoaderData } from "@remix-run/react";
 export default function CountRequest({ countPending, countSentNotification }: { countPending: any, countSentNotification: any }) {
 
   return (
-    <Box borderRadius="150" borderColor="border" borderWidth="025" background="bg-fill" shadow="600">
+    <Box borderRadius="150" borderColor="border" borderWidth="025" background="bg-fill">
       <InlineGrid gap="400" columns={2}>
         <Box padding="500" minHeight="179px" borderInlineEndWidth="025" borderColor="border">
           <Text as="p">New Requests</Text>
