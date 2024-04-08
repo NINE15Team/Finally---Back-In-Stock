@@ -6,11 +6,11 @@ import { authenticate } from "../shopify.server";
 import { getStoreInfoShopify } from "~/services/store-info.service";
 import { findAllSubscribers, findByEmailAndProductInfo, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { findAllActivities } from "~/services/customer-activity.service";
-import PendingRequest from "~/components/PendingRequest";
 import { useLoaderData } from "@remix-run/react";
-import SentRequest from "~/components/SentRequest";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
+import PendingRequest from "~/components/pending-request";
+import SentRequest from "~/components/sent-request";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
