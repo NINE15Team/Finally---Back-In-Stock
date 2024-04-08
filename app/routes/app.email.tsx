@@ -12,7 +12,7 @@ import {
   InlineStack,
   Divider,
 } from "@shopify/polaris";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { findEmailConfigByStoreURL, saveOrUpdate } from "../services/email.service";
 import { getStoreInfoShopify } from "../services/store-info.service";
 import { authenticate } from "../shopify.server";
@@ -36,6 +36,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
+  document.body.style.backgroundColor = 'white';
   let { emailConfig, shopifyURL } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const shopifyBridge = useAppBridge();
@@ -50,11 +51,19 @@ export default function Index() {
     shopifyBridge.modal.show('info-modal');
   }
 
+  useEffect(() => {
+    const originalBackgroundColor = document.body.style.backgroundColor;
+    document.body.style.backgroundColor = 'white';
+    return () => {
+      document.body.style.backgroundColor = 'unset';
+    };
+  }, []);
+
   return (
     <Page>
       <Layout>
-        <Layout.Section>
-          <Box paddingBlockEnd="800">
+        <Layout.Section >
+          <Box paddingBlockEnd="800" background="--p-color-bg-fill-brand">
             <InlineStack align='space-between'>
               <Text variant="headingXl" as="h1">Settings</Text>
               <div style={{ color: '#005BD3' }}>
@@ -95,7 +104,7 @@ export default function Index() {
                       autoComplete="off"
                       name="headerContent"
                     />
-                    <div style={{height: "155px"}}>
+                    <div style={{ height: "155px" }}>
                       <TextField
                         value={form.bodyContent}
                         onChange={(val) => handleChange("bodyContent", val)}
