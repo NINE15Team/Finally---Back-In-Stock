@@ -56,6 +56,7 @@ export default function Report({ title, pagination, data }: {
       </Box>
       <Box paddingBlockEnd="2000">
         <DataTable
+          verticalAlign="middle"
           columnContentTypes={[
             'text',
             'numeric',
@@ -69,25 +70,6 @@ export default function Report({ title, pagination, data }: {
             <Text key={1} as="p" alignment="end">Potential Income</Text>
           ]}
           rows={rows}
-          pagination={pagination ? {
-            hasNext: true,
-            onNext: () => {
-              let take: any = searchParams.get('take') || 2;
-              let skip: any = searchParams.get('skip');
-              if (skip == null || isNaN(skip)) {
-                skip = 1;
-              }
-              skip = (skip * take);
-              if (isNaN(skip)) {
-                skip = 0
-              }
-              const formData = new FormData();
-              formData.append("take", take);
-              formData.append("skip", skip);
-              submit(formData, { method: "post" });
-            },
-          } : undefined}
-
         />
       </Box>
     </Layout.Section>

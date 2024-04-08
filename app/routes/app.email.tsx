@@ -36,7 +36,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  // document.body.style.backgroundColor = 'white';
   let { emailConfig, shopifyURL } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const shopifyBridge = useAppBridge();
@@ -50,13 +49,6 @@ export default function Index() {
   if (actionData?.id) {
     shopifyBridge.modal.show('info-modal');
   }
-
-  useEffect(() => {
-    // document.body.style.backgroundColor = 'white';
-    // return () => {
-    //   document.body.style.backgroundColor = 'unset';
-    // };
-  }, []);
 
   return (
     <Page>
