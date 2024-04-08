@@ -36,7 +36,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  document.body.style.backgroundColor = 'white';
+  // document.body.style.backgroundColor = 'white';
   let { emailConfig, shopifyURL } = useLoaderData<typeof loader>();
   const actionData = useActionData<typeof action>();
   const shopifyBridge = useAppBridge();
@@ -52,11 +52,10 @@ export default function Index() {
   }
 
   useEffect(() => {
-    const originalBackgroundColor = document.body.style.backgroundColor;
-    document.body.style.backgroundColor = 'white';
-    return () => {
-      document.body.style.backgroundColor = 'unset';
-    };
+    // document.body.style.backgroundColor = 'white';
+    // return () => {
+    //   document.body.style.backgroundColor = 'unset';
+    // };
   }, []);
 
   return (
@@ -82,7 +81,7 @@ export default function Index() {
                 </Box>
                 <Text as="p">Customize notification emails customers receive when products are back in stock.</Text>
               </Box>
-              <Box borderColor="border" borderWidth="025" borderRadius="300" paddingBlock="500" paddingInline="1200">
+              <Box borderColor="border" borderWidth="025" borderRadius="300" paddingBlock="500" paddingInline="1200" background="bg-fill">
                 <Form method="POST">
                   <input type="hidden" name="shopifyURL" value={shopifyURL} />
                   <BlockStack gap="200">
