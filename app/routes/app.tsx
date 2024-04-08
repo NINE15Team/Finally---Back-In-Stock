@@ -31,14 +31,14 @@ export default function App() {
           <Link to="/app" rel="home">
             Home
           </Link>
-          <Link to="/app/email" >
-            Email
-          </Link>
-          <Link to="/app/instructions">
-            QuickSetup Guide
-          </Link>
           <Link to="/app/reports">
             Reports
+          </Link>
+          <Link to="/app/email" >
+            Preferences
+          </Link>
+          <Link to="/app/instructions">
+            Support
           </Link>
         </ui-nav-menu>
         <Outlet />

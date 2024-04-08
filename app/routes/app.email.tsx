@@ -56,7 +56,7 @@ export default function Index() {
         <Layout.Section>
           <Box paddingBlockEnd="800">
             <InlineStack align='space-between'>
-              <Text variant="heading2xl" as="h1">Settings</Text>
+              <Text variant="headingXl" as="h1">Settings</Text>
               <div style={{ color: '#005BD3' }}>
                 <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
               </div>

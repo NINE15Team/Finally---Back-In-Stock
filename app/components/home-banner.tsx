@@ -12,7 +12,7 @@ export default function HomeBanner() {
     <>
       <Layout.Section>
         <InlineStack align='space-between'>
-          <Text variant="heading2xl" as="h1">Dashboard</Text>
+          <Text variant="headingXl" as="h1">Dashboard</Text>
           <div style={{color: '#005BD3'}}>
             <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
           </div>

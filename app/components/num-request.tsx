@@ -12,13 +12,13 @@ export default function NumRequest() {
           <Box  padding="500" minHeight="179px" borderInlineEndWidth="025" borderColor="border">
             <Text as="p">New Requests</Text>
             <Box paddingBlockStart="500">
-              <Text as="h1" variant="heading3xl">{newSubscribers || 0}</Text>
+              <Text as="h1" variant="headingXl">{newSubscribers || 0}</Text>
             </Box>
           </Box>
           <Box  padding="500" minHeight="179px">
             <Text as="p">Sent Notifications</Text>
             <Box paddingBlockStart="500">
-              <Text as="h1" variant="heading3xl">{totalNotifications || 0}</Text>
+              <Text as="h1" variant="headingXl">{totalNotifications || 0}</Text>
              </Box>
           </Box>
         </InlineGrid>

@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "de0f56b0104cb0768f7a45702a92cc91"
-name = "Finally Back In Stock"
+name = "Finally"
 application_url = "https://finally-back-in-stock-a2662c637241.herokuapp.com"
 embedded = true
 

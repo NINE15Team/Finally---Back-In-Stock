@@ -42,7 +42,7 @@ export default function Instructions({ showButton }: { showButton: boolean }) {
         <Layout.Section>
           <Box paddingBlockEnd="800">
             <InlineStack align='start'>
-              <Text variant="heading2xl" as="h1">Support</Text>
+              <Text variant="headingXl" as="h1">Support</Text>
             </InlineStack>
             <Text as="p">
               Use this page as a reference to our installation guide, or to reach out to us if you have any questions or comments.
