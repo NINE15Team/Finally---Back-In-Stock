@@ -1,6 +1,5 @@
-import { Box, DataTable, InlineStack, Layout, Text } from "@shopify/polaris";
-import { useSearchParams, useSubmit } from "@remix-run/react";
-import { I18nContext, useI18n } from '@shopify/react-i18n';
+import { Box, DataTable, IndexTable, InlineStack, Text } from "@shopify/polaris";
+import { useI18n } from '@shopify/react-i18n';
 
 export default function Report({ title, pagination, data }: {
   title: string,
@@ -9,9 +8,17 @@ export default function Report({ title, pagination, data }: {
 
 }) {
   const [i18n] = useI18n();
-  const submit = useSubmit();
-  const [searchParams] = useSearchParams();
   const rows: any = [];
+  const resourceName = {
+    singular: 'Request',
+    plural: 'Requests',
+  };
+
+  const options: any = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
 
   data.forEach((prodInfo, index) => {
     const price = i18n.formatCurrency(prodInfo.price, {
@@ -22,13 +29,32 @@ export default function Report({ title, pagination, data }: {
       currency: 'USD',
       form: 'short',
     });
-    rows.push([
-      ImageTitle(prodInfo.imageURL, prodInfo.productTitle),
-      BoldText(prodInfo.customerSubscription?.length),
-      <Text key={index} as="p" alignment="center">{price}</Text>,
-      <Text key={index} as="p" alignment="end">{potentialPrice}</Text>,
-    ]);
+    rows.push({
+      id: prodInfo.id,
+      imageURL: prodInfo?.imageURL,
+      title: prodInfo?.productTitle,
+      totalSubscribers: prodInfo.customerSubscription?.length,
+      price: price,
+      potentialPrice: potentialPrice,
+    });
   });
+
+  const rowMarkup = rows.map(
+    (element: any, index: any) => (
+      <IndexTable.Row
+        id={element.id}
+        key={element.id}
+        position={index}
+      >
+        <IndexTable.Cell>
+          {ImageTitle(element.imageURL, element.title)}
+        </IndexTable.Cell>
+        <IndexTable.Cell><Text variant="headingSm" as="h6" alignment="justify">{element.totalSubscribers}</Text></IndexTable.Cell>
+        <IndexTable.Cell> <Text as="p" alignment="justify"> {element.price} </Text> </IndexTable.Cell>
+        <IndexTable.Cell> <Text as="p" alignment="justify">{element.potentialPrice}</Text>  </IndexTable.Cell>
+      </IndexTable.Row>
+    ),
+  );
 
   function ImageTitle(url: string, title: string) {
     return (
@@ -41,36 +67,25 @@ export default function Report({ title, pagination, data }: {
     );
   }
 
-  function BoldText(content: any) {
-    return (
-      <Text variant="headingSm" as="h6" alignment="center">
-        {content}
-      </Text>
-    )
-  }
-
   return (
     <>
       <Box paddingBlockStart="800" paddingBlockEnd="800">
         <Text variant='headingLg' as='h2'>{title}</Text>
       </Box>
       <Box paddingBlockEnd="2000">
-        <DataTable
-          verticalAlign="middle"
-          columnContentTypes={[
-            'text',
-            'numeric',
-            'text',
-            'text',
-          ]}
+        <IndexTable
+          resourceName={resourceName}
+          itemCount={data.length}
           headings={[
-            'Product',
-            <Text key={1} as="p" alignment="center">Requests</Text>,
-            <Text key={1} as="p" alignment="center">Price</Text>,
-            <Text key={1} as="p" alignment="end">Potential Income</Text>
+            { title: 'Product', alignment: 'start' },
+            { title: 'Requests', alignment: 'start' },
+            { title: 'Price', alignment: 'start' },
+            { title: 'Potential Income', alignment: 'start' },
           ]}
-          rows={rows}
-        />
+          selectable={false}
+        >
+          {rowMarkup}
+        </IndexTable>
       </Box>
     </>
 

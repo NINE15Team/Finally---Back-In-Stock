@@ -97,8 +97,6 @@ export default function Index() {
               Use this page to navigate through different reports.
             </Text>
           </Box>
-        </Layout.Section>
-        <Layout.Section>
           <Box paddingBlockEnd="2000">
             <BlockStack gap="300">
               <PendingRequest data={pendingSubscrbers.items} count={pendingSubscrbers.count} />

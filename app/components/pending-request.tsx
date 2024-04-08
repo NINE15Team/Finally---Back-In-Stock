@@ -185,29 +185,6 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
                   />
                 </Popover>
               </ButtonGroup> </Box> : <></>}
-          {data.length ? <IndexFilters
-            sortOptions={sortOptions}
-            sortSelected={sortSelected}
-            queryValue={queryValue}
-            queryPlaceholder="Searching in all"
-            onQueryChange={handleFiltersQueryChange}
-            onQueryClear={() => setQueryValue("")}
-            onSort={setSortSelected}
-            canCreateNewView={false}
-            cancelAction={{
-              onAction: () => { },
-              disabled: false,
-              loading: false,
-            }}
-            tabs={[]}
-            selected={selected}
-            onSelect={setSelected}
-            filters={filters}
-            appliedFilters={[]}
-            onClearAll={() => { }}
-            mode={mode}
-            setMode={setMode}
-          /> : <></>}
         </InlineStack>
       </Box>
       <IndexTable
@@ -219,10 +196,10 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
         }
         onSelectionChange={handleSelectionChange}
         headings={[
-          { title: 'Product' },
-          { title: 'Contact' },
-          { title: 'createdAt' },
-          { title: 'Vendor' }
+          { title: 'Product', alignment: 'start' },
+          { title: 'Contact', alignment: 'start' },
+          { title: 'createdAt', alignment: 'start' },
+          { title: 'Vendor', alignment: 'start' }
         ]}
         pagination={{
           hasNext: true,

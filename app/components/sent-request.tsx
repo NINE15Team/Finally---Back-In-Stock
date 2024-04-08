@@ -212,29 +212,6 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
                   />
                 </Popover>
               </ButtonGroup> </Box> : <></>}
-          {data.length ? <IndexFilters
-            sortOptions={sortOptions}
-            sortSelected={sortSelected}
-            queryValue={queryValue}
-            queryPlaceholder="Searching in all"
-            onQueryChange={handleFiltersQueryChange}
-            onQueryClear={() => setQueryValue("")}
-            onSort={setSortSelected}
-            canCreateNewView={false}
-            cancelAction={{
-              onAction: () => { },
-              disabled: false,
-              loading: false,
-            }}
-            tabs={[]}
-            selected={selected}
-            onSelect={setSelected}
-            filters={filters}
-            appliedFilters={[]}
-            onClearAll={() => { }}
-            mode={mode}
-            setMode={setMode}
-          /> : <></>}
         </InlineStack>
       </Box>
       <IndexTable
