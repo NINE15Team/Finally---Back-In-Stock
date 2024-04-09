@@ -4,7 +4,7 @@ import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
-import { InlineStack, Layout, Link, Page, Text } from "@shopify/polaris";
+import { Box, InlineStack, Layout, Link, Page, Text } from "@shopify/polaris";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
 import { useLoaderData } from "@remix-run/react";
 import CountRequest from "~/components/count-request";
@@ -58,16 +58,16 @@ export default function Index() {
           <div style={{ marginBottom: "32px" }}>
             <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
           </div>
-          { totalNotifications || newSubscribers ?
-            <>
+          {totalNotifications || newSubscribers ?
+            <Box>
               <CountRequest countPending={newSubscribers} countSentNotification={totalNotifications} />
               <Report title="Popular Products" pagination={false} data={subscribedProducts} />
-            </>
+            </Box>
             :
-            <>
+            <Box>
               <NoRequest />
               <Checklist />
-            </>
+            </Box>
           }
         </Layout.Section>
       </Layout>

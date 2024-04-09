@@ -11,6 +11,8 @@ import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import PendingRequest from "~/components/pending-request";
 import SentRequest from "~/components/sent-request";
+import CountRequest from "~/components/count-request";
+import { sumNoOfNotifications } from "~/services/notification-history.service";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -20,7 +22,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const sentPage = Number(url.searchParams.get("spage")) || 0;
   const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage * 5 });
   const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: 5, skip: sentPage * 5 });
-  return { pendingSubscrbers, customerActivities, shopifyURL: myshopify_domain };
+  const totalNotifications = await sumNoOfNotifications(myshopify_domain);
+
+  return { pendingSubscrbers, customerActivities, totalNotifications, shopifyURL: myshopify_domain };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -80,7 +84,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 
 export default function Index() {
-  let { pendingSubscrbers, customerActivities } = useLoaderData<any>();
+  let { pendingSubscrbers, customerActivities, totalNotifications } = useLoaderData<any>();
 
   return (
     <Page>
@@ -97,9 +101,13 @@ export default function Index() {
               Use this page to navigate through different reports.
             </Text>
           </Box>
-          <Box paddingBlockEnd="2000">
+          <Box paddingBlockEnd="2000" paddingBlockStart="1000">
             <BlockStack gap="300">
-              <PendingRequest data={pendingSubscrbers.items} count={pendingSubscrbers.count} />
+              {pendingSubscrbers.count > 0 || totalNotifications ?
+                <PendingRequest data={pendingSubscrbers.items} count={pendingSubscrbers.count} />
+                :
+                <CountRequest countPending={pendingSubscrbers.count} countSentNotification={totalNotifications} />
+              }
               <SentRequest data={customerActivities.items} count={customerActivities.count} />
             </BlockStack>
           </Box>

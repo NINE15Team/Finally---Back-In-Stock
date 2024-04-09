@@ -1,4 +1,4 @@
-import { Text, Box, InlineGrid, Layout } from "@shopify/polaris";
+import { Text, Box, InlineGrid } from "@shopify/polaris";
 
 export default function CountRequest({ countPending, countSentNotification }: { countPending: any, countSentNotification: any }) {
 
