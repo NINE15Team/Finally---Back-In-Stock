@@ -4,10 +4,13 @@ import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
 import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
-
-import { Layout, Page } from "@shopify/polaris";
+import { InlineStack, Layout, Link, Page, Text } from "@shopify/polaris";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
-import HomeBanner from "~/components/home-banner";
+import { useLoaderData } from "@remix-run/react";
+import CountRequest from "~/components/count-request";
+import Report from "~/components/report";
+import NoRequest from "~/components/no_request";
+import Checklist from "~/components/checklist";
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -36,23 +39,37 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
-  let shopInfo: any = await updateStoreInfo(admin);
-  await upsertEmail({
-    storeId: shopInfo.id,
-    shopifyURL: shopInfo.myshopify_domain,
-    title: shopInfo.name,
-    senderEmail: shopInfo.email
-  });
   return await isInitilized(admin);
 };
 
 export default function Index() {
-
+  let { totalNotifications, newSubscribers, subscribedProducts } = useLoaderData<any>();
 
   return (
     <Page>
       <Layout>
-        <HomeBanner />
+        <Layout.Section>
+          <InlineStack align='space-between'>
+            <Text variant="headingXl" as="h1">Dashboard</Text>
+            <div style={{ color: '#005BD3' }}>
+              <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
+            </div>
+          </InlineStack>
+          <div style={{ marginBottom: "32px" }}>
+            <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
+          </div>
+          { totalNotifications || newSubscribers ?
+            <>
+              <CountRequest countPending={newSubscribers} countSentNotification={totalNotifications} />
+              <Report title="Popular Products" pagination={false} data={subscribedProducts} />
+            </>
+            :
+            <>
+              <NoRequest />
+              <Checklist />
+            </>
+          }
+        </Layout.Section>
       </Layout>
     </Page>
   );

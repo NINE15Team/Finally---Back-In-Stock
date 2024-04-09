@@ -1,5 +1,4 @@
 import { Text, Box, InlineGrid, Layout } from "@shopify/polaris";
-import { useLoaderData } from "@remix-run/react";
 
 export default function CountRequest({ countPending, countSentNotification }: { countPending: any, countSentNotification: any }) {
 
