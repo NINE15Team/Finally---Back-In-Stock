@@ -20,10 +20,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const url = new URL(request.url)
   let pendingPage = Number(url.searchParams.get("ppage")) || 0;
   let sentPage = Number(url.searchParams.get("spage")) || 0;
-  if (pendingPage < 0) {
+  if (isNaN(pendingPage) || pendingPage < 0) {
     pendingPage = 1;
   }
-  if (sentPage < 0) {
+  if (isNaN(sentPage) || sentPage < 0) {
     sentPage = 1;
   }
   const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage * 5 });
