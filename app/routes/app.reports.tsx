@@ -18,8 +18,14 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
   let { myshopify_domain }: any = await getStoreInfoShopify(admin);
   const url = new URL(request.url)
-  const pendingPage = Number(url.searchParams.get("ppage")) || 0;
-  const sentPage = Number(url.searchParams.get("spage")) || 0;
+  let pendingPage = Number(url.searchParams.get("ppage")) || 0;
+  let sentPage = Number(url.searchParams.get("spage")) || 0;
+  if (pendingPage < 0) {
+    pendingPage = 1;
+  }
+  if (sentPage < 0) {
+    sentPage = 1;
+  }
   const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: 5, skip: pendingPage * 5 });
   const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: 5, skip: sentPage * 5 });
   const totalNotifications = await sumNoOfNotifications(myshopify_domain);
