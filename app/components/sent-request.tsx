@@ -159,10 +159,12 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
         --page;
       }
     }
-    const formData = new FormData();
-    formData.append("page", page);
-    formData.set('name', type.toUpperCase());
-    submit(formData, { method: "post" });
+    if (page >= 0) {
+      const formData = new FormData();
+      formData.append("page", page);
+      formData.set('name', type.toUpperCase());
+      submit(formData, { method: "post" });
+    }
   }
 
   const hasNext = (param: any, count: any) => {

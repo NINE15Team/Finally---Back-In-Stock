@@ -137,10 +137,12 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
         --page;
       }
     }
-    const formData = new FormData();
-    formData.append("page", page);
-    formData.set('name', type.toUpperCase());
-    submit(formData, { method: "post" });
+    if (page >= 0) {
+      const formData = new FormData();
+      formData.append("page", page);
+      formData.set('name', type.toUpperCase());
+      submit(formData, { method: "post" });
+    }
   }
 
   return (

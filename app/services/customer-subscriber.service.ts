@@ -171,40 +171,42 @@ const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
         } else if (subscriber.customerEmail) {
             sub = await findByEmailAndProductInfo(subscriber);
         }
-        let uuid = randomUUID();
-        let { productInfo } = sub;
-        if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
-            console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
-            return false
-        } else {
-            let resp = await sendEmail({
-                title: `Product Restock ${productInfo.productTitle}`,
-                toEmail: sub?.customerEmail,
-                senderEmail: emailInfo?.senderEmail,
-                subscriberId: sub?.id,
-                bodyContent: emailInfo?.bodyContent,
-                headerContent: emailInfo?.headerContent,
-                footerContent: emailInfo?.footerContent,
-                buttonContent: emailInfo?.buttonContent,
-                shopifyURL: subscriberList[0].shopifyURL,
-                storeName: subscriberList[0].storeName,
-                uuid: uuid,
-                productInfo: {
-                    productTitle: productInfo.productTitle,
-                    productHandle: productInfo.productHandle,
-                    variantId: productInfo.variantId,
-                    price: productInfo.price,
-                    imageURL: productInfo.imageURL,
-                    variantTitle: productInfo.variantTitle
-                }
-            })
-            await setCustomerNotified(sub?.customerEmail!, productInfo.id);
-            console.log(`Notified to ${sub?.customerEmail}`, resp);
-            await saveNotificationHistory({
-                uuid: uuid,
-                noOfNotifications: 1,
-                productInfoId: productInfo.id
-            });
+        if (sub != undefined && sub != null) {
+            let uuid = randomUUID();
+            let { productInfo } = sub;
+            if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
+                console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
+                return false
+            } else {
+                let resp = await sendEmail({
+                    title: `Product Restock ${productInfo.productTitle}`,
+                    toEmail: sub?.customerEmail,
+                    senderEmail: emailInfo?.senderEmail,
+                    subscriberId: sub?.id,
+                    bodyContent: emailInfo?.bodyContent,
+                    headerContent: emailInfo?.headerContent,
+                    footerContent: emailInfo?.footerContent,
+                    buttonContent: emailInfo?.buttonContent,
+                    shopifyURL: subscriberList[0].shopifyURL,
+                    storeName: subscriberList[0].storeName,
+                    uuid: uuid,
+                    productInfo: {
+                        productTitle: productInfo.productTitle,
+                        productHandle: productInfo.productHandle,
+                        variantId: productInfo.variantId,
+                        price: productInfo.price,
+                        imageURL: productInfo.imageURL,
+                        variantTitle: productInfo.variantTitle
+                    }
+                })
+                await setCustomerNotified(sub?.customerEmail!, productInfo.id);
+                console.log(`Notified to ${sub?.customerEmail}`, resp);
+                await saveNotificationHistory({
+                    uuid: uuid,
+                    noOfNotifications: 1,
+                    productInfoId: productInfo.id
+                });
+            }
         }
     }
     return subscriberList;
