@@ -84,18 +84,20 @@ export default function Index() {
                       autoComplete="off"
                       name="title"
                     />
-                    <Box paddingBlock="1200">
+                    <Box paddingBlock="200">
                       <Divider borderColor="border" borderWidth="025" />
                     </Box>
-                    <TextField
-                      value={form.headerContent}
-                      onChange={(val) => handleChange("headerContent", val)}
-                      label="Header Content"
-                      placeholder="Good News!"
-                      autoComplete="off"
-                      name="headerContent"
-                    />
-                    <div style={{ height: "155px" }}>
+                    <Box paddingBlock="200">
+                      <TextField
+                        value={form.headerContent}
+                        onChange={(val) => handleChange("headerContent", val)}
+                        label="Header Content"
+                        placeholder="Good News!"
+                        autoComplete="off"
+                        name="headerContent"
+                      />
+                    </Box>
+                    <Box paddingBlock="200">
                       <TextField
                         value={form.bodyContent}
                         onChange={(val) => handleChange("bodyContent", val)}
@@ -106,23 +108,28 @@ export default function Index() {
                         name="bodyContent"
                         ariaExpanded
                       />
-                    </div>
-                    <TextField
-                      value={form.footerContent}
-                      onChange={(val) => handleChange("footerContent", val)}
-                      label="Footer Content"
-                      placeholder="If you have any concerns,please email xyz"
-                      autoComplete="off"
-                      name="footerContent"
-                    />
-                    <TextField
-                      value={form.buttonContent}
-                      onChange={(val) => handleChange("buttonContent", val)}
-                      label="Buy Button Label"
-                      placeholder="Checkout Now!"
-                      autoComplete="off"
-                      name="buttonContent"
-                    />
+                    </Box>
+                    <Box paddingBlock="200">
+                      <TextField
+                        value={form.footerContent}
+                        onChange={(val) => handleChange("footerContent", val)}
+                        label="Footer Content"
+                        placeholder="If you have any concerns,please email xyz"
+                        autoComplete="off"
+                        name="footerContent"
+                      />
+                    </Box>
+                    <Box paddingBlock="200">
+
+                      <TextField
+                        value={form.buttonContent}
+                        onChange={(val) => handleChange("buttonContent", val)}
+                        label="Buy Button Label"
+                        placeholder="Checkout Now!"
+                        autoComplete="off"
+                        name="buttonContent"
+                      />
+                    </Box>
                     <Box paddingBlockStart="200">
                       <Button variant="primary" submit={true}>Save</Button>
                     </Box>
