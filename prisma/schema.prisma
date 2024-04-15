@@ -64,6 +64,7 @@ model ProductInfo {
 model CustomerSubscription {
   id            Int         @id @default(autoincrement())
   productInfoId Int         @map("product_info_id")
+  customerPhone String      @default("") @map("customer_phone") @db.VarChar(15)
   customerEmail String      @default("Default Email") @map("customer_email") @db.VarChar(50)
   status        Boolean     @default(false) @map("status")
   isNotified    Boolean     @default(false) @map("is_notified")

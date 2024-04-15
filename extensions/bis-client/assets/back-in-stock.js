@@ -41,6 +41,7 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
+
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({
@@ -51,9 +52,10 @@ class BackInStock extends HTMLElement {
           variantId: variantId,
           imageURL: this.productInstance.featured_image,
           vendor: this.vendor,
-          price: Number(this.getVariant(variantId).price)/100,
+          price: Number(this.getVariant(variantId).price) / 100,
           variantTitle: this.getVariant(variantId).title,
-          email: formData.get("email")
+          email: formData.get("email"),
+          customerPhone: formData.get('telephone')
         }),
       }).then(r => r.json());
 

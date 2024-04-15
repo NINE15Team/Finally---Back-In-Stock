@@ -9,4 +9,5 @@ export interface CustomerSubscriptionDTO extends BaseDTO {
     isNotified?: boolean;
     isSubscribed?: boolean;
     isActive?: boolean;
+    customerPhone: string;
 }
