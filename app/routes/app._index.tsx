@@ -1,167 +1,76 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import {
-  useActionData,
-  useNavigation,
-  useSubmit,
-  useLoaderData,
-  useRevalidator,
-  json,
-  Form,
-} from "@remix-run/react";
-import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  BlockStack,
-  Link,
-  InlineStack,
-  DataTable,
-  Box,
-  FormLayout,
-  TextField,
-  Button,
-  ButtonGroup,
-  List,
-} from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
-import { findTotalPotentialRevenue } from "../services/customer-subscriber.service";
+import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo } from "../services/store-info.service";
-import { Modal, TitleBar, useAppBridge } from '@shopify/app-bridge-react';
-import { useState } from "react";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
+import { Box, InlineStack, Layout, Link, Page, Text } from "@shopify/polaris";
+import { sumNoOfNotifications } from "~/services/notification-history.service";
+import { useLoaderData } from "@remix-run/react";
+import CountRequest from "~/components/count-request";
+import Report from "~/components/report";
+import NoRequest from "~/components/no_request";
+import Checklist from "~/components/checklist";
+
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
-
-  let shopInfo: any = await updateStoreInfo(admin);
-  await upsertEmail({
-    storeId: shopInfo.id,
-    shopifyURL: shopInfo.myshopify_domain,
-    title: shopInfo.name,
-    senderEmail: shopInfo.email
-  });
-
-  const data = await findSubscribedProducts({ inStock: false, shopifyURL: shopInfo.myshopify_domain });
-  const { potentialRevenue } = await findTotalPotentialRevenue(shopInfo.myshopify_domain);
-  return { data, shopifyURL: shopInfo.myshopify_domain, storeName: shopInfo.name, potentialRevenue };
+  let { admin } = await authenticate.admin(request);
+  let initilized = await isInitilized(admin);
+  let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
+  if (!initilized) {
+    await activateWebPixel(admin);
+    await updateStoreInfo(admin);
+    await upsertEmail({
+      headerContent: 'Good News!',
+      bodyContent: 'Your product is back in stock and now available.',
+      footerContent: `If you have any questions, please feel free to ask by emailing ${email}`,
+      buttonContent: 'CHECKOUT NOW',
+      storeId: id,
+      shopifyURL: myshopify_domain,
+      title: name,
+      senderEmail: email
+    });
+  }
+  const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain });
+  const totalNotifications = await sumNoOfNotifications(myshopify_domain);
+  const newSubscribers = await countOfSubscribers(myshopify_domain);
+  return { subscribedProducts, totalNotifications, newSubscribers, shopifyURL: myshopify_domain, storeName: name, initilized };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
-  let { admin, session } = await authenticate.admin(request);
-  let formData = await request.formData();
-  let obj = Object.fromEntries(formData) as any;
+  let { admin } = await authenticate.admin(request);
+  return await isInitilized(admin);
 };
 
 export default function Index() {
-  const nav = useNavigation();
-  const actionData = useActionData<typeof action>();
-  const shopifyBridge = useAppBridge();
-  let { revalidate } = useRevalidator();
-  let { data, shopifyURL, storeName, potentialRevenue } = useLoaderData<typeof loader>();
-  let rows: any = [];
-  const [selectedProductInfo, setSelectedProductInfo] = useState({} as any);
-
-
-  for (let i = 0; i < data.length; i++) {
-    const productInfo = data[i];
-    rows.push([
-      productInfo.variantTitle,
-      productInfo.price,
-      RenderLink(productInfo.customerSubscription?.length, productInfo.id),
-      (Number(productInfo.price) * productInfo.customerSubscription?.length),
-    ]);
-  }
-  const refreshData = async () => {
-    revalidate();
-  };
-
-  const onNotifyCustomer = async () => {
-    console.log("notify start");
-    const response = await fetch(`/api/notify`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        shopifyURL: shopifyURL,
-        storeName: storeName,
-      }),
-    });
-    shopifyBridge.modal.show('info-modal');
-    revalidate();
-  };
-
-  function RenderLink(content: any, productInfoId: any) {
-    const handleClick = () => {
-      let productInfo: any = data.filter(d => d.id == productInfoId)[0];
-      console.log(productInfo);
-      setSelectedProductInfo(productInfo)
-      shopifyBridge.modal.show('email-list-modal');
-    };
-    // Return the Link component with the onClick handler attached
-    return <Link onClick={handleClick}>{content}</Link>;
-  }
+  let { totalNotifications, newSubscribers, subscribedProducts } = useLoaderData<any>();
 
   return (
     <Page>
-      <ui-title-bar title="Back In Stock">
-        <button variant="primary" onClick={refreshData}>
-          Reload Data
-        </button>
-      </ui-title-bar>
-      <Modal id="info-modal">
-        <p style={{ padding: '20px' }}>Email notification has been processed </p>
-        <TitleBar title="Notification Message"></TitleBar>
-      </Modal>
-
-      <Modal id="email-list-modal">
-        <List type="bullet">
-          <ul>
-            {selectedProductInfo?.customerSubscription?.map((elm: any) => (
-              <List.Item key={elm.customerEmail}>{elm.customerEmail} -  {elm.isNotified ? 'Notified' : 'Not Notify Yet'}</List.Item>
-            ))}
-          </ul>
-        </List>
-        <TitleBar title="Subscribers List"></TitleBar>
-      </Modal>
-
-
-      <BlockStack gap="400">
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="200">
-                <DataTable
-                  columnContentTypes={["text", "text", "text", "text"]}
-                  headings={["Product Variant", "Price", "Subscribers", "Potential Revenue"]}
-                  rows={rows}
-                  totals={['', '', '', `${potentialRevenue ? `$${potentialRevenue}` : 'NILL'}`]}
-                  pagination={{
-                    hasNext: true,
-                    onNext: () => { },
-                  }}
-                />
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-
-          <Layout.Section variant="oneThird">
-            <BlockStack gap="500">
-              <Card>
-                <BlockStack gap="200">
-                  <BlockStack gap="200">
-                    <Button variant="primary" onClick={onNotifyCustomer}>
-                      Notify Customers
-                    </Button>
-                  </BlockStack>
-                </BlockStack>
-              </Card>
-            </BlockStack>
-          </Layout.Section>
-        </Layout>
-      </BlockStack>
+      <Layout>
+        <Layout.Section>
+          <InlineStack align='space-between'>
+            <Text variant="headingXl" as="h1">Dashboard</Text>
+            <div style={{ color: '#005BD3' }}>
+              <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
+            </div>
+          </InlineStack>
+          <div style={{ marginBottom: "32px" }}>
+            <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
+          </div>
+          {totalNotifications || newSubscribers ?
+            <Box>
+              <CountRequest countPending={newSubscribers} countSentNotification={totalNotifications} />
+              <Report title="Popular Products" pagination={false} data={subscribedProducts} />
+            </Box>
+            :
+            <Box>
+              <NoRequest />
+              <Checklist />
+            </Box>
+          }
+        </Layout.Section>
+      </Layout>
     </Page>
   );
 }

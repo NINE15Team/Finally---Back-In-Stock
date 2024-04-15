@@ -6,12 +6,26 @@
 
 {% assign out_of_stock_form_class = 'none' %}
 {% assign blockSettings = block.settings %}
-{% if blockSettings.product.selected_or_first_available_variant.available == false %}
+{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
+<style>
+  #{{ block.id }} form {
+    padding-left: {{blockSettings.padding_left}}px;
+    padding-right: {{blockSettings.padding_right}}px;
+  }
+  {% capture block_css %}{{ blockSettings.custom_css }}{% endcapture %}
+  {% if block_css != blank %}
+    {% assign block_id_selector = '#' | append: block.id %}
+    {{ block_css | replace: '==', block_id_selector | strip_html | escape }}
+  {% endif %}
+</style>
 <script src="{{ 'back-in-stock.js' | asset_url}}" async></script>
 <script type="application/json" id="bis-product-json">
   {{ product | json }}
+</script>
+<script>
+  console.log({{ product | json }})
 </script>
 <back-in-stock
   data-store="{{ shop.permanent_domain }}"
@@ -20,13 +34,15 @@
   data-product-title="{{ product.title }}"
   data-variant-id="{{ product.selected_or_first_available_variant.id }}"
   data-variant-title="{{ product.selected_or_first_available_variant.title }}"
+  data-vendor="{{ product.vendor }}"
+  id="{{ block.id }}"
 >
   <form
     class="out-of-stock {{ out_of_stock_form_class }}"
     style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }}"
   >
-    <h3>{{ blockSettings.form_title }}</h3>
-    <p>{{ blockSettings.description }}</p>
+    <h3 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h3>
+    <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
     <label for="email">Email</label>
     <div class="wrapper">
       <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}">
@@ -101,7 +117,7 @@
       "type": "text",
       "id": "form_title",
       "label": "Title",
-      "default": "Notify Me! When Available"
+      "default": "Notify me when available"
     },
     {
       "type": "richtext",
@@ -131,6 +147,39 @@
       "id": "button_text",
       "label": "Button text",
       "default": "Submit"
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Left",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Padding Right",
+      "default": 0
+    },
+    {
+      "type": "liquid",
+      "id": "custom_css",
+      "label": "Custom CSS"
+    },
+    {
+      "type": "paragraph",
+      "content": "To apply CSS exclusively to this block, use '==' to reference its parent container. For example, to adjust the font size of headings within this block, you can use:"
+    },
+    {
+      "type": "paragraph",
+      "content": "== h3 { font-size: 20px; }"
     }
   ]
 }

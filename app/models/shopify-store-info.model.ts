@@ -1,4 +1,4 @@
-import { ProductInfo } from './product-info.model';
+import type { ProductInfo } from './product-info.model';
 
 export class ShopifyStoreInfo {
     id: number;
@@ -7,6 +7,7 @@ export class ShopifyStoreInfo {
     shopifyURL: string;
     createdAt: Date;
     updatedAt: Date;
+    isInitilized: boolean;
     isActive: boolean;
     productInfo?: ProductInfo[];
 
@@ -17,6 +18,7 @@ export class ShopifyStoreInfo {
         shopifyURL: string,
         createdAt: Date,
         updatedAt: Date,
+        isInitilized: boolean,
         isActive: boolean,
         productInfo: ProductInfo[]
     ) {
@@ -26,6 +28,7 @@ export class ShopifyStoreInfo {
         this.shopifyURL = shopifyURL;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isInitilized = isInitilized;
         this.isActive = isActive;
         this.productInfo = productInfo;
 

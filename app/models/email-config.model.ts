@@ -1,5 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { ShopifyStoreInfo } from "./shopify-store-info.model";
+import type { ShopifyStoreInfo } from "./shopify-store-info.model";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 
 export class EmailConfiguration {

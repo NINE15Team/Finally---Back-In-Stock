@@ -1,4 +1,4 @@
-const API_URL = "https://matches-virgin-isa-peru.trycloudflare.com";
+const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -9,12 +9,12 @@ class BackInStock extends HTMLElement {
     this.productHandle = this.dataset.productHandle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
+    this.vendor = this.dataset.vendor;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
     this.initializeListeners();
   }
 
   initializeListeners() {
-    console.log(this.productInstance, this.hasVariantSelectElm());
     if (this.hasVariantSelectElm()) {
       let prodInstance = this.productInstance;
       let $form = this.form;
@@ -41,31 +41,22 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      const API_URL = "https://forward-tied-contests-alerts.trycloudflare.com";
-      const body = {
-        shopifyURL: this.shopifyURL,
-        productHandle: this.productHandle,
-        productId: this.productId,
-        productTitle: this.productTitle,
-        variantId: variantId,
-        imageURL: this.productInstance.featured_image,
-        price: this.getVariant(variantId).price,
-        variantTitle: this.getVariant(variantId).title,
-        email: formData.get("email"),
-      }
 
-      const telephone = formData.get('telephone')
-      if(telephone) {
-        if(!isNaN(telephone) && telephone.length == 11) {
-          body.tel = telephone
-        } else {
-          alert('Invalid Phone number');
-          return false;
-        }
-      }
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          shopifyURL: this.shopifyURL,
+          productHandle: this.productHandle,
+          productId: this.productId,
+          productTitle: this.productTitle,
+          variantId: variantId,
+          imageURL: this.productInstance.featured_image,
+          vendor: this.vendor,
+          price: Number(this.getVariant(variantId).price) / 100,
+          variantTitle: this.getVariant(variantId).title,
+          email: formData.get("email"),
+          customerPhone: formData.get('telephone')
+        }),
       }).then(r => r.json());
 
       if (response?.status) {

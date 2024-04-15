@@ -1,8 +1,10 @@
-import { CustomerSubscription } from "@prisma/client";
-import { findAll as findProducts } from "../services/product-info.service";
+import { CustomerSubscription, Prisma } from "@prisma/client";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
+import { findEmailConfigByStoreURL, sendEmail } from "./email.service";
+import { randomUUID } from "crypto";
+import { saveNotificationHistory } from "./notification-history.service";
 
 const findById = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findFirst({
@@ -21,17 +23,51 @@ const findById = async (params: CustomerSubscriptionDTO) => {
     });
 };
 
-
-const findAll = async (params: CustomerSubscriptionDTO) => {
-    return await prisma.customerSubscription.findMany({
+const findByEmailAndProductInfo = async (params: CustomerSubscriptionDTO) => {
+    return await prisma.customerSubscription.findFirst({
         where: {
             productInfo: {
-                inStock: false,
+                id: params.productInfoId
+            },
+            customerEmail: params.customerEmail,
+        },
+        include: {
+            productInfo: {
+                include: {
+                    store: {
+
+                    }
+                }
+            }
+        }
+    });
+};
+
+const findAll = async (params: CustomerSubscriptionDTO) => {
+    let clause = {} as Partial<CustomerSubscription>;
+    if (params.isNotified !== undefined) {
+        clause.isNotified = params.isNotified
+    }
+    let count = await prisma.customerSubscription.count({
+        where: {
+            productInfo: {
                 store: {
                     shopifyURL: params.shopifyURL
                 }
             },
-            isNotified: params?.isNotified,
+            ...clause
+        }
+    })
+    let items = await prisma.customerSubscription.findMany({
+        skip: params.skip || 0,
+        take: params.take || 5,
+        where: {
+            productInfo: {
+                store: {
+                    shopifyURL: params.shopifyURL
+                }
+            },
+            ...clause
         },
         include: {
             productInfo: {
@@ -40,7 +76,11 @@ const findAll = async (params: CustomerSubscriptionDTO) => {
                 }
             },
         },
+        orderBy: {
+            updatedAt: 'desc',
+        }
     });
+    return { items, count }
 };
 
 const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
@@ -55,7 +95,7 @@ const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
             isNotified: false,
             isSubscribed: true,
             updatedAt: new Date(),
-            customerTel: subscribeItem.tel
+            customerPhone: subscribeItem.customerPhone
         },
         create: {
             customerEmail: subscribeItem.customerEmail,
@@ -106,5 +146,87 @@ const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialR
     return { potentialRevenue: result[0].sum }
 };
 
+const countOfSubscribers = async (storeURL: string) => {
+    const count = await prisma.customerSubscription.count({
+        where: {
+            productInfo: {
+                store: {
+                    shopifyURL: storeURL
+                }
+            },
+            AND: [
+                { isSubscribed: true },
+                { isNotified: false },
+            ],
+        },
+    });
+    return count;
+};
 
-export { findById, findAll, subscribeProduct, setCustomerNotified, findTotalPotentialRevenue, unSubscribeProduct }
+const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
+    let emailInfo = await findEmailConfigByStoreURL(subscriberList[0].shopifyURL);
+    for (const subscriber of subscriberList) {
+        let sub;
+        if (subscriber.id) {
+            sub = await findById(subscriber);
+        } else if (subscriber.customerEmail) {
+            sub = await findByEmailAndProductInfo(subscriber);
+        }
+        if (sub != undefined && sub != null) {
+            let uuid = randomUUID();
+            let { productInfo } = sub;
+            if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
+                console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
+                return false
+            } else {
+                let resp = await sendEmail({
+                    title: `Product Restock ${productInfo.productTitle}`,
+                    toEmail: sub?.customerEmail,
+                    senderEmail: emailInfo?.senderEmail,
+                    subscriberId: sub?.id,
+                    bodyContent: emailInfo?.bodyContent,
+                    headerContent: emailInfo?.headerContent,
+                    footerContent: emailInfo?.footerContent,
+                    buttonContent: emailInfo?.buttonContent,
+                    shopifyURL: subscriberList[0].shopifyURL,
+                    storeName: subscriberList[0].storeName,
+                    uuid: uuid,
+                    productInfo: {
+                        productTitle: productInfo.productTitle,
+                        productHandle: productInfo.productHandle,
+                        variantId: productInfo.variantId,
+                        price: productInfo.price,
+                        imageURL: productInfo.imageURL,
+                        variantTitle: productInfo.variantTitle
+                    }
+                })
+                await setCustomerNotified(sub?.customerEmail!, productInfo.id);
+                console.log(`Notified to ${sub?.customerEmail}`, resp);
+                await saveNotificationHistory({
+                    uuid: uuid,
+                    noOfNotifications: 1,
+                    productInfoId: productInfo.id
+                });
+            }
+        }
+    }
+    return subscriberList;
+}
+
+const updateSubscribtionStatus = async (ids: number[], isSubscribed: boolean) => {
+    return await prisma.$executeRaw`UPDATE customer_subscription SET is_subscribed = ${isSubscribed} WHERE id IN (${Prisma.join(ids)})`;
+};
+
+
+export {
+    findById,
+    findAll as findAllSubscribers,
+    subscribeProduct,
+    setCustomerNotified,
+    findTotalPotentialRevenue,
+    unSubscribeProduct,
+    updateSubscribtionStatus,
+    countOfSubscribers,
+    notifyToCustomers,
+    findByEmailAndProductInfo
+}
