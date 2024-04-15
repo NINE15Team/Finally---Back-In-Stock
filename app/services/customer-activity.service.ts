@@ -1,11 +1,9 @@
 import { findByProductAndVariantId, } from "./product-info.service";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
-import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { findNotificationHistoryByUUId } from "./notification-history.service";
 import { CustomerActivity } from "@prisma/client";
-import { json } from "@remix-run/node";
 
 const save = async (customerActivity: CustomerActivityDTO) => {
     console.log(customerActivity);

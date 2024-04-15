@@ -4,8 +4,8 @@ import { findStoreByURL } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import EncryptionUtil from "~/utils/encryption.util";
-import { EmailConfiguration } from "~/models/email-config.model";
 import invariant from "tiny-invariant";
+import { EmailConfiguartion } from "@prisma/client";
 
 
 const sendGridAdapter = async (
@@ -367,7 +367,7 @@ const findEmailConfigByStoreURL = async (url: any) => {
     where: {
       storeId: storeInfo?.id,
     },
-  }) || {} as EmailConfiguration;
+  }) || {} as EmailConfiguartion;
 };
 
 const findByStoreId = async (storeId: any) => {

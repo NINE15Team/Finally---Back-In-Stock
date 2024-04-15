@@ -1,6 +1,4 @@
-import { randomInt } from "crypto";
 import prisma from "../db.server";
-import { authenticate } from "../shopify.server";
 
 const saveStoreInfo = async (data: any) => {
     return await prisma.shopifyStoreInfo.upsert({
