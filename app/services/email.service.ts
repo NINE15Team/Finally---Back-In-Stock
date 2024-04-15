@@ -3,27 +3,19 @@ import prisma from "../db.server";
 import { findStoreByURL } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
-import { ProductInfoDTO } from "~/dto/product-info.dto";
-import { ProductInfo } from "~/models/product-info.model";
 import EncryptionUtil from "~/utils/encryption.util";
 import { EmailConfiguration } from "~/models/email-config.model";
+import invariant from "tiny-invariant";
 
-const loadConfig = () => {
-  let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
-  if (EMAIL_API_KEY == undefined) {
-    throw new Error("Email API Key is missing in .env flie");
-  }
-  if (EMAIL_API_URL == undefined) {
-    throw new Error("Email API URL is missing in .env flie");
-  }
-  return { EMAIL_API_URL, EMAIL_API_KEY };
-};
 
 const sendGridAdapter = async (
   uri: string,
   { data = {}, responseType = "json", method = "POST" } = {},
 ) => {
-  let { EMAIL_API_URL, EMAIL_API_KEY } = loadConfig();
+  let { EMAIL_API_URL, EMAIL_API_KEY } = process.env
+  invariant(process.env.EMAIL_API_URL, "Email API Key is missing in .env flie");
+  invariant(process.env.EMAIL_API_KEY, "Email API URL is missing in .env file");
+
   const requestOptions = {
     method: method,
     headers: {
