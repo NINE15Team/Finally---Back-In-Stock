@@ -94,11 +94,11 @@ const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
         update: {
             isNotified: false,
             isSubscribed: true,
-            updatedAt: new Date(),
-            customerPhone: subscribeItem.customerPhone
+            updatedAt: new Date()
         },
         create: {
             customerEmail: subscribeItem.customerEmail,
+            customerPhone: subscribeItem.customerPhone,
             isSubscribed: true,
             isNotified: false,
             createdAt: new Date(),
@@ -108,7 +108,6 @@ const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
                     id: subscribeItem.productInfoId
                 }
             },
-            customerTel: subscribeItem.tel
         }
     })
 };
