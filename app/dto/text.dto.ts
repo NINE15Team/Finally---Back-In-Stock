@@ -1,5 +1,4 @@
-import type { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
-import type { ProductInfoDTO } from "./product-info.dto";
+import { BaseDTO } from "./base.dto";
 
 export interface TextDTO extends BaseDTO {
   id?: number;
