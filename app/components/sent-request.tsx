@@ -3,25 +3,21 @@ import { ActionList, Badge, Card } from "@shopify/polaris";
 
 import type { IndexFiltersProps } from "@shopify/polaris";
 import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button } from "@shopify/polaris";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
+import Nine15Context from "~/context/nin15.context";
 
 export default function SentRequest({ data, count }: { data: any[], count: any }) {
+  const context = useContext(Nine15Context);
+  const totalPages = Math.ceil(count / context.offset);
+  const [page, setPage] = useState(0);
   const shopifyBridge = useAppBridge();
-  const [sortSelected, setSortSelected] = useState(["A-Z"]);
-  const [queryValue, setQueryValue] = useState("");
-  const [selected, setSelected] = useState(0);
-  const { mode, setMode } = useSetIndexFiltersMode();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const submit = useSubmit();
   const [active, setActive] = useState<boolean>(false);
 
-  const handleFiltersQueryChange = useCallback(
-    (value: string) => setQueryValue(value),
-    []
-  );
   const showToast = (message: string) => {
     shopifyBridge.toast.show(message, { duration: 3000 });
   }
@@ -35,9 +31,6 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
     month: 'long',
     day: 'numeric'
   };
-
-  const filters: any[] = [
-  ];
 
   let rows = [] as any;
 
@@ -132,49 +125,18 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
     setActive(!active);
   };
 
-
-  const sortOptions: IndexFiltersProps["sortOptions"] = [
-    { label: "Product", value: "Product asc", directionLabel: "A-Z" },
-    { label: "Product", value: "Product desc", directionLabel: "Z-A" },
-    { label: "Contact", value: "Contact asc", directionLabel: "A-Z" },
-    { label: "Contact", value: "Contact desc", directionLabel: "Z-A" },
-    { label: "Requested On", value: "Requested On asc", directionLabel: "A-Z" },
-    { label: "Requested On", value: "Requested On desc", directionLabel: "Z-A" },
-    { label: "Vendor", value: "Vendor asc", directionLabel: "A-Z" },
-    { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
-  ];
-
   function triggerPagination(type: string, operation: string) {
-    let pageParam = 'ppage';
-    if (type == 'sent') {
-      pageParam = 'spage';
-    }
-    let page: any = searchParams.get(pageParam);
-    if (page == null || isNaN(page)) {
-      page = 1;
-    } else {
-      if (operation == "+") {
-        ++page;
-      } else {
-        --page;
-      }
-    }
-    if (page >= 0) {
-      const formData = new FormData();
-      formData.append("page", page);
-      formData.set('name', type.toUpperCase());
-      submit(formData, { method: "post" });
-    }
+    setPage((prevPage) => {
+      const updatedPage = operation === "+" ? prevPage + 1 : Math.max(0, prevPage - 1);
+      console.log(updatedPage);
+      setSearchParams((prevParams) => {
+        prevParams.set("spage", updatedPage.toString());
+        return prevParams;
+      });
+      return updatedPage;
+    });
   }
 
-  const hasNext = (param: any, count: any) => {
-    let page: any = searchParams.get(param);
-    if (page == 0) {
-      page = 1;
-    }
-    const maxPages = Math.ceil(count / 5);
-    return page < maxPages;
-  }
 
   return (
     <>
@@ -232,8 +194,8 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
             { title: 'Status' }
           ]}
           pagination={{
-            hasNext: hasNext('sent', count),
-            hasPrevious: true,
+            hasNext: (page + 1) < totalPages,
+            hasPrevious: page > 0,
             onNext: () => {
               triggerPagination("sent", "+");
             },

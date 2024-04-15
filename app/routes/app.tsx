@@ -24,6 +24,7 @@ export default function App() {
     onError(error) {
     },
   });
+
   return (
     <I18nContext.Provider value={i18nManager}>
       <AppProvider isEmbeddedApp apiKey={apiKey} >

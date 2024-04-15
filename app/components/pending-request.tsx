@@ -4,39 +4,21 @@ import { ActionList, Badge, Card } from "@shopify/polaris";
 
 import type { IndexFiltersProps } from "@shopify/polaris";
 import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button } from "@shopify/polaris";
-import { useCallback, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
+import Nine15Context from "~/context/nin15.context";
 
 
 export default function PendingRequest({ data, count }: { data: any[], count: any }) {
-
+  const context = useContext(Nine15Context);
+  const totalPages = Math.ceil(count / context.offset);
   const shopifyBridge = useAppBridge();
-  let actionResponse: any = useActionData<any>();
-  const [sortSelected, setSortSelected] = useState(["A-Z"]);
-  const [queryValue, setQueryValue] = useState("");
-  const [selected, setSelected] = useState(0);
-  const { mode, setMode } = useSetIndexFiltersMode();
-  const [searchParams] = useSearchParams();
+  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
   const submit = useSubmit();
   const [active, setActive] = useState<boolean>(false);
-  const hasNext = false;
-  const sortOptions: IndexFiltersProps["sortOptions"] = [
-    { label: "Product", value: "Product asc", directionLabel: "A-Z" },
-    { label: "Product", value: "Product desc", directionLabel: "Z-A" },
-    { label: "Contact", value: "Contact asc", directionLabel: "A-Z" },
-    { label: "Contact", value: "Contact desc", directionLabel: "Z-A" },
-    { label: "Requested On", value: "Requested On asc", directionLabel: "A-Z" },
-    { label: "Requested On", value: "Requested On desc", directionLabel: "Z-A" },
-    { label: "Vendor", value: "Vendor asc", directionLabel: "A-Z" },
-    { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
-  ];
-
-  const handleFiltersQueryChange = useCallback(
-    (value: string) => setQueryValue(value),
-    []
-  );
   const showToast = (message: string) => {
     shopifyBridge.toast.show(message, { duration: 3000 });
   }
@@ -123,26 +105,15 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
   };
 
   function triggerPagination(type: string, operation: string) {
-    let pageParam = 'ppage';
-    if (type == 'sent') {
-      pageParam = 'spage';
-    }
-    let page: any = searchParams.get(pageParam);
-    if (page == null || isNaN(page)) {
-      page = 1;
-    } else {
-      if (operation == "+") {
-        ++page;
-      } else {
-        --page;
-      }
-    }
-    if (page >= 0) {
-      const formData = new FormData();
-      formData.append("page", page);
-      formData.set('name', type.toUpperCase());
-      submit(formData, { method: "post" });
-    }
+    setPage((prevPage) => {
+      const updatedPage = operation === "+" ? prevPage + 1 : Math.max(0, prevPage - 1);
+      setSearchParams((prevParams) => {
+        prevParams.set("ppage", updatedPage.toString());
+        return prevParams;
+      });
+      return updatedPage;
+    });
+
   }
 
   return (
@@ -206,8 +177,8 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
             { title: 'Vendor', alignment: 'start' }
           ]}
           pagination={{
-            hasNext: true,
-            hasPrevious: true,
+            hasNext: (page + 1) < totalPages,
+            hasPrevious: page > 0,
             onNext: () => {
               triggerPagination("pending", "+");
             },
