@@ -2,7 +2,7 @@
 
 client_id = "4be5fc9d1ae991fced4096c5f04e5665"
 name = "finally-bis-hadi"
-application_url = "https://forward-tied-contests-alerts.trycloudflare.com"
+application_url = "https://treasures-broadcasting-avoid-find.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://forward-tied-contests-alerts.trycloudflare.com/auth/callback",
-  "https://forward-tied-contests-alerts.trycloudflare.com/auth/shopify/callback",
-  "https://forward-tied-contests-alerts.trycloudflare.com/api/auth/callback"
+  "https://treasures-broadcasting-avoid-find.trycloudflare.com/auth/callback",
+  "https://treasures-broadcasting-avoid-find.trycloudflare.com/auth/shopify/callback",
+  "https://treasures-broadcasting-avoid-find.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
