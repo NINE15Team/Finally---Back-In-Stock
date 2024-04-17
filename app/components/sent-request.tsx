@@ -49,15 +49,9 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
 
 
   const onSend = (selectedRow: any) => {
-    let selected = [];
-    for (let d of data) {
-      let idx = selectedRow.findIndex((sr: any) => d.id == sr);
-      if (idx != -1) {
-        selected.push(data[idx]);
-      }
-    }
+    const selectedRowObj = data.filter(item => selectedRow.includes(item.id));
     const formData = new FormData();
-    formData.append("data", JSON.stringify(selected));
+    formData.append("data", JSON.stringify(selectedRowObj));
     formData.set('name', 'SEND_EMAIL_AGAIN');
     submit(formData, { method: "post" });
     showToast('Message sent');

@@ -53,7 +53,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       for (let elm of activities) {
         subscriptions.push({
           customerEmail: elm.customerEmail,
-          productInfoId: elm.productId,
+          productInfoId: elm.productInfoId,
           shopifyURL: myshopify_domain,
           storeName: name
         });
