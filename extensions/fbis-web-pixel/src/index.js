@@ -1,6 +1,6 @@
 import { register } from "@shopify/web-pixels-extension";
 
-const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
+const API_URL = "https://mate-chi-kirk-intensive.trycloudflare.com";
 
 register(({ configuration, analytics, browser, init }) => {
 

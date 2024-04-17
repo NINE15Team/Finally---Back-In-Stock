@@ -5,6 +5,7 @@ import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { findEmailConfigByStoreURL, sendEmail } from "./email.service";
 import { randomUUID } from "crypto";
 import { saveNotificationHistory } from "./notification-history.service";
+import { sendSMS } from "./text.service";
 
 const findById = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findFirst({
@@ -171,7 +172,7 @@ const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
         } else if (subscriber.customerEmail) {
             sub = await findByEmailAndProductInfo(subscriber);
         }
-        if (sub != undefined && sub != null) {
+        if (sub != undefined && sub != null && sub.productInfo.inStock) {
             let uuid = randomUUID();
             let { productInfo } = sub;
             if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
@@ -199,6 +200,13 @@ const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
                         variantTitle: productInfo.variantTitle
                     }
                 })
+                if (sub.customerPhone || true) {
+                    let productURL = `${subscriberList[0].shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}`;
+                    let smsResp = await sendSMS({
+                        body: `Good news! Product ${productInfo.productTitle} is Back, ${productURL}`,
+                        to: '+18777804236'
+                    })
+                }
                 await setCustomerNotified(sub?.customerEmail!, productInfo.id);
                 console.log(`Notified to ${sub?.customerEmail}`, resp);
                 await saveNotificationHistory({
