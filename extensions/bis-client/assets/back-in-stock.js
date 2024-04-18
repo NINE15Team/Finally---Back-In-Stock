@@ -1,10 +1,11 @@
-const API_URL = "https://mate-chi-kirk-intensive.trycloudflare.com";
+const API_URL = "http://localhost:54921";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
     this.form = this.querySelector("form");
     this.showModalButton = this.querySelector('.notify-button');
     this.closeModalButton = this.querySelector('.close');
+    this.messageEl = this.querySelector('.message'); 
     this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
     this.productTitle = this.dataset.productTitle;
@@ -35,7 +36,7 @@ class BackInStock extends HTMLElement {
 
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      this.querySelector(".message *").classList.add("hide");
+      this.messageEl.querySelectorAll('*').forEach(el=>el.classList.add('hide'))
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
@@ -80,9 +81,9 @@ class BackInStock extends HTMLElement {
 
   showMessage(type) {
     if (type == 'info') {
-      this.form.querySelector(".message .success").classList.remove("hide");
+      this.messageEl.querySelector('.success').classList.remove('hide');
     } else if (type == 'error') {
-      this.form.querySelector(".message .error").classList.remove("hide");
+      this.messageEl.querySelector('.error').classList.remove('hide');
     }
   }
 
