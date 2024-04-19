@@ -66,7 +66,7 @@
 
 {% assign out_of_stock_form_class = 'hide' %}
 {% assign blockSettings = block.settings %}
-{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode or true %}
+{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
 <style>
