@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import prisma from "../db.server";
 
 const saveStoreInfo = async (data: any) => {
@@ -91,13 +92,13 @@ const activateWebPixel = async (admin: any) => {
             }`, {
         variables: {
             webPixel: {
-                settings: JSON.stringify({ accountID: "nine15" })
+                settings: JSON.stringify({ accountID: randomUUID() })
             }
         }
     },
     );
     const data = await response.json();
-    console.log("I am activating");
+    console.log("***************************8Web Pixel activating**************************");
     return data;
 };
 
