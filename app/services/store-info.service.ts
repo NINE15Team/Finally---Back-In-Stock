@@ -98,7 +98,7 @@ const activateWebPixel = async (admin: any) => {
     },
     );
     const data = await response.json();
-    console.log("***************************8Web Pixel activating**************************");
+    console.log("***************************Web Pixel activating**************************");
     return data;
 };
 

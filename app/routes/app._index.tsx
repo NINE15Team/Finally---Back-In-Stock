@@ -43,8 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  let { totalNotifications, newSubscribers, subscribedProducts } = useLoaderData<any>();
-
+  let { totalNotifications, newSubscribers, subscribedProducts} = useLoaderData<any>();
   return (
     <Page>
       <Layout>
@@ -56,7 +55,6 @@ export default function Index() {
             </div>
           </InlineStack>
           <div style={{ marginBottom: "32px" }}>
-            <Text alignment='start' as='p'>Welcome to Finally! Back in stock. </Text>
           </div>
           {totalNotifications || newSubscribers ?
             <Box>

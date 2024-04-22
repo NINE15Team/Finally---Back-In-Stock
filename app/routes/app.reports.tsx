@@ -106,9 +106,6 @@ export default function Index() {
                 <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
               </div>
             </InlineStack>
-            <Text as="p">
-              Use this page to navigate through different reports.
-            </Text>
           </Box>
           <Box paddingBlockEnd="2000" paddingBlockStart="1000">
             <BlockStack gap="300">

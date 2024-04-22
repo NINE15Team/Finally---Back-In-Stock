@@ -5,7 +5,6 @@ import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { findEmailConfigByStoreURL, sendEmail } from "./email.service";
 import { randomUUID } from "crypto";
 import { saveNotificationHistory } from "./notification-history.service";
-import { sendSMS } from "./text.service";
 
 const findById = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findFirst({
@@ -200,13 +199,6 @@ const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
                         variantTitle: productInfo.variantTitle
                     }
                 })
-                if (sub.customerPhone || true) {
-                    let productURL = `${subscriberList[0].shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}`;
-                    let smsResp = await sendSMS({
-                        body: `Good news! Product ${productInfo.productTitle} is Back, ${productURL}`,
-                        to: '+18777804236'
-                    })
-                }
                 await setCustomerNotified(sub?.customerEmail!, productInfo.id);
                 console.log(`Notified to ${sub?.customerEmail}`, resp);
                 await saveNotificationHistory({

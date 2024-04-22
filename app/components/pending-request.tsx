@@ -118,7 +118,7 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
 
   return (
     <>
-      <Box paddingBlockEnd="500" paddingBlockStart="500">
+      <Box  paddingBlockStart="500">
         <Text variant='headingLg' as='h2'>Pending Requests</Text>
       </Box>
 

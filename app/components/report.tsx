@@ -1,4 +1,5 @@
-import { Box, Card, DataTable, IndexTable, InlineStack, Text } from "@shopify/polaris";
+import { useLoaderData } from "@remix-run/react";
+import { Box, Card, DataTable, IndexTable, InlineStack, Link, Text } from "@shopify/polaris";
 import { useI18n } from '@shopify/react-i18n';
 
 export default function Report({ title, pagination, data }: {
@@ -13,6 +14,8 @@ export default function Report({ title, pagination, data }: {
     singular: 'Report',
     plural: 'Reports',
   };
+  let { shopifyURL } = useLoaderData<any>();
+
 
   data.forEach((prodInfo, index) => {
     const price = i18n.formatCurrency(prodInfo.price, {
@@ -30,6 +33,7 @@ export default function Report({ title, pagination, data }: {
       totalSubscribers: prodInfo.customerSubscription?.length,
       price: price,
       potentialPrice: potentialPrice,
+      productId: prodInfo.productId
     });
   });
 
@@ -41,7 +45,7 @@ export default function Report({ title, pagination, data }: {
         position={index}
       >
         <IndexTable.Cell>
-          {ImageTitle(element.imageURL, element.title)}
+          {ImageTitle(element.productId, element.imageURL, element.title)}
         </IndexTable.Cell>
         <IndexTable.Cell><Text variant="headingSm" as="h6" alignment="justify">{element.totalSubscribers}</Text></IndexTable.Cell>
         <IndexTable.Cell> <Text as="p" alignment="justify"> {element.price} </Text> </IndexTable.Cell>
@@ -50,14 +54,20 @@ export default function Report({ title, pagination, data }: {
     ),
   );
 
-  function ImageTitle(url: string, title: string) {
+  function ImageTitle(productId: string, url: string, title: string) {
+    let productURL = `https://${shopifyURL}/admin/products/${productId}`
     return (
-      <InlineStack gap="300" blockAlign="center">
-        <Box>
-          <img src={url} height="40px" width="40px" alt="product" />
-        </Box>
-        <Text as="p">{title}</Text>
-      </InlineStack>
+      <Link
+        target="_blank"
+        url={productURL}
+      >
+        <InlineStack gap="300" blockAlign="center">
+          <Box>
+            <img src={url} height="40px" width="40px" alt="product" />
+          </Box>
+          <Text as="p">{title}</Text>
+        </InlineStack>
+      </Link>
     );
   }
 

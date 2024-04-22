@@ -134,14 +134,14 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
 
   return (
     <>
-      <Box paddingBlockEnd="500" paddingBlockStart="500">
+      <Box paddingBlockStart="500">
         <Text variant='headingLg' as='h2'>Sent Requests</Text>
       </Box>
       <Box
         background="bg-surface"
       >
         <InlineStack align="space-between" wrap={false}>
-          {selectedResources.length ?
+          {selectedResources.length && false ?
             <Box
               padding="200"
             >

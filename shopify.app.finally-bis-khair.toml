@@ -2,7 +2,7 @@
 
 client_id = "8800ca44f2a3eeaa42dafeb829ea1c0b"
 name = "Finally"
-application_url = "https://mouse-hold-xp-rally.trycloudflare.com"
+application_url = "https://uganda-theaters-steps-bad.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://mouse-hold-xp-rally.trycloudflare.com/auth/callback",
-  "https://mouse-hold-xp-rally.trycloudflare.com/auth/shopify/callback",
-  "https://mouse-hold-xp-rally.trycloudflare.com/api/auth/callback"
+  "https://uganda-theaters-steps-bad.trycloudflare.com/auth/callback",
+  "https://uganda-theaters-steps-bad.trycloudflare.com/auth/shopify/callback",
+  "https://uganda-theaters-steps-bad.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

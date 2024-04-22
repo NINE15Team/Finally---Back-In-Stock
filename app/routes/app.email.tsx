@@ -54,16 +54,13 @@ export default function Index() {
     <Page>
       <Layout>
         <Layout.Section >
-          <Box paddingBlockEnd="800" background="--p-color-bg-fill-brand">
+          <Box paddingBlockEnd="800" >
             <InlineStack align='space-between'>
               <Text variant="headingXl" as="h1">Settings</Text>
               <div style={{ color: '#005BD3' }}>
                 <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
               </div>
             </InlineStack>
-            <Text as="p">
-              Use this page to customize the notification email customers receive as well as future settings
-            </Text>
           </Box>
           <Box paddingBlockEnd="2000">
             <InlineGrid columns={['oneThird', 'twoThirds']}>
@@ -141,7 +138,7 @@ export default function Index() {
         </Layout.Section>
         <Modal id="info-modal">
           <p style={{ padding: '20px' }}>Email Configuration Updated!</p>
-          <TitleBar title="Info Message"></TitleBar>
+          <TitleBar title="Settings"></TitleBar>
         </Modal>
       </Layout>
     </Page >
