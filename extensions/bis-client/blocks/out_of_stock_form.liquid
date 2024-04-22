@@ -109,6 +109,7 @@ form {
         name="email"
         placeholder="{{ blockSettings.input_text_placeholder }}">
     </div>
+    {% if block_css != blank %}
     <div class="wrapper">
       <label for="telephone">Telephone
         <small>(For US Only)</small>
@@ -122,6 +123,7 @@ form {
         minlength="10"
         title="Eleven digits code">
     </div>
+    {% endif %}
     <button class="submit" style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
       {{ blockSettings.button_text }}
     </button>
