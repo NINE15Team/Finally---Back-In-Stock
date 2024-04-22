@@ -118,7 +118,7 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
 
   return (
     <>
-      <Box  paddingBlockStart="500">
+      <Box paddingBlockStart="500">
         <Text variant='headingLg' as='h2'>Pending Requests</Text>
       </Box>
 
@@ -128,7 +128,7 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
         borderStartStartRadius="200"
       >
         <InlineStack align="space-between" wrap={false}>
-          {selectedResources.length ?
+          {selectedResources.length && false ?
             <Box
               borderBlockEndWidth="050"
               borderColor="border"
