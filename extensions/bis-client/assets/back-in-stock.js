@@ -5,7 +5,7 @@ class BackInStock extends HTMLElement {
     this.form = this.querySelector("form");
     this.showModalButton = this.querySelector('.notify-button');
     this.closeModalButton = this.querySelector('.close');
-    this.messageEl = this.querySelector('.message'); 
+    this.messageEl = this.querySelector('.message');
     this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
     this.productTitle = this.dataset.productTitle;
@@ -36,7 +36,10 @@ class BackInStock extends HTMLElement {
 
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      this.messageEl.querySelectorAll('*').forEach(el=>el.classList.add('hide'))
+      if (e.submitter.classList.contains('close')) {
+        return false;
+      }
+      this.messageEl.querySelectorAll('*').forEach(el => el.classList.add('hide'))
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
@@ -69,12 +72,12 @@ class BackInStock extends HTMLElement {
       }
     });
 
-    this.showModalButton.addEventListener('click',()=>{
+    this.showModalButton.addEventListener('click', () => {
       document.body.appendChild(this.form)
       this.form.classList.remove('hide')
     })
 
-    this.closeModalButton.addEventListener('click',()=>{
+    this.closeModalButton.addEventListener('click', () => {
       this.form.classList.add('hide')
     })
   }

@@ -66,7 +66,7 @@
 
 {% assign out_of_stock_form_class = 'hide' %}
 {% assign blockSettings = block.settings %}
-{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
+{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode  == true %}
   {% assign out_of_stock_form_class = '' %}
 {% endif %}
 <style>
@@ -97,8 +97,9 @@ form {
   data-variant-id="{{ product.selected_or_first_available_variant.id }}"
   data-variant-title="{{ product.selected_or_first_available_variant.title }}"
   data-vendor="{{ product.vendor }}"
+  class="{{ out_of_stock_form_class }}"
   id="{{ block.id }}">
-  <form class="out-of-stock-modal hide {{ out_of_stock_form_class }}" style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }}">
+  <form class="out-of-stock-modal" style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }}">
     <button class="close">X</button>
     <h3 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h3>
     <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
