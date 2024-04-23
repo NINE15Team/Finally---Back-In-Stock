@@ -58,7 +58,7 @@ export default function Instructions({ showButton }: { showButton: boolean }) {
         <FooterHelp>
           <Box padding="800" borderRadius='100' background="bg-surface-caution">
             Please feel free to reach out to us if you have any questions or comments. You can reach out at {' '}
-            <Link url="support@NINE15.com">
+            <Link>
               support@NINE15.com
             </Link>
           </Box>
