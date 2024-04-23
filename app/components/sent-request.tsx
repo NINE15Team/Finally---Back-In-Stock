@@ -8,6 +8,7 @@ import { } from "@remix-run/react";
 import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
 import Nine15Context from "~/context/nin15.context";
+import { emptyStateMarkup } from "./empty-state";
 
 export default function SentRequest({ data, count }: { data: any[], count: any }) {
   const context = useContext(Nine15Context);
@@ -180,6 +181,7 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
           selectedItemsCount={
             allResourcesSelected ? 'All' : selectedResources.length
           }
+          emptyState={emptyStateMarkup}
           onSelectionChange={handleSelectionChange}
           headings={[
             { title: 'Product' },

@@ -1,6 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import { Box, Card, DataTable, IndexTable, InlineStack, Link, Text } from "@shopify/polaris";
 import { useI18n } from '@shopify/react-i18n';
+import { emptyStateMarkup } from "./empty-state";
 
 export default function Report({ title, pagination, data }: {
   title: string,
@@ -80,6 +81,7 @@ export default function Report({ title, pagination, data }: {
         <IndexTable
           resourceName={resourceName}
           itemCount={data.length}
+          emptyState={emptyStateMarkup}
           headings={[
             { title: 'Product', alignment: 'start' },
             { title: 'Requests', alignment: 'start' },
