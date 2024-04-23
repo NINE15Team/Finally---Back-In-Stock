@@ -47,6 +47,13 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
+      let image = "";
+      if (this.productInstance.featured_image) {
+
+        image = this.productInstance.featured_image;
+      } else if (this.productInstance.image) {
+        image = this.productInstance.image.src;
+      }
 
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
