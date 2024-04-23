@@ -63,7 +63,7 @@ class BackInStock extends HTMLElement {
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
-          imageURL: this.productInstance.featured_image,
+          imageURL: image,
           vendor: this.vendor,
           price: Number(this.getVariant(variantId).price) / 100,
           variantTitle: this.getVariant(variantId).title,
