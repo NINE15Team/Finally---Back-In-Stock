@@ -20,7 +20,18 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json();
-        if (await isOwnerEmail(requstBody)) {
+        if (!requstBody.email) {
+            return json(
+                { status: false, message: "Email can't be empty" },
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+        }
+
+        if (await isOwnerEmail(requstBody.email)) {
             return json(
                 { status: false, message: "Cannot use a Shopify owner email for subscription." },
                 {
