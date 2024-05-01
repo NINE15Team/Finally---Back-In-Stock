@@ -398,6 +398,16 @@ const isEmailVerified = async (storeName: string) => {
   return data?.isEmailVerified;
 };
 
+const isOwnerEmail = async (email: string) => {
+  let result = await prisma.emailConfiguartion.count({
+    where: {
+      senderEmail: email
+    },
+  });
+  return result > 0;
+};
+
+
 const getStoreInfo = async (email: Partial<EmailDTO>) => {
   if (!email.storeId) {
     return await findStoreByURL(email.storeName);
@@ -414,5 +424,6 @@ export {
   findEmailConfigByStoreURL,
   upsertEmail,
   isEmailVerified,
-  findByStoreId
+  findByStoreId,
+  isOwnerEmail
 };

@@ -3,6 +3,7 @@ import { json } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
 import type { CustomerSubscriptionDTO } from "../dto/customer-subscription.dto";
+import { isOwnerEmail } from "~/services/email.service";
 
 export const loader: LoaderFunction = async ({ request }) => {
     return json(
@@ -19,6 +20,16 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json();
+        if (await isOwnerEmail(requstBody)) {
+            return json(
+                { status: false, message: "Cannot use a Shopify owner email for subscription." },
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+        }
         console.log("****************Check If Product Exist");
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
         if (!isProductExist) {

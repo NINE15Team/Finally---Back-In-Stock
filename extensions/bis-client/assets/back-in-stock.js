@@ -75,7 +75,7 @@ class BackInStock extends HTMLElement {
       if (response?.status) {
         this.showMessage('info')
       } else {
-        this.showMessage('error')
+        this.showMessage('error', response?.message)
       }
     });
 
@@ -89,10 +89,13 @@ class BackInStock extends HTMLElement {
     })
   }
 
-  showMessage(type) {
+  showMessage(type, message) {
     if (type == 'info') {
       this.messageEl.querySelector('.success').classList.remove('hide');
     } else if (type == 'error') {
+      if(message){
+        this.messageEl.querySelector('.error').textContent = message; 
+      }
       this.messageEl.querySelector('.error').classList.remove('hide');
     }
   }
