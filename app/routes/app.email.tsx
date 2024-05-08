@@ -12,7 +12,7 @@ import {
   InlineStack,
   Divider,
 } from "@shopify/polaris";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { findEmailConfigByStoreURL, saveOrUpdate } from "../services/email.service";
 import { getStoreInfoShopify } from "../services/store-info.service";
 import { authenticate } from "../shopify.server";

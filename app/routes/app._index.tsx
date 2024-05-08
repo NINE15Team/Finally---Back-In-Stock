@@ -27,7 +27,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       buttonContent: 'CHECKOUT NOW',
       storeId: id,
       shopifyURL: myshopify_domain,
-      title: name,
+      title: 'Finally',
       senderEmail: email
     });
   }
@@ -43,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  let { totalNotifications, newSubscribers, subscribedProducts} = useLoaderData<any>();
+  let { totalNotifications, newSubscribers, subscribedProducts } = useLoaderData<any>();
   return (
     <Page>
       <Layout>

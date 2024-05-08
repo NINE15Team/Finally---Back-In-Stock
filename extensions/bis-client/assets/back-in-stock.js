@@ -81,6 +81,9 @@ class BackInStock extends HTMLElement {
 
     this.showModalButton.addEventListener('click', () => {
       document.body.appendChild(this.form)
+      this.form.querySelector("input").value = "";
+      document.querySelector(".out-of-stock-modal .message .success").textContent = ""
+      document.querySelector(".out-of-stock-modal .message .error").textContent = ""
       this.form.classList.remove('hide')
     })
 
@@ -93,8 +96,8 @@ class BackInStock extends HTMLElement {
     if (type == 'info') {
       this.messageEl.querySelector('.success').classList.remove('hide');
     } else if (type == 'error') {
-      if(message){
-        this.messageEl.querySelector('.error').textContent = message; 
+      if (message) {
+        this.messageEl.querySelector('.error').textContent = message;
       }
       this.messageEl.querySelector('.error').classList.remove('hide');
     }
