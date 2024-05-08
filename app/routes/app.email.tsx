@@ -57,6 +57,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!isEmpty(validateForm(obj))) {
     return json({ status: false, error: validateForm(obj) })
   } else {
+    console.log(obj);
     let resp = await saveOrUpdate(obj)
     return json({ status: true, data: resp });
   }

@@ -303,6 +303,7 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       },
     },
     update: {
+      title: email.title,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
