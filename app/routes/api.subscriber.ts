@@ -31,16 +31,6 @@ export const action: ActionFunction = async ({ request }) => {
             );
         }
 
-        if (await isOwnerEmail(requstBody.email)) {
-            return json(
-                { status: false, message: "Cannot use a Shopify owner email for subscription." },
-                {
-                    headers: {
-                        "Access-Control-Allow-Origin": "*",
-                    },
-                }
-            );
-        }
         console.log("****************Check If Product Exist");
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
         if (!isProductExist) {
