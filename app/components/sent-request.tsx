@@ -199,6 +199,7 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
               triggerPagination("sent", "-");
             },
           }}
+          selectable={false}
         >
           {rowMarkup}
         </IndexTable>

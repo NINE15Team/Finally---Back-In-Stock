@@ -186,6 +186,7 @@ export default function PendingRequest({ data, count }: { data: any[], count: an
               triggerPagination("pending", "-");
             },
           }}
+          selectable={false}
         >
           {rowMarkup}
         </IndexTable>
