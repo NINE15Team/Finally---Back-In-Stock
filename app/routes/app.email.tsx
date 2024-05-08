@@ -57,7 +57,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!isEmpty(validateForm(obj))) {
     return json({ status: false, error: validateForm(obj) })
   } else {
-    return json({ status: true, data: await saveOrUpdate(obj) });
+    let resp = await saveOrUpdate(obj)
+    return json({ status: true, data: resp });
   }
 };
 
@@ -146,7 +147,7 @@ export default function Index() {
                         placeholder="If you have any concerns,please email xyz"
                         autoComplete="off"
                         name="footerContent"
-                        error={fetcher.state == 'idle' && fetcher.data?.error?.footerContent  && !form.footerContent}
+                        error={fetcher.state == 'idle' && fetcher.data?.error?.footerContent && !form.footerContent}
                       />
                     </Box>
                     <Box paddingBlock="200">
