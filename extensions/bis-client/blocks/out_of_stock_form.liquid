@@ -14,7 +14,6 @@
       width: 100%;
       border: 1px solid black;
       background: none;
-      font: inherit;
       cursor: pointer;
     }
 
@@ -50,7 +49,6 @@
     }
 
     .out-of-stock-modal .wrapper label {
-      font-size: 1em;
     }
 
     .out-of-stock-modal .wrapper + .wrapper {
@@ -58,7 +56,6 @@
     }
 
     .out-of-stock-modal .wrapper small {
-      font-size: 0.8em;
       opacity: 0.7;
     }
 
@@ -67,8 +64,6 @@
       margin-top: 3rem;
       border: 0;
       cursor: pointer;
-      font: inherit;
-      font-weight: 400;
     }
 
     #{{ block.id }} form {
@@ -115,10 +110,10 @@
   >
     <form
       class="out-of-stock-modal hide finally-bis-button-font"
-      style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }};border-radius:{{  blockSettings.notify_me_form_border_radius_slider}}px;width:{{ blockSettings.notify_me_form_width_slider }}"
+      style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }};border-radius:{{  blockSettings.notify_me_form_border_radius_slider}}px;width:{{ blockSettings.notify_me_form_width_slider }}%"
     >
       <button class="close">X</button>
-      <h3 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h3>
+      <h2 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h2>
       <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
       <div class="wrapper">
         <label for="email">Email</label>
@@ -171,7 +166,7 @@
         border-radius:{{ blockSettings.notify_me_btn_border_radius_slider }}px;
       "
     >
-      Notify Me Now
+      {{ blockSettings.notify_me_btn_bg_txt }}
     </button>
   </back-in-stock>
 {% endif %}
