@@ -1,4 +1,4 @@
-import { BlockStack, Box, InlineGrid, Layout, Text } from "@shopify/polaris";
+import { BlockStack, Box, Card, InlineGrid, Layout, Text } from "@shopify/polaris";
 
 export default function InstructionCard({ title, description, img_url }: {
   title: string,
@@ -7,7 +7,7 @@ export default function InstructionCard({ title, description, img_url }: {
 }) {
   return (
     <Layout.Section>
-      <Box padding="400" background="bg-surface">
+      <Box padding="400" background="bg-surface" borderRadius="500">
         <InlineGrid columns={['oneThird', 'twoThirds']} gap="1600">
           <BlockStack gap="400">
             <Text variant='headingLg' as='h2'>{title}</Text>
