@@ -92,7 +92,9 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
       case 'add_to_cart':
         return <Badge tone="info">Added to Cart</Badge>
       case 'completed':
-        return <Badge>Sent</Badge>
+        return <Badge>Completed</Badge>
+      case 'send':
+        return <Badge>Email Send</Badge>
       default:
         return <></>
     }
