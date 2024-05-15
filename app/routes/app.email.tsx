@@ -11,6 +11,7 @@ import {
   InlineGrid,
   InlineStack,
   Divider,
+  Card,
 } from "@shopify/polaris";
 import { useState } from "react";
 import { findEmailConfigByStoreURL, saveOrUpdate } from "../services/email.service";
@@ -83,100 +84,102 @@ export default function Index() {
 
   return (
     <Page>
-      <Layout>
-        <Layout.Section >
-          <Box paddingBlockEnd="800" >
-            <InlineStack align='space-between'>
-              <Text variant="headingXl" as="h1">Settings</Text>
-              <div style={{ color: '#005BD3' }}>
-                <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
-              </div>
-            </InlineStack>
-          </Box>
-          <Box paddingBlockEnd="2000">
+      <Box paddingBlockEnd="800" >
+        <InlineStack align='space-between'>
+          <Text variant="headingXl" as="h2">Preferences</Text>
+        </InlineStack>
+      </Box>
+
+      <Box paddingBlockEnd="2000" >
+        <fetcher.Form method="POST" name="save_email">
+          <Card>
             <InlineGrid columns={['oneThird', 'twoThirds']}>
-              <Box paddingInlineEnd="2000">
-                <Box paddingBlockEnd="800">
+
+              <Box paddingInlineEnd="2000" paddingBlockStart="200" paddingBlockEnd="200">
+                <Box paddingBlockEnd="300">
                   <Text variant='headingLg' as='h2'>Notification Email</Text>
                 </Box>
                 <Text as="p">Customize notification emails customers receive when products are back in stock.</Text>
               </Box>
-              <Box borderColor="border" borderWidth="025" borderRadius="300" paddingBlock="500" paddingInline="1200" background="bg-fill">
-                <fetcher.Form method="POST" name="save_email">
-                  <input type="hidden" name="shopifyURL" value={shopifyURL} />
-                  <BlockStack gap="200">
-                    <TextField
-                      value={form.title}
-                      onChange={(val) => handleChange("title", val)}
-                      label="Email Subject"
-                      autoComplete="off"
-                      name="title"
-                      error={fetcher.state == 'idle' && fetcher.data?.error?.title && !form.title}
-                    />
-                    <Box paddingBlock="200">
-                      <Divider borderColor="border" borderWidth="025" />
-                    </Box>
-                    <Box paddingBlock="200">
-                      <TextField
-                        value={form.headerContent}
-                        onChange={(val) => handleChange("headerContent", val)}
-                        label="Header Content"
-                        placeholder="Good News!"
-                        autoComplete="off"
-                        name="headerContent"
-                        error={fetcher.state == 'idle' && fetcher.data?.error?.headerContent && !form.headerContent}
-                      />
-                    </Box>
-                    <Box paddingBlock="200">
-                      <TextField
-                        value={form.bodyContent}
-                        onChange={(val) => handleChange("bodyContent", val)}
-                        label="Body Message"
-                        placeholder="Your product is back in stock"
-                        autoComplete="off"
-                        multiline={true}
-                        name="bodyContent"
-                        ariaExpanded
-                        error={fetcher.state == 'idle' && fetcher.data?.error?.bodyContent && !form.bodyContent}
-                      />
-                    </Box>
-                    <Box paddingBlock="200">
-                      <TextField
-                        value={form.footerContent}
-                        onChange={(val) => handleChange("footerContent", val)}
-                        label="Footer Content"
-                        placeholder="If you have any concerns,please email xyz"
-                        autoComplete="off"
-                        name="footerContent"
-                        error={fetcher.state == 'idle' && fetcher.data?.error?.footerContent && !form.footerContent}
-                      />
-                    </Box>
-                    <Box paddingBlock="200">
 
-                      <TextField
-                        value={form.buttonContent}
-                        onChange={(val) => handleChange("buttonContent", val)}
-                        label="Buy Button Label"
-                        placeholder="Checkout Now!"
-                        autoComplete="off"
-                        name="buttonContent"
-                        error={fetcher.state == 'idle' && fetcher.data?.error?.buttonContent && !form.buttonContent}
-                      />
-                    </Box>
-                    <Box paddingBlockStart="200">
-                      <Button variant="primary" submit={true} loading={fetcher.state != 'idle' && !fetcher?.data?.status} >Save</Button>
-                    </Box>
-                  </BlockStack>
-                </fetcher.Form>
+              <Box id="email_form" paddingBlockStart="200" paddingBlockEnd="200">
+                <input type="hidden" name="shopifyURL" value={shopifyURL} />
+                <BlockStack gap="200">
+                  <TextField
+                    value={form.title}
+                    onChange={(val) => handleChange("title", val)}
+                    label="Email Subject"
+                    autoComplete="off"
+                    name="title"
+                    error={fetcher.state == 'idle' && fetcher.data?.error?.title && !form.title}
+                  />
+
+                  <Box paddingBlock="200">
+                    <TextField
+                      value={form.headerContent}
+                      onChange={(val) => handleChange("headerContent", val)}
+                      label="Header Content"
+                      placeholder="Good News!"
+                      autoComplete="off"
+                      name="headerContent"
+                      error={fetcher.state == 'idle' && fetcher.data?.error?.headerContent && !form.headerContent}
+                    />
+                  </Box>
+                  <Box paddingBlock="200">
+                    <TextField
+                      value={form.bodyContent}
+                      onChange={(val) => handleChange("bodyContent", val)}
+                      label="Body Message"
+                      placeholder="Your product is back in stock"
+                      autoComplete="off"
+                      multiline={5}
+
+                      name="bodyContent"
+                      ariaExpanded
+                      error={fetcher.state == 'idle' && fetcher.data?.error?.bodyContent && !form.bodyContent}
+                    />
+                  </Box>
+                  <Box paddingBlock="200">
+                    <TextField
+                      value={form.footerContent}
+                      onChange={(val) => handleChange("footerContent", val)}
+                      label="Footer Content"
+                      placeholder="If you have any concerns,please email xyz"
+                      autoComplete="off"
+                      name="footerContent"
+                      error={fetcher.state == 'idle' && fetcher.data?.error?.footerContent && !form.footerContent}
+                    />
+                  </Box>
+                  <Box paddingBlock="200">
+
+                    <TextField
+                      value={form.buttonContent}
+                      onChange={(val) => handleChange("buttonContent", val)}
+                      label="Buy Button Label"
+                      placeholder="Checkout Now!"
+                      autoComplete="off"
+                      name="buttonContent"
+                      error={fetcher.state == 'idle' && fetcher.data?.error?.buttonContent && !form.buttonContent}
+                    />
+                  </Box>
+                </BlockStack>
               </Box>
+
             </InlineGrid>
-          </Box>
-        </Layout.Section>
-        <Modal id="info-modal">
-          <p style={{ padding: '20px' }}>Email Configuration Updated!</p>
-          <TitleBar title="Settings"></TitleBar>
-        </Modal>
-      </Layout>
+          </Card>
+
+          <InlineStack align="end">
+            <Box paddingBlockStart="200">
+              <Button variant="primary" submit={true} loading={fetcher.state != 'idle' && !fetcher?.data?.status} >Save</Button>
+            </Box>
+          </InlineStack>
+        </fetcher.Form>
+      </Box>
+
+      <Modal id="info-modal">
+        <p style={{ padding: '20px' }}>Email Configuration Updated!</p>
+        <TitleBar title="Settings"></TitleBar>
+      </Modal>
     </Page >
   );
 }
