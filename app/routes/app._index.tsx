@@ -50,9 +50,6 @@ export default function Index() {
         <Layout.Section>
           <InlineStack align='space-between'>
             <Text variant="headingXl" as="h1">Dashboard</Text>
-            <div style={{ color: '#005BD3' }}>
-              <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
-            </div>
           </InlineStack>
           <div style={{ marginBottom: "32px" }}>
           </div>
@@ -64,7 +61,6 @@ export default function Index() {
             :
             <Box>
               <NoRequest />
-              <Checklist />
             </Box>
           }
         </Layout.Section>
