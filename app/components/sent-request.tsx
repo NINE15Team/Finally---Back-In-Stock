@@ -87,14 +87,14 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
   }
   function StatusBadge(status: string) {
     switch (status) {
+      case 'send':
+        return <Badge>Email Sent</Badge>
       case 'view':
         return <Badge tone="success">Clicked</Badge>
       case 'add_to_cart':
         return <Badge tone="info">Added to Cart</Badge>
       case 'completed':
         return <Badge>Completed</Badge>
-      case 'send':
-        return <Badge>Email Send</Badge>
       default:
         return <></>
     }
