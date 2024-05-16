@@ -104,21 +104,31 @@ export default function Index() {
 
               <Box id="email_form" paddingBlockStart="200" paddingBlockEnd="200">
                 <input type="hidden" name="shopifyURL" value={shopifyURL} />
-                <BlockStack gap="200">
-                  <TextField
-                    value={form.title}
-                    onChange={(val) => handleChange("title", val)}
-                    label="Email Subject"
-                    autoComplete="off"
-                    name="title"
-                    error={fetcher.state == 'idle' && fetcher.data?.error?.title && !form.title}
-                  />
+                <BlockStack gap="300">
+                  <Box paddingBlock="200">
+                    <Text variant="headingXs" as="h6">
+                      Email Subject
+                    </Text>
+                    <TextField
+                      value={form.title}
+                      onChange={(val) => handleChange("title", val)}
+                      label="Email Subject"
+                      labelHidden
+                      autoComplete="off"
+                      name="title"
+                      error={fetcher.state == 'idle' && fetcher.data?.error?.title && !form.title}
+                    />
+                  </Box>
 
                   <Box paddingBlock="200">
+                    <Text variant="headingXs" as="h6">
+                      Header Content
+                    </Text>
                     <TextField
                       value={form.headerContent}
                       onChange={(val) => handleChange("headerContent", val)}
                       label="Header Content"
+                      labelHidden
                       placeholder="Good News!"
                       autoComplete="off"
                       name="headerContent"
@@ -126,24 +136,31 @@ export default function Index() {
                     />
                   </Box>
                   <Box paddingBlock="200">
+                    <Text variant="headingXs" as="h6">
+                      Body Message
+                    </Text>
                     <TextField
                       value={form.bodyContent}
                       onChange={(val) => handleChange("bodyContent", val)}
                       label="Body Message"
+                      labelHidden
                       placeholder="Your product is back in stock"
                       autoComplete="off"
                       multiline={5}
-
                       name="bodyContent"
                       ariaExpanded
                       error={fetcher.state == 'idle' && fetcher.data?.error?.bodyContent && !form.bodyContent}
                     />
                   </Box>
                   <Box paddingBlock="200">
+                    <Text variant="headingXs" as="h6">
+                      Footer Content
+                    </Text>
                     <TextField
                       value={form.footerContent}
                       onChange={(val) => handleChange("footerContent", val)}
                       label="Footer Content"
+                      labelHidden
                       placeholder="If you have any concerns,please email xyz"
                       autoComplete="off"
                       name="footerContent"
@@ -151,11 +168,14 @@ export default function Index() {
                     />
                   </Box>
                   <Box paddingBlock="200">
-
+                    <Text variant="headingXs" as="h6">
+                      Buy Button Label
+                    </Text>
                     <TextField
                       value={form.buttonContent}
                       onChange={(val) => handleChange("buttonContent", val)}
                       label="Buy Button Label"
+                      labelHidden
                       placeholder="Checkout Now!"
                       autoComplete="off"
                       name="buttonContent"
