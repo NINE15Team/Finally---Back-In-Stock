@@ -1,11 +1,9 @@
 import { findByProductAndVariantId, } from "./product-info.service";
 import prisma from "~/db.server";
 import { findStoreByURL } from "./store-info.service";
-import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { findNotificationHistoryByUUId } from "./notification-history.service";
 import { CustomerActivity } from "@prisma/client";
-import { json } from "@remix-run/node";
 
 const save = async (customerActivity: CustomerActivityDTO) => {
     console.log(customerActivity);
@@ -56,6 +54,7 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
             notificationHistoryId: notificationHistory?.id!,
             productInfoId: productInfo?.id!,
             storeId: storeInfo?.id!,
+            customerEmail: activity.customerEmail,
             updatedAt: new Date(),
             createdAt: new Date(),
         } as CustomerActivity);
@@ -66,5 +65,30 @@ const saveAll = async (customerActivities: CustomerActivityDTO[]) => {
     })
 };
 
+const findAll = async (customerActivity: CustomerActivityDTO) => {
+    const storeInfo = await findStoreByURL(customerActivity.shopifyURL);
+    let count = await prisma.customerActivity.count({
+        where: {
+            store: {
+                id: storeInfo?.id
+            },
+        },
+    })
+    let items = await prisma.customerActivity.findMany({
+        skip: customerActivity.skip || 0,
+        take: customerActivity.take || 5,
+        where: {
+            store: {
+                id: storeInfo?.id
+            },
+        },
+        include: {
+            productInfo: {
 
-export { save as saveCustomerActivity, saveAll as saveCustomerActivities }
+            }
+        }
+    })
+    return { count, items }
+};
+
+export { save as saveCustomerActivity, saveAll as saveCustomerActivities, findAll as findAllActivities }

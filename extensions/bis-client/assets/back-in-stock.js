@@ -2,19 +2,22 @@ const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
-    this.form = this.querySelector(".out-of-stock");
+    this.form = this.querySelector("form");
+    this.showModalButton = this.querySelector('.notify-button');
+    this.closeModalButton = this.querySelector('.close');
+    this.messageEl = this.querySelector('.message');
     this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
     this.productTitle = this.dataset.productTitle;
     this.productHandle = this.dataset.productHandle;
     this.defaultVariantId = this.dataset.variantId;
     this.variantTitle = this.dataset.variantTitle;
+    this.vendor = this.dataset.vendor;
     this.productInstance = JSON.parse(document.querySelector("#bis-product-json").textContent);
     this.initializeListeners();
   }
 
   initializeListeners() {
-    console.log(this.productInstance, this.hasVariantSelectElm());
     if (this.hasVariantSelectElm()) {
       let prodInstance = this.productInstance;
       let $form = this.form;
@@ -23,9 +26,9 @@ class BackInStock extends HTMLElement {
           let selectedVariant = document.querySelector('product-form form [name=id]').value;
           let isAvailable = prodInstance.variants.some(v => v.id == selectedVariant && v.available);
           if (!isAvailable) {
-            $form.classList.remove('none');
+            $form.classList.remove('hide');
           } else {
-            $form.classList.add('none');
+            $form.classList.add('hide');
           }
         }, 100)
       });
@@ -33,7 +36,10 @@ class BackInStock extends HTMLElement {
 
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      this.querySelector(".message *").classList.add("none");
+      if (e.submitter.classList.contains('close')) {
+        return false;
+      }
+      this.messageEl.querySelectorAll('*').forEach(el => el.classList.add('hide'))
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
@@ -41,6 +47,14 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
+      let image = "";
+      if (this.productInstance.featured_image) {
+
+        image = this.productInstance.featured_image;
+      } else if (this.productInstance.image) {
+        image = this.productInstance.image.src;
+      }
+
       const response = await fetch(`${API_URL}/api/subscriber`, {
         method: "POST",
         body: JSON.stringify({
@@ -49,26 +63,43 @@ class BackInStock extends HTMLElement {
           productId: this.productId,
           productTitle: this.productTitle,
           variantId: variantId,
-          imageURL: this.productInstance.featured_image,
-          price: Number(this.getVariant(variantId).price)/100,
+          imageURL: image,
+          vendor: this.vendor,
+          price: Number(this.getVariant(variantId).price) / 100,
           variantTitle: this.getVariant(variantId).title,
-          email: formData.get("email")
+          email: formData.get("email"),
+          customerPhone: formData.get('telephone')
         }),
       }).then(r => r.json());
 
       if (response?.status) {
         this.showMessage('info')
       } else {
-        this.showMessage('error')
+        this.showMessage('error', response?.message)
       }
     });
+
+    this.showModalButton.addEventListener('click', () => {
+      document.body.appendChild(this.form)
+      this.form.querySelector("input").value = "";
+      document.querySelector(".out-of-stock-modal .message .success").classList.add('hide');
+      document.querySelector(".out-of-stock-modal .message .error").classList.add('hide');
+      this.form.classList.remove('hide')
+    })
+
+    this.closeModalButton.addEventListener('click', () => {
+      this.form.classList.add('hide')
+    })
   }
 
-  showMessage(type) {
+  showMessage(type, message) {
     if (type == 'info') {
-      this.form.querySelector(".message .success").classList.remove("none");
+      this.messageEl.querySelector('.success').classList.remove('hide');
     } else if (type == 'error') {
-      this.form.querySelector(".message .error").classList.remove("none");
+      if (message) {
+        this.messageEl.querySelector('.error').textContent = message;
+      }
+      this.messageEl.querySelector('.error').classList.remove('hide');
     }
   }
 

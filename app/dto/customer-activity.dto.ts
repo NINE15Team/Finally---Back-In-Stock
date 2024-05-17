@@ -8,5 +8,5 @@ export interface CustomerActivityDTO extends BaseDTO {
     variantId?: number;
     status?: string;
     uuid?: string;
-    browserTrackId: string;
+    browserTrackId?: string;
 }

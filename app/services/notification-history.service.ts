@@ -1,6 +1,5 @@
 import prisma from "~/db.server";
 import { NotificationHistoryDTO } from "~/dto/notification-history.dto";
-import { NotificationHistory } from "~/models/notification-history.model";
 
 const save = async (historyDTO: NotificationHistoryDTO) => {
     return await prisma.notificationHistory.create({

@@ -1,51 +1,92 @@
-import { IndexTable, useIndexResourceState, Text, ButtonGroup, Button, Popover, ActionList, Toast } from "@shopify/polaris";
+import type { IndexFiltersProps } from "@shopify/polaris";
+import { IndexTable, useIndexResourceState, Text, IndexFilters, useSetIndexFiltersMode, Box, InlineStack, ButtonGroup, Popover, Button} from "@shopify/polaris";
 import { useCallback, useState } from "react";
+import { useActionData, useSearchParams, useSubmit } from "@remix-run/react";
+import { useAppBridge } from "@shopify/app-bridge-react";
 import { ChevronDownIcon } from '@shopify/polaris-icons';
-import { useActionData, useSubmit } from "@remix-run/react";
-import { TitleBar, useAppBridge, Modal } from "@shopify/app-bridge-react";
-import './request.scss'
 
-export default function Request({ title, label, data, type }: {
+export default function Request({ title, data, type, dateAttribute, attributeName, lastColName, lastColValue, lastColKey, actionsList }: {
   title: string,
-  label: string,
   data: any[],
-  type: string
+  type: string,
+  count: number,
+  dateAttribute: string,
+  attributeName: string,
+  lastColName: string,
+  lastColValue: (value:any) => any,
+  lastColKey: string,
+  actionsList: (selectedRow: any[]) => any,
 
 }) {
   const shopifyBridge = useAppBridge();
   let actionResponse: any = useActionData<any>();
+  const [sortSelected, setSortSelected] = useState(["A-Z"]);
+  const [queryValue, setQueryValue] = useState("");
+  const [selected, setSelected] = useState(0);
+  const { mode, setMode } = useSetIndexFiltersMode();
+  const [searchParams] = useSearchParams();
+  const submit = useSubmit();
+
+  const handleFiltersQueryChange = useCallback(
+    (value: string) => setQueryValue(value),
+    []
+  );
+
   const resourceName = {
-    singular: 'order',
-    plural: 'orders',
+    singular: 'Request',
+    plural: 'Requests',
   };
 
+  const options: any = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+
+  const filters: any[] = [
+  ];
+
   let rows = [] as any;
+
   data.forEach((elm: any) => {
+    const date: any = elm[dateAttribute];
     rows.push({
       id: elm.id,
       product: elm?.productInfo.productTitle,
+      imageURL: elm?.productInfo.imageURL,
       email: elm?.customerEmail,
-      date: elm?.updatedAt
+      date: new Intl.DateTimeFormat('en-US', options).format(new Date(date)),
+      vendor: elm?.productInfo.vendor
     })
   });
 
   const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
 
+  function ImageTitle(url: string, title: string) {
+    return (
+      <InlineStack gap="300" blockAlign="center">
+        <Box>
+          <img src={url} height="40px" width="40px" alt="product" />
+        </Box>
+        <Text as="p">{title}</Text>
+      </InlineStack>
+    );
+  }
+
   const rowMarkup = rows.map(
-    ({ id, product, email, date }: { id: any, product: any, email: any, date: any }, index: any) => (
+    (element: any, index: any) => (
       <IndexTable.Row
-        id={id}
-        key={id}
-        selected={selectedResources.includes(id)}
+        id={element.id}
+        key={element.id}
+        selected={selectedResources.includes(element.id)}
         position={index}
       >
         <IndexTable.Cell>
-          <Text variant="bodyMd" fontWeight="bold" as="span">
-            {product}
-          </Text>
+          {ImageTitle(element.imageURL, element.product)}
         </IndexTable.Cell>
-        <IndexTable.Cell>{email}</IndexTable.Cell>
-        <IndexTable.Cell>{date}</IndexTable.Cell>
+        <IndexTable.Cell>{element.email}</IndexTable.Cell>
+        <IndexTable.Cell>{element.date}</IndexTable.Cell>
+        <IndexTable.Cell>{lastColValue(element[lastColKey])} -  {lastColKey}</IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
@@ -55,52 +96,6 @@ export default function Request({ title, label, data, type }: {
   const toggleActive = () => {
     setActive(!active);
   };
-
-  const PendingActionList = ({ selectedRow }: { selectedRow: any }) => {
-    const submit = useSubmit();
-    const onSend = () => {
-      console.log("Send Manually", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'SEND_EMAIL');
-      submit(formData, { method: "post" });
-    }
-    const onUnSubscribe = () => {
-      console.log("UnSubscribe", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'UNSUBSCRIBE');
-      submit(formData, { method: "post" });
-    }
-    return (<ActionList
-      actionRole="menuitem"
-      items={[{ content: 'Send Manually', onAction: onSend }, { content: 'Unsubscribe', onAction: onUnSubscribe }]}
-    />)
-  }
-
-  const NotificationSentActionList = ({ selectedRow }: { selectedRow: any }) => {
-    const submit = useSubmit();
-    const onSend = () => {
-      console.log("Re-Send", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'SEND_EMAIL');
-      submit(formData, { method: "post" });
-
-    }
-    const onSubscribe = () => {
-      console.log("Re subscribe", selectedRow);
-      const formData = new FormData();
-      formData.append("ids", selectedRow);
-      formData.set('name', 'SUBSCRIBE');
-      submit(formData, { method: "post" });
-
-    }
-    return (<ActionList
-      actionRole="menuitem"
-      items={[{ content: 'Send Again', onAction: onSend }, { content: 'Re-subscribe', onAction: onSubscribe }]}
-    />)
-  }
 
   const showToast = (message: string) => {
     shopifyBridge.toast.show(message, { duration: 3000 });
@@ -114,56 +109,141 @@ export default function Request({ title, label, data, type }: {
     showToast('Customer Unsubscribed');
   }
 
+  const sortOptions: IndexFiltersProps["sortOptions"] = [
+    { label: "Product", value: "Product asc", directionLabel: "A-Z" },
+    { label: "Product", value: "Product desc", directionLabel: "Z-A" },
+    { label: "Contact", value: "Contact asc", directionLabel: "A-Z" },
+    { label: "Contact", value: "Contact desc", directionLabel: "Z-A" },
+    { label: "Requested On", value: "Requested On asc", directionLabel: "A-Z" },
+    { label: "Requested On", value: "Requested On desc", directionLabel: "Z-A" },
+    { label: "Vendor", value: "Vendor asc", directionLabel: "A-Z" },
+    { label: "Vendor", value: "Vendor desc", directionLabel: "Z-A" }
+  ];
+
+  function fetchNext(type: string) {
+    let pageParam = 'ppage';
+    if (type == 'sent') {
+      pageParam = 'spage';
+    }
+    let page: any = searchParams.get(pageParam);
+    if (page == null || isNaN(page)) {
+      page = 1;
+    } else {
+      ++page;
+    }
+    const formData = new FormData();
+    formData.append("page", page);
+    formData.set('name', type.toUpperCase());
+    submit(formData, { method: "post" });
+  }
+
+  function fetchPrev(type: string) {
+    let pageParam = 'ppage';
+    if (type == 'sent') {
+      pageParam = 'spage';
+    }
+    let page: any = searchParams.get(pageParam);
+    if (page == null || isNaN(page)) {
+      page = 1;
+    } else {
+      --page;
+    }
+    const formData = new FormData();
+    formData.append("page", page);
+    formData.set('name', type.toUpperCase());
+    submit(formData, { method: "post" });
+  }
+
   return (
     <>
-      <div className="requests-wrapper second-underlined">
-        <Text as="h3" variant="bodyMd">{title} - <span>{label}</span></Text>
-        <IndexTable
-          itemCount={data.length}
-          resourceName={resourceName}
-          selectedItemsCount={
-            allResourcesSelected ? 'All' : selectedResources.length
-          }
-          onSelectionChange={handleSelectionChange}
-          headings={[
-            { title: 'Product' },
-            { title: 'Contact' },
-            { title: 'Request Date' }
-          ]}
-        >
-          {rowMarkup}
-        </IndexTable>
-        {rows.length > 0 ?
-          <div className="btnContainer">
-            <ButtonGroup variant="segmented">
-              <div className="my-button">
-                <Button variant="primary">Actions</Button>
-              </div>
+      <Box paddingBlockEnd="800">
+        <Text variant='headingLg' as='h2'>{title}</Text>
+      </Box>
+      <Box
+        background="bg-surface"
+        borderStartEndRadius="200"
+        borderStartStartRadius="200"
+      >
+        <InlineStack align="space-between" wrap={false}>
+          {selectedResources.length ?
+            <Box
+              borderBlockEndWidth="050"
+              borderColor="border"
+              padding="200"
+            >
+              <ButtonGroup variant="segmented">
+                <Button onClick={() => toggleActive()} variant="primary">Actions</Button>
 
-              <Popover
-                active={active}
-                preferredAlignment="right"
-                activator={
-                  <Button
-                    variant="primary"
-                    onClick={() => toggleActive()}
-                    icon={ChevronDownIcon}
-                    accessibilityLabel="Other save actions"
-                  />
-                }
-                autofocusTarget="first-node"
-                onClose={() => toggleActive()}
-              >
-                {type === 'pending' ? (
-                  <PendingActionList selectedRow={selectedResources} />
-                ) : (
-                  <NotificationSentActionList selectedRow={selectedResources} />
-                )}
-              </Popover>
-            </ButtonGroup>
-          </div>
-          : null}
-      </div >
+                <Popover
+                  active={active}
+                  preferredAlignment="right"
+                  activator={
+                    <Button
+                      variant="primary"
+                      onClick={() => toggleActive()}
+                      icon={ChevronDownIcon}
+                      accessibilityLabel="Other save actions"
+                    />
+                  }
+                  autofocusTarget="first-node"
+                  onClose={() => toggleActive()}
+                >
+                  {actionsList(selectedResources)}
+                </Popover>
+              </ButtonGroup> </Box> : <></>}
+          {data.length ? <IndexFilters
+            sortOptions={sortOptions}
+            sortSelected={sortSelected}
+            queryValue={queryValue}
+            queryPlaceholder="Searching in all"
+            onQueryChange={handleFiltersQueryChange}
+            onQueryClear={() => setQueryValue("")}
+            onSort={setSortSelected}
+            canCreateNewView={false}
+            cancelAction={{
+              onAction: () => { },
+              disabled: false,
+              loading: false,
+            }}
+            tabs={[]}
+            selected={selected}
+            onSelect={setSelected}
+            filters={filters}
+            appliedFilters={[]}
+            onClearAll={() => { }}
+            mode={mode}
+            setMode={setMode}
+          /> : <></>}
+        </InlineStack>
+      </Box>
+      <IndexTable
+        itemCount={data.length}
+        resourceName={resourceName}
+        sortColumnIndex={0}
+        selectedItemsCount={
+          allResourcesSelected ? 'All' : selectedResources.length
+        }
+        onSelectionChange={handleSelectionChange}
+        headings={[
+          { title: 'Product' },
+          { title: 'Contact' },
+          { title: dateAttribute },
+          { title: lastColName }
+        ]}
+        pagination={{
+          hasNext: true,
+          hasPrevious: true,
+          onNext: () => {
+            fetchNext(type);
+          },
+          onPrevious: () => {
+            fetchPrev(type);
+          }
+        }}
+      >
+        {rowMarkup}
+      </IndexTable>
+
     </>
   );
 }

@@ -1,6 +1,5 @@
-import { randomInt } from "crypto";
+import { randomUUID } from "crypto";
 import prisma from "../db.server";
-import { authenticate } from "../shopify.server";
 
 const saveStoreInfo = async (data: any) => {
     return await prisma.shopifyStoreInfo.upsert({
@@ -93,13 +92,13 @@ const activateWebPixel = async (admin: any) => {
             }`, {
         variables: {
             webPixel: {
-                settings: JSON.stringify({ accountID: randomInt(5) + "" })
+                settings: JSON.stringify({ accountID: randomUUID() })
             }
         }
     },
     );
     const data = await response.json();
-    console.log("I am activating");
+    console.log("***************************Web Pixel activating**************************");
     return data;
 };
 

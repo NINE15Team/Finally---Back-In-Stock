@@ -1,5 +1,3 @@
-import { CustomerSubscription } from "~/models/customer-subscription.model";
-import { ProductInfo } from "~/models/product-info.model";
 
 const storeInfoData =
     [{

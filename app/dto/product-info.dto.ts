@@ -15,6 +15,7 @@ export interface ProductInfoDTO extends BaseDTO {
     status?: boolean;
     inStock?: boolean;
     customerSubscribe: CustomerSubscriptionDTO;
+    vendor?: string;
     createdAt?: Date;
     updatedAt?: Date;
     isActive?: boolean;

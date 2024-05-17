@@ -1,61 +1,176 @@
-<style>
-  .none {
-    display: none;
-  }
-</style>
-
-{% assign out_of_stock_form_class = 'none' %}
-{% assign blockSettings = block.settings %}
-{% if blockSettings.product.selected_or_first_available_variant.available == false or request.design_mode %}
-  {% assign out_of_stock_form_class = '' %}
-{% endif %}
-<style>
-  #{{ block.id }} form {
-    padding-left: {{blockSettings.padding_left}}px;
-    padding-right: {{blockSettings.padding_right}}px;
-  }
-  {% capture block_css %}{{ blockSettings.custom_css }}{% endcapture %}
-  {% if block_css != blank %}
-    {% assign block_id_selector = '#' | append: block.id %}
-    {{ block_css | replace: '==', block_id_selector | strip_html | escape }}
+{% if request.page_type == 'product' %}
+  {% assign blockSettings = block.settings %}
+  {% assign out_of_stock_form_class = 'hide' %}
+  {% if product.selected_or_first_available_variant.available == false or request.design_mode == true %}
+    {% assign out_of_stock_form_class = '' %}
   {% endif %}
-</style>
-<script src="{{ 'back-in-stock.js' | asset_url}}" async></script>
-<script type="application/json" id="bis-product-json">
-  {{ product | json }}
-</script>
-<back-in-stock
-  data-store="{{ shop.permanent_domain }}"
-  data-product-id="{{ product.id }}"
-  data-product-handle="{{ product.handle }}"
-  data-product-title="{{ product.title }}"
-  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
-  data-variant-title="{{ product.selected_or_first_available_variant.title }}"
-  id="{{ block.id }}"
->
-  <form
-    class="out-of-stock {{ out_of_stock_form_class }}"
-    style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }}"
+
+  <style>
+    {{ blockSettings.notify_me_btn_font_picker | font_face: font_display: 'swap' }}
+    .hide {
+      display: none;
+    }
+    .notify-button {
+      width: 100%;
+      border: 1px solid black;
+      background: none;
+      cursor: pointer;
+    }
+
+    .out-of-stock-modal {
+      position: fixed;
+      z-index: 1000;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 2rem 4rem;
+    }
+
+    .out-of-stock-modal .close {
+      position: absolute;
+      right: 0.75em;
+      top: 0.75em;
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+    }
+
+    .out-of-stock-modal .wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1em;
+    }
+
+    .out-of-stock-modal .wrapper input {
+      padding: 0.6em 1em;
+      border: 1px solid gray;
+      border-radius: 3px;
+    }
+
+    .out-of-stock-modal .wrapper label {
+    }
+
+    .out-of-stock-modal .wrapper + .wrapper {
+      margin-top: 0.3em;
+    }
+
+    .out-of-stock-modal .wrapper small {
+      opacity: 0.7;
+    }
+
+    .out-of-stock-modal .submit {
+      width: 100%;
+      margin-top: 3rem;
+      border: 0;
+      cursor: pointer;
+      font:inherit
+    }
+
+    #{{ block.id }} form {
+      padding-left: {{ blockSettings.padding_left}} px;
+      padding-right: {{ blockSettings.padding_right}} px;
+    }
+    {% capture block_css %}
+      {{ blockSettings.custom_css }}
+    {% endcapture %}
+    {% if block_css != blank %}
+      {% assign block_id_selector = '#' | append: block.id %}
+      {{ block_css | replace: '==', block_id_selector | strip_html | escape }}
+    {% endif %}
+
+    .finally-bis-button-font{
+      font-size:{{ blockSettings.notify_me_btn_font_size_slider }}px;
+      font-family:{{ blockSettings.notify_me_btn_font_picker.family }},{{ blockSettings.notify_me_btn_font_picker.fallback_families }};
+      font-style: {{ blockSettings.notify_me_btn_font_picker.style }};
+      font-weight: {{ blockSettings.notify_me_btn_font_picker.weight }}
+    }
+
+    .finally-bis-form-font{
+      font-size:{{ blockSettings.notify_me_form_font_size_slider }}px;
+      font-family:{{ blockSettings.notify_me_form_font_picker.family }},{{ blockSettings.notify_me_form_font_picker.fallback_families }};
+      font-style: {{ blockSettings.notify_me_form_font_picker.style }};
+      font-weight: {{ blockSettings.notify_me_form_font_picker.weight }}
+    }
+  </style>
+
+  <script src="{{ 'back-in-stock.js' | asset_url}}" async></script>
+  <script type="application/json" id="bis-product-json">
+    {{ product | json }}
+  </script>
+  <back-in-stock
+    data-store="{{ shop.permanent_domain }}"
+    data-product-id="{{ product.id }}"
+    data-product-handle="{{ product.handle }}"
+    data-product-title="{{ product.title }}"
+    data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    data-variant-title="{{ product.selected_or_first_available_variant.title }}"
+    data-vendor="{{ product.vendor }}"
+    class="{{ out_of_stock_form_class }}"
+    id="{{ block.id }}"
   >
-    <h3 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h3>
-    <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
-    <label for="email">Email</label>
-    <div class="wrapper">
-      <input type="text" name="email" placeholder="{{ blockSettings.input_text_placeholder }}">
-      <button style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}">
+    <form
+      class="out-of-stock-modal hide finally-bis-button-font"
+      style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }};border-radius:{{  blockSettings.notify_me_form_border_radius_slider}}px;width:{{ blockSettings.notify_me_form_width_slider }}%"
+    >
+      <button class="close">X</button>
+      <h2 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h2>
+      <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
+      <div class="wrapper">
+        <label for="email">Email</label>
+        <input
+          type="text"
+          name="email"
+          placeholder="{{ blockSettings.input_text_placeholder }}"
+        >
+      </div>
+      {% if block_css != blank %}
+        <div class="wrapper">
+          <label for="telephone"
+            >Telephone
+            <small>(For US Only)</small>
+          </label>
+          <input
+            type="tel"
+            name="telephone"
+            placeholder="0000000000"
+            pattern="[0-9]{10}"
+            maxlength="10"
+            minlength="10"
+            title="Eleven digits code"
+          >
+        </div>
+      {% endif %}
+      <button
+        class="submit"
+        style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}"
+      >
         {{ blockSettings.button_text }}
       </button>
-    </div>
-    <p class="message">
-      <span class="success none">
-        {{ blockSettings.success_message }}
-      </span>
-      <span class="error none">
-        {{ blockSettings.error_message }}
-      </span>
-    </p>
-  </form>
-</back-in-stock>
+      <p class="message">
+        <span class="success hide">
+          {{ blockSettings.success_message }}
+        </span>
+        <span class="error hide">
+          {{ blockSettings.error_message }}
+        </span>
+      </p>
+    </form>
+
+    <button
+      class="notify-button finally-bis-button-font"
+      style="
+        background:{{ blockSettings.notify_me_btn_bg_color }};
+        color:{{ blockSettings.notify_me_btn_text_color }};
+        width:{{ blockSettings.notify_me_btn_width_slider }}%;
+        padding:{{ blockSettings.notify_me_btn_padding_slider }}px;
+        border-radius:{{ blockSettings.notify_me_btn_border_radius_slider }}px;
+      "
+    >
+      {{ blockSettings.notify_me_btn_bg_txt }}
+    </button>
+  </back-in-stock>
+{% endif %}
 
 {% schema %}
 {
@@ -63,21 +178,83 @@
   "target": "section",
   "settings": [
     {
+      "type": "header",
+      "content": "Notify me Button",
+      "info": "Settings for Notify me button"
+    },
+
+    {
       "type": "text",
-      "id": "title",
-      "label": "Block title",
-      "default": "Back In Stock Form"
+      "id": "notify_me_btn_bg_txt",
+      "label": "Button Text",
+      "default": "Notify Me When Available"
     },
     {
-      "type": "product",
-      "id": "product",
-      "label": "product",
-      "autofill": true
+      "type": "color",
+      "id": "notify_me_btn_bg_color",
+      "label": "Button Background color",
+      "default": "#FCFBF2"
+    },
+    {
+      "type": "color",
+      "id": "notify_me_btn_text_color",
+      "label": "Button Text color",
+      "default": "#262626"
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_btn_width_slider",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "%",
+      "label": "Button width Slider",
+      "default": 100
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_btn_padding_slider",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Button padding slider",
+      "default": 20
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_btn_border_radius_slider",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Border raduis slider",
+      "default": 100
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_btn_font_size_slider",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "label": "Font size slider",
+      "default": 16
+    },
+    {
+      "type": "font_picker",
+      "id": "notify_me_btn_font_picker",
+      "label": "Font",
+      "default": "work_sans_n6"
     },
     {
       "type": "header",
-      "content": "Colors",
-      "info": "Colors for the back-in-stock form"
+      "content": "Form Setting",
+      "info": "Form Setting"
     },
     {
       "type": "color",
@@ -102,11 +279,6 @@
       "id": "text_color",
       "label": "Text color",
       "default": "#fff"
-    },
-    {
-      "type": "header",
-      "content": "Text",
-      "info": "Text content for the form"
     },
     {
       "type": "text",
@@ -148,7 +320,7 @@
       "id": "padding_left",
       "min": 0,
       "max": 100,
-      "step": 4,
+      "step": 2,
       "unit": "px",
       "label": "Padding Left",
       "default": 0
@@ -158,11 +330,52 @@
       "id": "padding_right",
       "min": 0,
       "max": 100,
-      "step": 4,
+      "step": 2,
       "unit": "px",
       "label": "Padding Right",
       "default": 0
     },
+
+    {
+      "type": "range",
+      "id": "notify_me_form_font_size_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form font size slider",
+      "default": 12
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_form_width_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Form width slider",
+      "default": 50
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_form_border_radius_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form Border raduis slider",
+      "default": 10
+    },
+
+    {
+      "type": "font_picker",
+      "id": "notify_me_form_font_picker",
+      "label": "Form Font",
+      "default": "work_sans_n6"
+    },
+
     {
       "type": "liquid",
       "id": "custom_css",

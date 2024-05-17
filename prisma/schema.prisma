@@ -48,6 +48,7 @@ model ProductInfo {
   productHandle        String                 @map("product_handle") @db.VarChar(50)
   imageURL             String                 @default("Default Variant") @map("image_url")
   price                Float                  @default(0) @map("price")
+  vendor               String                 @default("") @db.VarChar(50)
   customerSubscription CustomerSubscription[]
   store                ShopifyStoreInfo       @relation(fields: [storeId], references: [id], onDelete: Cascade)
   inStock              Boolean                @default(false) @map("in_stock")
@@ -63,6 +64,7 @@ model ProductInfo {
 model CustomerSubscription {
   id            Int         @id @default(autoincrement())
   productInfoId Int         @map("product_info_id")
+  customerPhone String      @default("") @map("customer_phone") @db.VarChar(15)
   customerEmail String      @default("Default Email") @map("customer_email") @db.VarChar(50)
   status        Boolean     @default(false) @map("status")
   isNotified    Boolean     @default(false) @map("is_notified")
@@ -114,6 +116,7 @@ model CustomerActivity {
   productInfoId         Int                 @map("product_info_id")
   browserTrackId        String              @map("browser_track_id")
   notificationHistoryId Int                 @map("notification_history_id")
+  customerEmail         String              @default("") @map("customer_email")
   createdAt             DateTime            @default(now()) @map("created_at")
   updatedAt             DateTime            @default(now()) @updatedAt @map("updated_at")
   store                 ShopifyStoreInfo    @relation(fields: [storeId], references: [id], onDelete: Cascade)

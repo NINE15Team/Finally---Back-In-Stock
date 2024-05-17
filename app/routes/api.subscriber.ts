@@ -3,6 +3,7 @@ import { json } from "@remix-run/node"; // or cloudflare/deno
 import { findByProductAndVariantId, isProductAlreadyAdded, addProductInfo } from "~/services/product-info.service";
 import { subscribeProduct } from "~/services/customer-subscriber.service";
 import type { CustomerSubscriptionDTO } from "../dto/customer-subscription.dto";
+import { isOwnerEmail } from "~/services/email.service";
 
 export const loader: LoaderFunction = async ({ request }) => {
     return json(
@@ -19,6 +20,17 @@ export const loader: LoaderFunction = async ({ request }) => {
 export const action: ActionFunction = async ({ request }) => {
     if (request.method == 'POST') {
         let requstBody = await request.json();
+        if (!requstBody.email) {
+            return json(
+                { status: false, message: "Email can't be empty" },
+                {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                    },
+                }
+            );
+        }
+
         console.log("****************Check If Product Exist");
         let isProductExist = await isProductAlreadyAdded(requstBody.productId, requstBody.variantId);
         if (!isProductExist) {
@@ -29,6 +41,7 @@ export const action: ActionFunction = async ({ request }) => {
         let productInfo = await findByProductAndVariantId(requstBody.productId, requstBody.variantId);
         let subscribeItem: CustomerSubscriptionDTO = {
             customerEmail: requstBody.email,
+            customerPhone: requstBody.customerPhone ?? "",
             isNotified: false,
             isActive: false,
             productInfoId: productInfo?.id,

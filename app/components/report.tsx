@@ -1,6 +1,7 @@
-import { DataTable, Text } from "@shopify/polaris";
-import './request.scss'
-import { useSearchParams, useSubmit } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
+import { Box, Card, DataTable, IndexTable, InlineStack, Link, Text } from "@shopify/polaris";
+import { useI18n } from '@shopify/react-i18n';
+import { emptyStateMarkup } from "./empty-state";
 
 export default function Report({ title, pagination, data }: {
   title: string,
@@ -8,71 +9,91 @@ export default function Report({ title, pagination, data }: {
   data: any[]
 
 }) {
-  const submit = useSubmit();
-  const [searchParams] = useSearchParams();
+  const [i18n] = useI18n();
   const rows: any = [];
-  data.forEach(prodInfo => {
-    console.log(prodInfo);
-    rows.push([
-      ImageTitle(prodInfo.imageURL, prodInfo.productTitle),
-      BoldText(prodInfo.customerSubscription?.length),
-      `$${prodInfo.price}`,
-      `$${(Number(prodInfo.price) * prodInfo.customerSubscription?.length)}`,
-    ]);
+  const resourceName = {
+    singular: 'Report',
+    plural: 'Reports',
+  };
+  let { shopifyURL } = useLoaderData<any>();
+
+
+  data.forEach((prodInfo, index) => {
+    const price = i18n.formatCurrency(prodInfo.price, {
+      currency: 'USD',
+      form: 'short',
+    });
+    const potentialPrice = i18n.formatCurrency(Number(prodInfo.price) * prodInfo.customerSubscription?.length, {
+      currency: 'USD',
+      form: 'short',
+    });
+    rows.push({
+      id: prodInfo.id,
+      imageURL: prodInfo?.imageURL,
+      title: prodInfo?.productTitle,
+      totalSubscribers: prodInfo.customerSubscription?.length,
+      price: price,
+      potentialPrice: potentialPrice,
+      productId: prodInfo.productId
+    });
   });
 
-  function ImageTitle(url: string, title: string) {
-    return <div className="row-image-container">
-      <img src={url} height="40px" width="40px" alt="product"/>
-      <Text as="p">{title}</Text>
-    </div>
-  }
+  const rowMarkup = rows.map(
+    (element: any, index: any) => (
+      <IndexTable.Row
+        id={element.id}
+        key={element.id}
+        position={index}
+      >
+        <IndexTable.Cell>
+          {ImageTitle(element.productId, element.imageURL, element.title)}
+        </IndexTable.Cell>
+        <IndexTable.Cell><Text variant="headingSm" as="h6" alignment="justify">{element.totalSubscribers}</Text></IndexTable.Cell>
+        <IndexTable.Cell> <Text as="p" alignment="justify"> {element.price} </Text> </IndexTable.Cell>
+        <IndexTable.Cell> <Text as="p" alignment="justify">{element.potentialPrice}</Text>  </IndexTable.Cell>
+      </IndexTable.Row>
+    ),
+  );
 
-  function BoldText(content: any) {
+  function ImageTitle(productId: string, url: string, title: string) {
+    let productURL = `https://${shopifyURL}/admin/products/${productId}`
     return (
-      <Text variant="headingSm" as="h6">
-        {content}
-      </Text>
-    )
+      <Link
+        target="_blank"
+        url={productURL}
+      >
+        <InlineStack gap="300" blockAlign="center">
+          <Box>
+            <img src={url} height="40px" width="40px" alt="product" />
+          </Box>
+          <Text as="p">{title}</Text>
+        </InlineStack>
+      </Link>
+    );
   }
 
   return (
-    <div className="requests-wrapper full-width b-section">
-      <Text as="h2" variant="bodyMd">{title}</Text>
-        <DataTable
-          columnContentTypes={[
-            'text',
-            'numeric',
-            'text',
-            'text',
-          ]}
+    <>
+      <Box paddingBlockStart="800" paddingBlockEnd="800">
+        <Text variant='headingLg' as='h2'>{title}</Text>
+      </Box>
+      <Card padding="0">
+        <IndexTable
+          resourceName={resourceName}
+          itemCount={data.length}
+          emptyState={emptyStateMarkup}
           headings={[
-            'Product',
-            'Requests',
-            'Price',
-            'Potential Income',
+            { title: 'Product', alignment: 'start' },
+            { title: 'Requests', alignment: 'start' },
+            { title: 'Price', alignment: 'start' },
+            { title: 'Potential Income', alignment: 'start' },
           ]}
-          rows={rows}
-          pagination={pagination ? {
-            hasNext: true,
-            onNext: () => {
-              let take: any = searchParams.get('take') || 2;
-              let skip: any = searchParams.get('skip');
-              if (skip == null || isNaN(skip)) {
-                skip = 1;
-              }
-              skip = (skip * take);
-              if (isNaN(skip)) {
-                skip = 0
-              }
-              const formData = new FormData();
-              formData.append("take", take);
-              formData.append("skip", skip);
-              submit(formData, { method: "post" });
-            },
-          } : undefined}
+          selectable={false}
+        >
+          {rowMarkup}
+        </IndexTable>
+      </Card>
+    </>
 
-        />
-    </div>
   );
 }

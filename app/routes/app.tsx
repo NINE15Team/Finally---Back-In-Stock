@@ -7,6 +7,7 @@ import "@shopify/polaris/build/esm/styles.css";
 
 import { authenticate } from "../shopify.server";
 import { isInitilized } from "~/services/store-info.service";
+import { I18nContext, I18nManager } from '@shopify/react-i18n';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -17,24 +18,33 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 export default function App() {
   const { apiKey, initilized } = useLoaderData<typeof loader>();
 
+  const locale = 'en';
+  const i18nManager = new I18nManager({
+    locale,
+    onError(error) {
+    },
+  });
+
   return (
-    <AppProvider isEmbeddedApp apiKey={apiKey}>
-      <ui-nav-menu>
-        <Link to="/app" rel="home">
-          Home
-        </Link>
-        <Link to="/app/email" >
-          Email
-        </Link>
-        <Link to="/app/instructions">
-          QuickSetup Guide
-        </Link>
-        <Link to="/app/reports">
-          Reports
-        </Link>
-      </ui-nav-menu>
-      <Outlet />
-    </AppProvider>
+    <I18nContext.Provider value={i18nManager}>
+      <AppProvider isEmbeddedApp apiKey={apiKey} >
+        <ui-nav-menu>
+          <Link to="/app" rel="home">
+            Home
+          </Link>
+          <Link to="/app/reports">
+            Reports
+          </Link>
+          <Link to="/app/email" >
+            Preferences
+          </Link>
+          <Link to="/app/instructions">
+            Support
+          </Link>
+        </ui-nav-menu>
+        <Outlet />
+      </AppProvider>
+    </I18nContext.Provider>
   );
 }
 
