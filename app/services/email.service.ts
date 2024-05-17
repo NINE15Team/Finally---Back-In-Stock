@@ -3,27 +3,19 @@ import prisma from "../db.server";
 import { findStoreByURL } from "../services/store-info.service";
 import { EmailDTO } from "../dto/email.dto";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
-import { ProductInfoDTO } from "~/dto/product-info.dto";
-import { ProductInfo } from "~/models/product-info.model";
 import EncryptionUtil from "~/utils/encryption.util";
-import { EmailConfiguration } from "~/models/email-config.model";
+import invariant from "tiny-invariant";
+import { EmailConfiguartion } from "@prisma/client";
 
-const loadConfig = () => {
-  let { EMAIL_API_URL, EMAIL_API_KEY } = process.env;
-  if (EMAIL_API_KEY == undefined) {
-    throw new Error("Email API Key is missing in .env flie");
-  }
-  if (EMAIL_API_URL == undefined) {
-    throw new Error("Email API URL is missing in .env flie");
-  }
-  return { EMAIL_API_URL, EMAIL_API_KEY };
-};
 
 const sendGridAdapter = async (
   uri: string,
   { data = {}, responseType = "json", method = "POST" } = {},
 ) => {
-  let { EMAIL_API_URL, EMAIL_API_KEY } = loadConfig();
+  let { EMAIL_API_URL, EMAIL_API_KEY } = process.env
+  invariant(process.env.EMAIL_API_URL, "Email API Key is missing in .env flie");
+  invariant(process.env.EMAIL_API_KEY, "Email API URL is missing in .env file");
+
   const requestOptions = {
     method: method,
     headers: {
@@ -58,7 +50,7 @@ const loadEmailTemplate = async (email: EmailDTO) => {
   }
   let token = EncryptionUtil.encrypt(JSON.stringify({ sid: email.subscriberId }), AES_SECRET_KEY);
   let unsubscribeLink = `${SHOPIFY_APP_URL}/public/unsubscribe?token=${token}`;
-  let productURL = `${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}&fbis=${email.uuid}`;
+  let productURL = `${shopifyURL}/products/${productInfo?.productHandle}?variant=${productInfo?.variantId}&fbis=${email.uuid}&email=${email.toEmail}`;
   return `
   <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -311,6 +303,7 @@ const saveOrUpdate = async (email: Partial<EmailDTO>) => {
       },
     },
     update: {
+      title: email.title,
       headerContent: email.headerContent,
       bodyContent: email.bodyContent,
       footerContent: email.footerContent,
@@ -336,6 +329,10 @@ const upsertEmail = async (email: Partial<EmailDTO>) => {
       senderEmail: email.senderEmail,
       title: email.title,
       isEmailVerified: EmailVerificationStatus.YES,
+      headerContent: email.headerContent,
+      bodyContent: email.bodyContent,
+      footerContent: email.footerContent,
+      buttonContent: email.buttonContent,
       createdAt: new Date(),
       updatedAt: new Date(),
       store: {
@@ -371,7 +368,7 @@ const findEmailConfigByStoreURL = async (url: any) => {
     where: {
       storeId: storeInfo?.id,
     },
-  }) || {} as EmailConfiguration;
+  }) || {} as EmailConfiguartion;
 };
 
 const findByStoreId = async (storeId: any) => {
@@ -402,6 +399,16 @@ const isEmailVerified = async (storeName: string) => {
   return data?.isEmailVerified;
 };
 
+const isOwnerEmail = async (email: string) => {
+  let result = await prisma.emailConfiguartion.count({
+    where: {
+      senderEmail: email
+    },
+  });
+  return result > 0;
+};
+
+
 const getStoreInfo = async (email: Partial<EmailDTO>) => {
   if (!email.storeId) {
     return await findStoreByURL(email.storeName);
@@ -418,5 +425,6 @@ export {
   findEmailConfigByStoreURL,
   upsertEmail,
   isEmailVerified,
-  findByStoreId
+  findByStoreId,
+  isOwnerEmail
 };

@@ -3,12 +3,14 @@ import { authenticate } from "../shopify.server";
 import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify } from "../services/store-info.service";
-import '../components/base.scss';
-
-import { Layout, Page } from "@shopify/polaris";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel } from "../services/store-info.service";
+import { Box, InlineStack, Layout, Link, Page, Text } from "@shopify/polaris";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
-import HomeBanner from "~/components/home-banner";
+import { useLoaderData } from "@remix-run/react";
+import CountRequest from "~/components/count-request";
+import Report from "~/components/report";
+import NoRequest from "~/components/no_request";
+import Checklist from "~/components/checklist";
 
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -16,11 +18,16 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let initilized = await isInitilized(admin);
   let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
+    await activateWebPixel(admin);
     await updateStoreInfo(admin);
     await upsertEmail({
+      headerContent: 'Good News!',
+      bodyContent: 'Your product is back in stock and now available.',
+      footerContent: `If you have any questions, please feel free to ask by emailing ${email}`,
+      buttonContent: 'CHECKOUT NOW',
       storeId: id,
       shopifyURL: myshopify_domain,
-      title: name,
+      title: 'Finally',
       senderEmail: email
     });
   }
@@ -32,24 +39,31 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
-  let shopInfo: any = await updateStoreInfo(admin);
-  await upsertEmail({
-    storeId: shopInfo.id,
-    shopifyURL: shopInfo.myshopify_domain,
-    title: shopInfo.name,
-    senderEmail: shopInfo.email
-  });
-  // await activateWebPixel(admin);
   return await isInitilized(admin);
 };
 
 export default function Index() {
-
-
+  let { totalNotifications, newSubscribers, subscribedProducts } = useLoaderData<any>();
   return (
     <Page>
       <Layout>
-        <HomeBanner />
+        <Layout.Section>
+          <InlineStack align='space-between'>
+            <Text variant="headingXl" as="h1">Dashboard</Text>
+          </InlineStack>
+          <div style={{ marginBottom: "32px" }}>
+          </div>
+          {totalNotifications || newSubscribers ?
+            <Box>
+              <CountRequest countPending={newSubscribers} countSentNotification={totalNotifications} />
+              <Report title="Popular Products" pagination={false} data={subscribedProducts} />
+            </Box>
+            :
+            <Box>
+              <NoRequest />
+            </Box>
+          }
+        </Layout.Section>
       </Layout>
     </Page>
   );

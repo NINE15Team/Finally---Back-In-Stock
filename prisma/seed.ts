@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { storeInfoData, customerSubscriptionData, productInfoData } from '../app/services/data.service'
+import { storeInfoData, customerSubscriptionData } from '../app/services/data.service'
 
 const prisma = new PrismaClient()
 async function seed() {

@@ -23,13 +23,42 @@ const findById = async (params: CustomerSubscriptionDTO) => {
     });
 };
 
+const findByEmailAndProductInfo = async (params: CustomerSubscriptionDTO) => {
+    return await prisma.customerSubscription.findFirst({
+        where: {
+            productInfo: {
+                id: params.productInfoId
+            },
+            customerEmail: params.customerEmail,
+        },
+        include: {
+            productInfo: {
+                include: {
+                    store: {
+
+                    }
+                }
+            }
+        }
+    });
+};
 
 const findAll = async (params: CustomerSubscriptionDTO) => {
     let clause = {} as Partial<CustomerSubscription>;
     if (params.isNotified !== undefined) {
         clause.isNotified = params.isNotified
     }
-    return await prisma.customerSubscription.findMany({
+    let count = await prisma.customerSubscription.count({
+        where: {
+            productInfo: {
+                store: {
+                    shopifyURL: params.shopifyURL
+                }
+            },
+            ...clause
+        }
+    })
+    let items = await prisma.customerSubscription.findMany({
         skip: params.skip || 0,
         take: params.take || 5,
         where: {
@@ -51,6 +80,7 @@ const findAll = async (params: CustomerSubscriptionDTO) => {
             updatedAt: 'desc',
         }
     });
+    return { items, count }
 };
 
 const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
@@ -64,10 +94,11 @@ const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
         update: {
             isNotified: false,
             isSubscribed: true,
-            updatedAt: new Date(),
+            updatedAt: new Date()
         },
         create: {
             customerEmail: subscribeItem.customerEmail,
+            customerPhone: subscribeItem.customerPhone,
             isSubscribed: true,
             isNotified: false,
             createdAt: new Date(),
@@ -76,8 +107,7 @@ const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
                 connect: {
                     id: subscribeItem.productInfoId
                 }
-            }
-
+            },
         }
     })
 };
@@ -135,41 +165,48 @@ const countOfSubscribers = async (storeURL: string) => {
 const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
     let emailInfo = await findEmailConfigByStoreURL(subscriberList[0].shopifyURL);
     for (const subscriber of subscriberList) {
-        let sub = await findById(subscriber);
-        let uuid = randomUUID();
-        let { productInfo } = sub;
-        if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
-            console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
-            return false
-        } else {
-            let resp = await sendEmail({
-                title: `Product Restock ${productInfo.productTitle}`,
-                toEmail: sub?.customerEmail,
-                senderEmail: emailInfo?.senderEmail,
-                subscriberId: sub?.id,
-                bodyContent: emailInfo?.bodyContent,
-                headerContent: emailInfo?.headerContent,
-                footerContent: emailInfo?.footerContent,
-                buttonContent: emailInfo?.buttonContent,
-                shopifyURL: subscriberList[0].shopifyURL,
-                storeName: subscriberList[0].storeName,
-                uuid: uuid,
-                productInfo: {
-                    productTitle: productInfo.productTitle,
-                    productHandle: productInfo.productHandle,
-                    variantId: productInfo.variantId,
-                    price: productInfo.price,
-                    imageURL: productInfo.imageURL,
-                    variantTitle: productInfo.variantTitle
-                }
-            })
-            await setCustomerNotified(sub?.customerEmail!, productInfo.id);
-            console.log(`Notified to ${sub?.customerEmail}`, resp);
-            await saveNotificationHistory({
-                uuid: uuid,
-                noOfNotifications: 1,
-                productInfoId: productInfo.id
-            });
+        let sub;
+        if (subscriber.id) {
+            sub = await findById(subscriber);
+        } else if (subscriber.customerEmail) {
+            sub = await findByEmailAndProductInfo(subscriber);
+        }
+        if (sub != undefined && sub != null && sub.productInfo.inStock) {
+            let uuid = randomUUID();
+            let { productInfo } = sub;
+            if (sub?.customerEmail?.toLowerCase() == emailInfo?.senderEmail.toLowerCase()) {
+                console.error(`Sender and Receiever can't be same ${sub.customerEmail} - ${emailInfo?.senderEmail}`);
+                return false
+            } else {
+                let resp = await sendEmail({
+                    title: `Product Restock ${productInfo.productTitle}`,
+                    toEmail: sub?.customerEmail,
+                    senderEmail: emailInfo?.senderEmail,
+                    subscriberId: sub?.id,
+                    bodyContent: emailInfo?.bodyContent,
+                    headerContent: emailInfo?.headerContent,
+                    footerContent: emailInfo?.footerContent,
+                    buttonContent: emailInfo?.buttonContent,
+                    shopifyURL: subscriberList[0].shopifyURL,
+                    storeName: subscriberList[0].storeName,
+                    uuid: uuid,
+                    productInfo: {
+                        productTitle: productInfo.productTitle,
+                        productHandle: productInfo.productHandle,
+                        variantId: productInfo.variantId,
+                        price: productInfo.price,
+                        imageURL: productInfo.imageURL,
+                        variantTitle: productInfo.variantTitle
+                    }
+                })
+                await setCustomerNotified(sub?.customerEmail!, productInfo.id);
+                console.log(`Notified to ${sub?.customerEmail}`, resp);
+                await saveNotificationHistory({
+                    uuid: uuid,
+                    noOfNotifications: 1,
+                    productInfoId: productInfo.id
+                });
+            }
         }
     }
     return subscriberList;
@@ -189,5 +226,6 @@ export {
     unSubscribeProduct,
     updateSubscribtionStatus,
     countOfSubscribers,
-    notifyToCustomers
+    notifyToCustomers,
+    findByEmailAndProductInfo
 }
