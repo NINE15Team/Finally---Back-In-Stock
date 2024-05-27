@@ -1,10 +1,8 @@
-const API_URL = "https://suits-landscapes-chorus-dentists.trycloudflare.com";
+const API_URL = "https://ee-realtor-accessing-synthesis.trycloudflare.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
     this.form = this.querySelector("form");
-    this.showModalButton = this.querySelector('.notify-button');
-    this.closeModalButton = this.querySelector('.close');
     this.messageEl = this.querySelector('.message');
     this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
@@ -79,17 +77,6 @@ class BackInStock extends HTMLElement {
       }
     });
 
-    this.showModalButton.addEventListener('click', () => {
-      document.body.appendChild(this.form)
-      this.form.querySelector("input").value = "";
-      document.querySelector(".out-of-stock-modal .message .success").classList.add('hide');
-      document.querySelector(".out-of-stock-modal .message .error").classList.add('hide');
-      this.form.classList.remove('hide')
-    })
-
-    this.closeModalButton.addEventListener('click', () => {
-      this.form.classList.add('hide')
-    })
   }
 
   showMessage(type, message) {

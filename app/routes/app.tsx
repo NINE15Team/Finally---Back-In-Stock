@@ -39,7 +39,7 @@ export default function App() {
             Preferences
           </Link>
           <Link to="/app/instructions">
-            Support
+            Installation
           </Link>
         </ui-nav-menu>
         <Outlet />

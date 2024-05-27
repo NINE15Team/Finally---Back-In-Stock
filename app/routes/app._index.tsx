@@ -21,13 +21,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     await activateWebPixel(admin);
     await updateStoreInfo(admin);
     await upsertEmail({
-      headerContent: 'Good News!',
-      bodyContent: 'Your product is back in stock and now available.',
+      headerContent: 'Great News',
+      bodyContent: 'Finally! Your {{product}} is back in stock!',
       footerContent: `If you have any questions, please feel free to ask by emailing ${email}`,
       buttonContent: 'CHECKOUT NOW',
       storeId: id,
       shopifyURL: myshopify_domain,
-      title: 'Finally',
+      title: 'Finally! Your {{product}} is back in stock!',
       senderEmail: email
     });
   }
@@ -48,11 +48,11 @@ export default function Index() {
     <Page>
       <Layout>
         <Layout.Section>
-          <InlineStack align='space-between'>
-            <Text variant="headingXl" as="h1">Dashboard</Text>
-          </InlineStack>
-          <div style={{ marginBottom: "32px" }}>
-          </div>
+          <Box paddingBlockEnd="800">
+            <InlineStack align='space-between'>
+              <Text variant="headingXl" as="h1">Dashboard</Text>
+            </InlineStack>
+          </Box>
           {totalNotifications || newSubscribers ?
             <Box>
               <CountRequest countPending={newSubscribers} countSentNotification={totalNotifications} />
