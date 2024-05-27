@@ -30,6 +30,7 @@
       opacity: 0.7;
     }
 
+
     #{{ block.id }} form {
       padding: {{ blockSettings.form_padding}}px;
     }
@@ -89,6 +90,10 @@
           type="text"
           name="email"
           placeholder="{{ blockSettings.input_text_placeholder }}"
+          style="
+            width:{{ blockSettings.input_width }}%;
+            max-width:{{ blockSettings.input_max_width }}%;
+          "
         >
       </div>
       {% if false %}
@@ -156,7 +161,6 @@
       "label": "Text color",
       "default": "#fff"
     },
-
     {
       "type": "color",
       "id": "button_background",
@@ -171,13 +175,33 @@
     },
     {
       "type": "range",
+      "id": "input_width",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Input width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "input_max_width",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Input max width",
+      "default": 100
+    },
+    {
+      "type": "range",
       "id": "button_width",
       "min": 0,
       "max": 100,
       "step": 2,
       "unit": "%",
       "label": "Button width",
-      "default": 12
+      "default": 100
     },
     {
       "type": "range",
@@ -207,8 +231,60 @@
       "step": 2,
       "unit": "px",
       "label": "Button Border Radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "form_padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form Padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "notify_me_form_font_size_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form font size",
       "default": 12
     },
+
+    {
+      "type": "range",
+      "id": "notify_me_form_width_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Form width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "notify_me_form_max_width_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Form max width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "notify_me_form_border_radius_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form Border raduis",
+      "default": 10
+    },
+
     {
       "type": "text",
       "id": "form_title",
@@ -244,58 +320,6 @@
       "label": "Button text",
       "default": "Submit"
     },
-    {
-      "type": "range",
-      "id": "form_padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding",
-      "default": 14
-    },
-    {
-      "type": "range",
-      "id": "notify_me_form_font_size_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Form font size slider",
-      "default": 12
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_form_width_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "%",
-      "label": "Form width",
-      "default": 100
-    },
-    {
-      "type": "range",
-      "id": "notify_me_form_max_width_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "%",
-      "label": "Form max width",
-      "default": 100
-    },
-    {
-      "type": "range",
-      "id": "notify_me_form_border_radius_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Form Border raduis slider",
-      "default": 10
-    },
-
     {
       "type": "font_picker",
       "id": "notify_me_form_font_picker",
