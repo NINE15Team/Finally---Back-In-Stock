@@ -10,66 +10,29 @@
     .hide {
       display: none;
     }
-    .notify-button {
-      width: 100%;
-      border: 1px solid black;
-      background: none;
-      cursor: pointer;
-    }
 
-    .out-of-stock-modal {
-      position: fixed;
-      z-index: 1000;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 2rem 4rem;
-    }
-
-    .out-of-stock-modal .close {
-      position: absolute;
-      right: 0.75em;
-      top: 0.75em;
-      background: none;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-
-    .out-of-stock-modal .wrapper {
+    .wrapper {
+      margin-top: 0.3em;
       display: flex;
       flex-direction: column;
       gap: 0.1em;
     }
 
-    .out-of-stock-modal .wrapper input {
+    .wrapper input {
       padding: 0.6em 1em;
       border: 1px solid gray;
       border-radius: 3px;
+      outline: none !important;
+      box-shadow: none !important;
     }
 
-    .out-of-stock-modal .wrapper label {
-    }
-
-    .out-of-stock-modal .wrapper + .wrapper {
-      margin-top: 0.3em;
-    }
-
-    .out-of-stock-modal .wrapper small {
+    .wrapper small {
       opacity: 0.7;
     }
 
-    .out-of-stock-modal .submit {
-      width: 100%;
-      margin-top: 3rem;
-      border: 0;
-      cursor: pointer;
-      font:inherit
-    }
 
     #{{ block.id }} form {
-      padding-left: {{ blockSettings.padding_left}} px;
-      padding-right: {{ blockSettings.padding_right}} px;
+      padding: {{ blockSettings.form_padding}}px;
     }
     {% capture block_css %}
       {{ blockSettings.custom_css }}
@@ -110,10 +73,15 @@
     id="{{ block.id }}"
   >
     <form
-      class="out-of-stock-modal hide finally-bis-button-font"
-      style="background:{{ blockSettings.form_background }};color:{{ blockSettings.text_color }};border-radius:{{  blockSettings.notify_me_form_border_radius_slider}}px;width:{{ blockSettings.notify_me_form_width_slider }}%"
+      style="
+        background:{{ blockSettings.form_background }};
+        color:{{ blockSettings.text_color }};
+        border-radius:{{  blockSettings.notify_me_form_border_radius_slider}}px;
+        width:{{ blockSettings.notify_me_form_width_slider }}%;
+        max-width:{{ blockSettings.notify_me_form_max_width_slider }}% ;
+        border: 1px solid
+      "
     >
-      <button class="close">X</button>
       <h2 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h2>
       <p style="color:{{ blockSettings.text_color }}">{{ blockSettings.description }}</p>
       <div class="wrapper">
@@ -122,9 +90,13 @@
           type="text"
           name="email"
           placeholder="{{ blockSettings.input_text_placeholder }}"
+          style="
+            width:{{ blockSettings.input_width }}%;
+            max-width:{{ blockSettings.input_max_width }}%;
+          "
         >
       </div>
-      {% if block_css != blank %}
+      {% if false %}
         <div class="wrapper">
           <label for="telephone"
             >Telephone
@@ -142,8 +114,16 @@
         </div>
       {% endif %}
       <button
-        class="submit"
-        style="background: {{ blockSettings.button_background }};color:{{ blockSettings.button_text_color }}"
+        class="btn button button--primary"
+        style="
+          background: {{ blockSettings.button_background }};
+          color:{{ blockSettings.button_text_color }};
+          width:{{ blockSettings.button_width }}%;
+          max-width:{{ blockSettings.button_max_width }}%;
+          padding:{{ blockSettings.button_padding }}px;
+          border-radius:{{ blockSettings.button_border_radius }}px;
+          margin-top:10px
+        "
       >
         {{ blockSettings.button_text }}
       </button>
@@ -156,19 +136,6 @@
         </span>
       </p>
     </form>
-
-    <button
-      class="notify-button finally-bis-button-font"
-      style="
-        background:{{ blockSettings.notify_me_btn_bg_color }};
-        color:{{ blockSettings.notify_me_btn_text_color }};
-        width:{{ blockSettings.notify_me_btn_width_slider }}%;
-        padding:{{ blockSettings.notify_me_btn_padding_slider }}px;
-        border-radius:{{ blockSettings.notify_me_btn_border_radius_slider }}px;
-      "
-    >
-      {{ blockSettings.notify_me_btn_bg_txt }}
-    </button>
   </back-in-stock>
 {% endif %}
 
@@ -177,80 +144,6 @@
   "name": "Back In Stock Form",
   "target": "section",
   "settings": [
-    {
-      "type": "header",
-      "content": "Notify me Button",
-      "info": "Settings for Notify me button"
-    },
-
-    {
-      "type": "text",
-      "id": "notify_me_btn_bg_txt",
-      "label": "Button Text",
-      "default": "Notify Me When Available"
-    },
-    {
-      "type": "color",
-      "id": "notify_me_btn_bg_color",
-      "label": "Button Background color",
-      "default": "#FCFBF2"
-    },
-    {
-      "type": "color",
-      "id": "notify_me_btn_text_color",
-      "label": "Button Text color",
-      "default": "#262626"
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_btn_width_slider",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "%",
-      "label": "Button width Slider",
-      "default": 100
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_btn_padding_slider",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Button padding slider",
-      "default": 20
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_btn_border_radius_slider",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Border raduis slider",
-      "default": 100
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_btn_font_size_slider",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Font size slider",
-      "default": 16
-    },
-    {
-      "type": "font_picker",
-      "id": "notify_me_btn_font_picker",
-      "label": "Font",
-      "default": "work_sans_n6"
-    },
     {
       "type": "header",
       "content": "Form Setting",
@@ -264,22 +157,134 @@
     },
     {
       "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
       "id": "button_background",
       "label": "Button background",
-      "default": "#fff"
+      "default": "#000"
     },
     {
       "type": "color",
       "id": "button_text_color",
       "label": "Button text color",
-      "default": "#000"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text color",
       "default": "#fff"
     },
+    {
+      "type": "range",
+      "id": "input_width",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Input width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "input_max_width",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Input max width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "button_width",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Button width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "button_max_width",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Button Max width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Padding",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Button Border Radius",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "form_padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form Padding",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "notify_me_form_font_size_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form font size",
+      "default": 12
+    },
+
+    {
+      "type": "range",
+      "id": "notify_me_form_width_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Form width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "notify_me_form_max_width_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "%",
+      "label": "Form max width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "notify_me_form_border_radius_slider",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Form Border raduis",
+      "default": 0
+    },
+
     {
       "type": "text",
       "id": "form_title",
@@ -315,60 +320,6 @@
       "label": "Button text",
       "default": "Submit"
     },
-    {
-      "type": "range",
-      "id": "padding_left",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding Left",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding_right",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Padding Right",
-      "default": 0
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_form_font_size_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Form font size slider",
-      "default": 12
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_form_width_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "%",
-      "label": "Form width slider",
-      "default": 50
-    },
-
-    {
-      "type": "range",
-      "id": "notify_me_form_border_radius_slider",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "label": "Form Border raduis slider",
-      "default": 10
-    },
-
     {
       "type": "font_picker",
       "id": "notify_me_form_font_picker",

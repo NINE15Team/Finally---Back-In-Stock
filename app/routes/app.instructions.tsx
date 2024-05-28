@@ -38,58 +38,63 @@ export default function Instructions({ showButton }: { showButton: boolean }) {
 
   return (
     <Page>
+      <Layout>
+        <Layout.Section>
 
-      <Box paddingBlockEnd="800">
-        <InlineStack align='start'>
-          <Text variant="headingXl" as="h2">Support</Text>
-        </InlineStack>
-        <Box paddingBlockStart="300">
-          <Text as="p">
-            Use this page as a reference to our installation guide, or to reach out to us if you have any questions or comments.
-          </Text>
-        </Box>
-      </Box>
-
-
-      {instructionList.map((e: any, index: number) => (
-        <MediaCard
-          key={index}
-          title={e.title}
-          description={e.description}
-          size="small"
-        >
-          <img
-            alt=""
-            width="100%"
-            height="100%"
-            style={{
-              objectFit: 'cover',
-              objectPosition: 'center',
-            }}
-            src={e.img_url}
-          />
-        </MediaCard>
-      ))}
-
-
-      <FooterHelp>
-        <Box borderRadius='100'>
-          Please feel free to reach out to us if you have any questions or comments. You can reach out at {' '}
-          <Link>
-            support@NINE15.com
-          </Link>
-        </Box>
-      </FooterHelp>
-
-      {showButton &&
-        <BlockStack inlineAlign="end">
-          <Box paddingBlockStart="200">
-            {navigation.state == 'idle' ?
-              <Button variant="primary" tone="critical" submit={true}>Proceed</Button> :
-              <Spinner accessibilityLabel="Spinner example" size="small" />
-            }
+          <Box paddingBlockEnd="800">
+            <InlineStack align='start'>
+              <Text variant="headingXl" as="h2">Support</Text>
+            </InlineStack>
+            <Box paddingBlockStart="300">
+              <Text as="p">
+                Use this page as a reference to our installation guide, or to reach out to us if you have any questions or comments.
+              </Text>
+            </Box>
           </Box>
-        </BlockStack>}
+
+
+          {instructionList.map((e: any, index: number) => (
+            <MediaCard
+              key={index}
+              title={e.title}
+              description={e.description}
+              size="small"
+            >
+              <img
+                alt=""
+                width="100%"
+                height="100%"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                }}
+                src={e.img_url}
+              />
+            </MediaCard>
+          ))}
+
+
+          <FooterHelp>
+            <Box borderRadius='100'>
+              Please feel free to reach out to us if you have any questions or comments. You can reach out at {' '}
+              <Link>
+                support@NINE15.com
+              </Link>
+            </Box>
+          </FooterHelp>
+
+          {showButton &&
+            <BlockStack inlineAlign="end">
+              <Box paddingBlockStart="200">
+                {navigation.state == 'idle' ?
+                  <Button variant="primary" tone="critical" submit={true}>Proceed</Button> :
+                  <Spinner accessibilityLabel="Spinner example" size="small" />
+                }
+              </Box>
+            </BlockStack>}
+
+        </Layout.Section>
+      </Layout>
 
     </Page >
   );

@@ -71,6 +71,7 @@ const isInitilized = async (admin: any) => {
 
 const getStoreInfoShopify = async (admin: any) => {
     const { shop } = await admin.rest.get({ path: `shop` }).then((response: any) => response.json());
+    console.log(shop);
     return shop;
 };
 

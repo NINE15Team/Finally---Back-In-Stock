@@ -99,15 +99,15 @@ export default function Index() {
     <Page>
       <Layout>
         <Layout.Section>
-          <Box>
+          <Box paddingBlockEnd="800">
             <InlineStack align='space-between'>
-              <Text variant="heading2xl" as="h1">Reports</Text>
+              <Text variant="headingXl" as="h1">Reports</Text>
               <div style={{ color: '#005BD3' }}>
                 <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
               </div>
             </InlineStack>
           </Box>
-          <Box paddingBlockEnd="2000" paddingBlockStart="1000">
+          <Box paddingBlockEnd="2000">
             <BlockStack gap="300">
               {pendingSubscrbers.count > 0 || totalNotifications ?
                 <PendingRequest data={pendingSubscrbers.items} count={pendingSubscrbers.count} />

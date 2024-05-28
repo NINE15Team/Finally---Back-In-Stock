@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "f4a8a027cfa0ffd7f1b85b4f3328f472"
-name = "finally-back-in-stock-nine15"
-application_url = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/"
+name = "Finally - Staging"
+application_url = "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/"
 embedded = true
 
 [build]
@@ -11,27 +11,22 @@ include_config_on_deploy = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products"
+scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/auth/callback",
-  "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/auth/shopify/callback",
-  "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/api/auth/callback"
+  "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/auth/callback",
+  "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/auth/shopify/callback",
+  "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/api/auth/callback",
 ]
 
 [webhooks]
 api_version = "2024-01"
 
-  [webhooks.privacy_compliance]
-  customer_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
-  customer_data_request_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
-  shop_deletion_url = "https://finally-back-in-stock-staging-91f1859b2ef3.herokuapp.com/api/compliance"
-
-[app_proxy]
-url = "https://finally-back-in-stock-staging-6563cbfb9731.herokuapp.com/api/hello"
-subpath = "bis-api"
-prefix = "apps"
+[webhooks.privacy_compliance]
+shop_deletion_url = "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/api/compliance"
+customer_deletion_url = "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/api/compliance"
+customer_data_request_url = "https://finally-back-in-stock-staging-de6b34047e19.herokuapp.com/api/data-request"
 
 [pos]
 embedded = false

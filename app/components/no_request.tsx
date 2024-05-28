@@ -1,7 +1,11 @@
-import { Text, Box, BlockStack, Layout, Card, Divider, Button, InlineGrid, InlineStack, ButtonGroup } from '@shopify/polaris';
+import { Text, Box, BlockStack, Layout, Card, Divider, Button, InlineGrid, InlineStack, ButtonGroup, Link } from '@shopify/polaris';
 import no_request from "../image/no-request.png";
 
-export default function NoRequest() {
+export default function NoRequest({ domain }: { domain: string }) {
+  let shopifyURL = domain;
+  if (!domain.includes("http")) {
+    shopifyURL = "https://".concat(domain);
+  }
   return (
     <>
       <Card roundedAbove="sm">
@@ -19,7 +23,7 @@ export default function NoRequest() {
 
       </Box>
 
-      <InlineGrid gap="400" columns={3}>
+      <InlineGrid gap="400" columns={1}>
 
         <Card roundedAbove="sm" >
           <BlockStack>
@@ -27,16 +31,21 @@ export default function NoRequest() {
               Step 1 - Widget configuration
             </Text>
             <Box paddingBlock="200">
-              <Text as="p" variant="bodyMd">
-                First, install and configure the Finally! widget on the product details page.
+              <Box paddingBlockEnd="200">
+                <Text as="p" variant="bodyLg" alignment="start">
+                  <div style={{ "fontStyle": 'italic' }}>
+                    This is the form customers will see if a product is out of stock, they can use the form to subscribe to get notified once the product is back in stock.
+                  </div>
+                </Text>
+              </Box>
+              <Text as="p" variant="bodyLg" alignment="start">
+                First, install and configure the Finally! Widget on the product page.
               </Text>
-            </Box>
-            <Box paddingBlock="500">
             </Box>
           </BlockStack>
           <BlockStack >
             <ButtonGroup>
-              <Button variant='primary' tone="success" url='/app/instructions'> Support </Button>
+              <Button variant='primary' tone="success" url='/app/instructions'> Configure </Button>
             </ButtonGroup>
           </BlockStack>
         </Card>
@@ -47,8 +56,17 @@ export default function NoRequest() {
               Step 2 - Email notification
             </Text>
             <Box paddingBlock="200">
-              <Text as="p" variant="bodyMd">
-                Review and customize the email notification that gets sent to your customers when the products they are interested in are back in stock.
+
+              <Box paddingBlockEnd="200">
+                <Text as="p" variant="bodyLg" alignment="start">
+                  <div style={{ "fontStyle": 'italic' }}>
+                    This is the message your customers will receive when the product they subscribed to is back in stock.
+                  </div>
+                </Text>
+              </Box>
+
+              <Text as="p" variant="bodyLg" alignment="start">
+                Review and customize the email message that your customers will receive once the products they are interested in are back in stock.
               </Text>
             </Box>
             <ButtonGroup>
@@ -63,12 +81,25 @@ export default function NoRequest() {
               Step 3 - Test your setup
             </Text>
             <Box paddingBlock="200">
-              <Text as="p" variant="bodyMd">
-                Test and request to receive a notification when a product is back in stock, modify the stock to test what your customer’s experience would look like.
+              <Box paddingBlockEnd="200">
+                <Text as="p" variant="bodyLg" alignment="start">
+                  <div style={{ "fontStyle": 'italic' }}>
+                    This is not required but you can test app if you would like by acting as a customer
+                    to see what their experience will look like.
+                  </div>
+                </Text>
+              </Box>
+              <Text as="p" variant="bodyLg" alignment="start">
+                Visit your online store and check a product page that is out of stock, use the
+                Finally! Widget to enter your email address to request to be notified once the
+                product is back in stock. Then, go in the admin and add stock, you should receive
+                an email informing you that the product is back in stock and ready to purchase.
               </Text>
             </Box>
             <ButtonGroup>
-              <Button variant='primary' tone="success" url='/app/reports'> Customize </Button>
+              <Button variant='primary' tone="success" url={shopifyURL} target='_blank' >
+                Test
+              </Button>
             </ButtonGroup>
           </BlockStack>
         </Card>

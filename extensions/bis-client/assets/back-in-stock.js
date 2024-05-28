@@ -3,8 +3,6 @@ class BackInStock extends HTMLElement {
   constructor() {
     super();
     this.form = this.querySelector("form");
-    this.showModalButton = this.querySelector('.notify-button');
-    this.closeModalButton = this.querySelector('.close');
     this.messageEl = this.querySelector('.message');
     this.shopifyURL = this.dataset.store;
     this.productId = this.dataset.productId;
@@ -36,9 +34,7 @@ class BackInStock extends HTMLElement {
 
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (e.submitter.classList.contains('close')) {
-        return false;
-      }
+      console.log("I am leaving");
       this.messageEl.querySelectorAll('*').forEach(el => el.classList.add('hide'))
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
@@ -54,42 +50,34 @@ class BackInStock extends HTMLElement {
       } else if (this.productInstance.image) {
         image = this.productInstance.image.src;
       }
+      try {
+        const response = await fetch(`${API_URL}/api/subscriber`, {
+          method: "POST",
+          body: JSON.stringify({
+            shopifyURL: this.shopifyURL,
+            productHandle: this.productHandle,
+            productId: this.productId,
+            productTitle: this.productTitle,
+            variantId: variantId,
+            imageURL: image,
+            vendor: this.vendor,
+            price: Number(this.getVariant(variantId).price) / 100,
+            variantTitle: this.getVariant(variantId).title,
+            email: formData.get("email"),
+            customerPhone: formData.get('telephone')
+          }),
+        }).then(r => r.json());
 
-      const response = await fetch(`${API_URL}/api/subscriber`, {
-        method: "POST",
-        body: JSON.stringify({
-          shopifyURL: this.shopifyURL,
-          productHandle: this.productHandle,
-          productId: this.productId,
-          productTitle: this.productTitle,
-          variantId: variantId,
-          imageURL: image,
-          vendor: this.vendor,
-          price: Number(this.getVariant(variantId).price) / 100,
-          variantTitle: this.getVariant(variantId).title,
-          email: formData.get("email"),
-          customerPhone: formData.get('telephone')
-        }),
-      }).then(r => r.json());
-
-      if (response?.status) {
-        this.showMessage('info')
-      } else {
-        this.showMessage('error', response?.message)
+        if (response?.status) {
+          this.showMessage('info')
+        } else {
+          this.showMessage('error', response?.message)
+        }
+      } catch (e) {
+        this.showMessage('error', "Some thing wen't wrong")
       }
     });
 
-    this.showModalButton.addEventListener('click', () => {
-      document.body.appendChild(this.form)
-      this.form.querySelector("input").value = "";
-      document.querySelector(".out-of-stock-modal .message .success").classList.add('hide');
-      document.querySelector(".out-of-stock-modal .message .error").classList.add('hide');
-      this.form.classList.remove('hide')
-    })
-
-    this.closeModalButton.addEventListener('click', () => {
-      this.form.classList.add('hide')
-    })
   }
 
   showMessage(type, message) {
