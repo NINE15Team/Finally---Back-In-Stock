@@ -164,42 +164,18 @@ export default function Index() {
                       <Text variant="headingXs" as="h6">
                         Body Message
                       </Text>
-                      <EditorProvider>
-                        <Toolbar>
-                          <BtnUndo />
-                          <BtnRedo />
-                          <Separator />
-                          <BtnBold />
-                          <BtnItalic />
-                          <BtnUnderline />
-                          <BtnStrikeThrough />
-                          <Separator />
-                          <BtnNumberedList />
-                          <BtnBulletList />
-                          <Separator />
-                          <BtnLink />
-                          <BtnClearFormatting />
-                          <HtmlButton />
-                          <Separator />
-                          <BtnStyles />
-                        </Toolbar>
-                        <Editor
-                          value={form.bodyContent}
-                          onChange={(val) => handleChange("bodyContent", val.target.value)}
-                          name="bodyContent"
-                        />
-                      </EditorProvider>
-                      {/* <TextField
-                      value={form.bodyContent}
-                      label="Body Message"
-                      labelHidden
-                      placeholder="Your product is back in stock"
-                      autoComplete="off"
-                      multiline={5}
-                      name="bodyContent"
-                      ariaExpanded
-                      error={fetcher.state == 'idle' && fetcher.data?.error?.bodyContent && !form.bodyContent}
-                    /> */}
+                      <TextField
+                        value={form.bodyContent}
+                        onChange={(val) => handleChange("bodyContent", val)}
+                        label="Body Message"
+                        labelHidden
+                        placeholder="Your product is back in stock"
+                        autoComplete="off"
+                        multiline={5}
+                        name="bodyContent"
+                        ariaExpanded
+                        error={fetcher.state == 'idle' && fetcher.data?.error?.bodyContent && !form.bodyContent}
+                      />
                     </Box>
                     <Box paddingBlock="200">
                       <Text variant="headingXs" as="h6">

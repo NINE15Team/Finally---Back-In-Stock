@@ -2,7 +2,7 @@
 
 client_id = "8800ca44f2a3eeaa42dafeb829ea1c0b"
 name = "Finally"
-application_url = "https://ee-realtor-accessing-synthesis.trycloudflare.com"
+application_url = "https://or-protective-council-surveys.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,9 +16,9 @@ scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://ee-realtor-accessing-synthesis.trycloudflare.com/auth/callback",
-  "https://ee-realtor-accessing-synthesis.trycloudflare.com/auth/shopify/callback",
-  "https://ee-realtor-accessing-synthesis.trycloudflare.com/api/auth/callback"
+  "https://or-protective-council-surveys.trycloudflare.com/auth/callback",
+  "https://or-protective-council-surveys.trycloudflare.com/auth/shopify/callback",
+  "https://or-protective-council-surveys.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]

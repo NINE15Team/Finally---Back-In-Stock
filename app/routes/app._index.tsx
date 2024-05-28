@@ -16,7 +16,7 @@ import Checklist from "~/components/checklist";
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
   let initilized = await isInitilized(admin);
-  let { id, myshopify_domain, name, email }: any = await getStoreInfoShopify(admin);
+  let { id, myshopify_domain, name, email, domain }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
     await activateWebPixel(admin);
     await updateStoreInfo(admin);
@@ -34,7 +34,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const subscribedProducts = await findSubscribedProducts({ shopifyURL: myshopify_domain });
   const totalNotifications = await sumNoOfNotifications(myshopify_domain);
   const newSubscribers = await countOfSubscribers(myshopify_domain);
-  return { subscribedProducts, totalNotifications, newSubscribers, shopifyURL: myshopify_domain, storeName: name, initilized };
+  return { subscribedProducts, totalNotifications, newSubscribers, shopifyURL: myshopify_domain, storeName: name, initilized, domain };
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -43,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 };
 
 export default function Index() {
-  let { totalNotifications, newSubscribers, subscribedProducts } = useLoaderData<any>();
+  let { totalNotifications, newSubscribers, subscribedProducts, domain } = useLoaderData<any>();
   return (
     <Page>
       <Layout>
@@ -60,7 +60,7 @@ export default function Index() {
             </Box>
             :
             <Box>
-              <NoRequest />
+              <NoRequest domain={domain} />
             </Box>
           }
         </Layout.Section>

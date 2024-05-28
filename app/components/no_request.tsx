@@ -1,7 +1,11 @@
-import { Text, Box, BlockStack, Layout, Card, Divider, Button, InlineGrid, InlineStack, ButtonGroup } from '@shopify/polaris';
+import { Text, Box, BlockStack, Layout, Card, Divider, Button, InlineGrid, InlineStack, ButtonGroup, Link } from '@shopify/polaris';
 import no_request from "../image/no-request.png";
 
-export default function NoRequest() {
+export default function NoRequest({ domain }: { domain: string }) {
+  let shopifyURL = domain;
+  if (!domain.includes("http")) {
+    shopifyURL = "https://".concat(domain);
+  }
   return (
     <>
       <Card roundedAbove="sm">
@@ -29,7 +33,9 @@ export default function NoRequest() {
             <Box paddingBlock="200">
               <Box paddingBlockEnd="200">
                 <Text as="p" variant="bodyLg" alignment="start">
-                  This is the form customers will see if a product is out of stock, they can use the form to subscribe to get notified once the product is back in stock.
+                  <div style={{ "fontStyle": 'italic' }}>
+                    This is the form customers will see if a product is out of stock, they can use the form to subscribe to get notified once the product is back in stock.
+                  </div>
                 </Text>
               </Box>
               <Text as="p" variant="bodyLg" alignment="start">
@@ -53,7 +59,9 @@ export default function NoRequest() {
 
               <Box paddingBlockEnd="200">
                 <Text as="p" variant="bodyLg" alignment="start">
-                  This is the message your customers will receive when the product they subscribed to is back in stock.
+                  <div style={{ "fontStyle": 'italic' }}>
+                    This is the message your customers will receive when the product they subscribed to is back in stock.
+                  </div>
                 </Text>
               </Box>
 
@@ -75,8 +83,10 @@ export default function NoRequest() {
             <Box paddingBlock="200">
               <Box paddingBlockEnd="200">
                 <Text as="p" variant="bodyLg" alignment="start">
-                  This is not required but you can test app if you would like by acting as a customer
-                  to see what their experience will look like.
+                  <div style={{ "fontStyle": 'italic' }}>
+                    This is not required but you can test app if you would like by acting as a customer
+                    to see what their experience will look like.
+                  </div>
                 </Text>
               </Box>
               <Text as="p" variant="bodyLg" alignment="start">
@@ -87,7 +97,9 @@ export default function NoRequest() {
               </Text>
             </Box>
             <ButtonGroup>
-              <Button variant='primary' tone="success" url='/app/reports'> Test </Button>
+              <Button variant='primary' tone="success" url={shopifyURL} target='_blank' >
+                Test
+              </Button>
             </ButtonGroup>
           </BlockStack>
         </Card>
