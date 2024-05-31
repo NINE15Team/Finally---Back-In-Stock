@@ -79,7 +79,7 @@
         border-radius:{{  blockSettings.notify_me_form_border_radius_slider}}px;
         width:{{ blockSettings.notify_me_form_width_slider }}%;
         max-width:{{ blockSettings.notify_me_form_max_width_slider }}% ;
-        border: 1px solid
+        border: 1px solid {{ blockSettings.notify_me_form_border_radius_color }}
       "
     >
       <h2 style="color:{{ blockSettings.text_color }}">{{ blockSettings.form_title }}</h2>
@@ -283,6 +283,13 @@
       "unit": "px",
       "label": "Form Border raduis",
       "default": 0
+    },
+
+    {
+      "type": "color",
+      "id": "notify_me_form_border_radius_color",
+      "label": "Form border color",
+      "default": "#000"
     },
 
     {
