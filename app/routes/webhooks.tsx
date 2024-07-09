@@ -4,6 +4,7 @@ import db from "../db.server";
 import { upsertProduct } from "../services/product-info.service";
 import { deleteStoreByURL } from "../services/store-info.service";
 
+
 export const action = async ({ request }: ActionFunctionArgs) => {
   const { topic, shop, session, admin, payload } = await authenticate.webhook(
     request
@@ -23,6 +24,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       break;
     case "PRODUCTS_UPDATE":
       console.log("_______________-PRODUCTS_UPDATE______________");
+      const queue = "PRODUCTS_UPDATE";
       await upsertProduct(payload, shop);
       break;
     case "CUSTOMERS_DATA_REQUEST":

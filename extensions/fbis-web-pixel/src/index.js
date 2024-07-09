@@ -1,6 +1,6 @@
 import { register } from "@shopify/web-pixels-extension";
 
-const API_URL = "https://finally-back-in-stock-a2662c637241.herokuapp.com";
+const API_URL = "https://finally-back-in-stock-backend-d0ae88a21a21.herokuapp.com";
 
 register(({ configuration, analytics, browser, init }) => {
 
@@ -23,7 +23,7 @@ register(({ configuration, analytics, browser, init }) => {
             uuid: uuid,
             customerEmail: email,
             browserTrackId: event.clientId,
-            status: 'view'
+            activity: 'view'
           }]),
         }).then(r => r.json());
         if (response.success) {
@@ -61,7 +61,7 @@ register(({ configuration, analytics, browser, init }) => {
           uuid: uuid,
           browserTrackId: event.clientId,
           customerEmail: email,
-          status: 'add_to_cart'
+          activity: 'add_to_cart'
         }]),
       }).then(r => r.json());
       if (response.success) {
@@ -92,7 +92,7 @@ register(({ configuration, analytics, browser, init }) => {
           uuid: elm.uuid,
           browserTrackId: event.clientId,
           customerEmail: elm.email,
-          status: 'completed'
+          activity: 'completed'
         })
       })
       const response = await fetch(`${API_URL}/api/customer_activity`, {

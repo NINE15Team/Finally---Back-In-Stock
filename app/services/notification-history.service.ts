@@ -1,5 +1,6 @@
 import prisma from "~/db.server";
 import { NotificationHistoryDTO } from "~/dto/notification-history.dto";
+import { httpGet } from "~/utils/api.util";
 
 const save = async (historyDTO: NotificationHistoryDTO) => {
     return await prisma.notificationHistory.create({
@@ -73,19 +74,8 @@ const findByUUID = async (uuid: any) => {
 
 
 const sumNoOfNotifications = async (shopifyURL: string) => {
-    let result = await prisma.notificationHistory.aggregate({
-        _sum: {
-            noOfNotifications: true
-        },
-        where: {
-            productInfo: {
-                store: {
-                    shopifyURL: shopifyURL
-                }
-            }
-        }
-    })
-    return result['_sum'].noOfNotifications;
+    let response = await httpGet('notification/count', shopifyURL);
+    return response.count;
 };
 
 export {
