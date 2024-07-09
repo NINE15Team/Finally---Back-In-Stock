@@ -2,6 +2,7 @@ import prisma from "~/db.server";
 import { findStoreByURL } from "../services/store-info.service";
 import type { ProductInfoDTO } from "~/dto/product-info.dto";
 import { parsePrice } from "~/utils/app.util";
+import { httpGet } from "~/utils/api.util";
 
 const findAll = async (param: Partial<ProductInfoDTO>) => {
     return await prisma.productInfo.findMany({
@@ -26,31 +27,9 @@ const findAll = async (param: Partial<ProductInfoDTO>) => {
     });
 };
 
-const findSubscribedProducts = async (param: Partial<ProductInfoDTO>) => {
-    BigInt.prototype.toJSON = function () {
-        return this.toString();
-    };
-    return await prisma.productInfo.findMany({
-        skip: param.skip || 0,
-        take: param.take || 10,
-        where: {
-            store: {
-                shopifyURL: param.shopifyURL
-            },
-            NOT: {
-                customerSubscription: {
-                    none: {}
-                }
-            }
-        },
-        include: {
-            customerSubscription: {
-            }
-        },
-        orderBy: {
-            updatedAt: 'desc'
-        }
-    });
+const findSubscribedProducts = async (shopifyURL: string) => {
+    return httpGet('product/subscribed', shopifyURL);
+
 };
 
 
@@ -144,7 +123,6 @@ const upsertProduct = async (req: any, store: string) => {
     });
     let storeInfo = await findStoreByURL(store);
     prodcutInfos.forEach(async elm => {
-        console.log(elm)
         return await prisma.productInfo.upsert({
             where: {
                 productId_variantId: {

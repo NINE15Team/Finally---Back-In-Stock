@@ -18,24 +18,7 @@ import { authenticate } from "../shopify.server";
 import { json, redirect, useActionData, useFetcher, useLoaderData } from "@remix-run/react";
 import { Modal, TitleBar, useAppBridge } from "@shopify/app-bridge-react";
 import { EmailDTO } from "~/dto/email.dto";
-import {
-  BtnBold,
-  BtnBulletList,
-  BtnClearFormatting,
-  BtnItalic,
-  BtnLink,
-  BtnNumberedList,
-  BtnRedo,
-  BtnStrikeThrough,
-  BtnStyles,
-  BtnUnderline,
-  BtnUndo,
-  HtmlButton,
-  Separator,
-  Toolbar,
-  Editor,
-  EditorProvider
-} from 'react-simple-wysiwyg';
+
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -87,7 +70,7 @@ export default function Index() {
   const actionData = useActionData<typeof action>();
   const fetcher = useFetcher();
   const shopifyBridge = useAppBridge();
-
+  console.log(emailConfig);
   const [form, setForm] = useState(emailConfig);
 
   const handleChange = (key: string, value: string) => {
@@ -99,7 +82,6 @@ export default function Index() {
   }
 
   const onSave = () => {
-    console.log(form);
     const formData = new FormData();
     formData.append("intent", "save_email");
     formData.set('data', JSON.stringify(form));

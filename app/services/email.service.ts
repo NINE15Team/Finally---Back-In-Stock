@@ -5,7 +5,7 @@ import { EmailDTO } from "../dto/email.dto";
 import { EmailVerificationStatus } from "~/enum/EmailVerificationStatus";
 import EncryptionUtil from "~/utils/encryption.util";
 import invariant from "tiny-invariant";
-import { EmailConfiguartion } from "@prisma/client";
+import { httpGet, httpPost } from "~/utils/api.util";
 
 
 const sendGridAdapter = async (
@@ -285,37 +285,19 @@ const sendEmail = async (email: EmailDTO) => {
 
 
 const saveOrUpdate = async (email: Partial<EmailDTO>) => {
-  const storeInfo = await findStoreByURL(email.shopifyURL);
-  return prisma.emailConfiguartion.upsert({
-    where: {
-      storeId: storeInfo?.id,
-    },
-    create: {
-      title: email.title,
-      senderEmail: email.senderEmail,
-      isEmailVerified: EmailVerificationStatus.YES,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      store: {
-        connect: {
-          id: storeInfo?.id,
-        },
-      },
-    },
-    update: {
-      title: email.title,
-      headerContent: email.headerContent,
-      bodyContent: email.bodyContent,
-      footerContent: email.footerContent,
-      buttonContent: email.buttonContent,
-      updatedAt: new Date(),
-      store: {
-        connect: {
-          id: storeInfo?.id,
-        },
-      },
-    },
-  });
+  let body = {
+    id: email.id,
+    title: email.title,
+    senderEmail: email.senderEmail,
+    isEmailVerified: "YES",
+    headerContent: email.headerContent,
+    bodyContent: email.bodyContent,
+    footerContent: email.footerContent,
+    buttonContent: email.buttonContent,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  }
+  return httpPost('email/config/save', body, email.shopifyURL!)
 };
 
 
@@ -362,13 +344,8 @@ const upsertEmail = async (email: Partial<EmailDTO>) => {
   }
 };
 
-const findEmailConfigByStoreURL = async (url: any) => {
-  const storeInfo = await findStoreByURL(url);
-  return await prisma.emailConfiguartion.findFirst({
-    where: {
-      storeId: storeInfo?.id,
-    },
-  }) || {} as EmailConfiguartion;
+const findEmailConfigByStoreURL = async (shopifyURL: any) => {
+  return httpGet('email/config', shopifyURL);
 };
 
 const findByStoreId = async (storeId: any) => {
@@ -380,51 +357,10 @@ const findByStoreId = async (storeId: any) => {
 };
 
 
-const isEmailVerified = async (storeName: string) => {
-  const storeInfo = await findStoreByURL(storeName);
-  let data = await prisma.emailConfiguartion.findFirst({
-    where: {
-      storeId: storeInfo?.id,
-    },
-  });
-
-  // TODO later on un-comment when send verification will start working
-  // if (data && data?.id && data.isEmailVerified != EmailVerificationStatus.YES) {
-  //   let verifiedSender = await sendGridAdapter(`verified_senders?id=${data.senderId}`, { responseType: "json", method: "GET" })
-  //   if (verifiedSender.verified) {
-  //     data.isEmailVerified = EmailVerificationStatus.YES;
-  //     await saveOrUpdate(data);
-  //   }
-  // }
-  return data?.isEmailVerified;
-};
-
-const isOwnerEmail = async (email: string) => {
-  let result = await prisma.emailConfiguartion.count({
-    where: {
-      senderEmail: email
-    },
-  });
-  return result > 0;
-};
-
-
-const getStoreInfo = async (email: Partial<EmailDTO>) => {
-  if (!email.storeId) {
-    return await findStoreByURL(email.storeName);
-  } else {
-    return {
-      id: email.storeId,
-    };
-  }
-};
-
 export {
   sendEmail,
   saveOrUpdate,
   findEmailConfigByStoreURL,
   upsertEmail,
-  isEmailVerified,
-  findByStoreId,
-  isOwnerEmail
+  findByStoreId
 };

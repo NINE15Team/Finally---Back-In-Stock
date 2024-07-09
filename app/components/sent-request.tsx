@@ -42,7 +42,7 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
       imageURL: elm?.productInfo.imageURL,
       email: elm?.customerEmail,
       date: new Intl.DateTimeFormat('en-US', options).format(new Date(elm.updatedAt)),
-      status: elm?.status
+      activity: elm?.activity
     })
   });
   const { selectedResources, allResourcesSelected, handleSelectionChange } = useIndexResourceState(rows);
@@ -113,7 +113,7 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
         </IndexTable.Cell>
         <IndexTable.Cell>{element.email}</IndexTable.Cell>
         <IndexTable.Cell>{element.date}</IndexTable.Cell>
-        <IndexTable.Cell>{StatusBadge(element.status)}</IndexTable.Cell>
+        <IndexTable.Cell>{StatusBadge(element.activity)}</IndexTable.Cell>
       </IndexTable.Row>
     ),
   );
@@ -125,7 +125,6 @@ export default function SentRequest({ data, count }: { data: any[], count: any }
   function triggerPagination(type: string, operation: string) {
     setPage((prevPage) => {
       const updatedPage = operation === "+" ? prevPage + 1 : Math.max(0, prevPage - 1);
-      console.log(updatedPage);
       setSearchParams((prevParams) => {
         prevParams.set("spage", updatedPage.toString());
         return prevParams;
