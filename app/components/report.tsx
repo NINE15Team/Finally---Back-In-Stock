@@ -19,21 +19,13 @@ export default function Report({ title, pagination, data }: {
 
 
   data.forEach((prodInfo, index) => {
-    const price = i18n.formatCurrency(prodInfo.price, {
-      currency: 'USD',
-      form: 'short',
-    });
-    const potentialPrice = i18n.formatCurrency(Number(prodInfo.price) * prodInfo.customerSubscription?.length, {
-      currency: 'USD',
-      form: 'short',
-    });
     rows.push({
       id: prodInfo.id,
       imageURL: prodInfo?.imageURL,
       title: prodInfo?.productTitle,
-      totalSubscribers: prodInfo.customerSubscription?.length,
-      price: price,
-      potentialPrice: potentialPrice,
+      totalSubscribers: prodInfo.totalSubscribers,
+      price: toPriceFormat(prodInfo.price),
+      potentialPrice: toPriceFormat(prodInfo.potentialPrice),
       productId: prodInfo.productId
     });
   });
@@ -70,6 +62,13 @@ export default function Report({ title, pagination, data }: {
         </InlineStack>
       </Link>
     );
+  }
+
+  function toPriceFormat(price: any) {
+    return i18n.formatCurrency(price, {
+      currency: 'USD',
+      form: 'short',
+    });
   }
 
   return (

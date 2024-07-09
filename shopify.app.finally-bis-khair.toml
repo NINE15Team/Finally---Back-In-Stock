@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "8800ca44f2a3eeaa42dafeb829ea1c0b"
-name = "Finally"
-application_url = "https://intl-liz-salt-packing.trycloudflare.com"
+name = "Finally - Khair"
+application_url = "https://heard-safer-incoming-fm.trycloudflare.com"
 embedded = true
 
 [build]
@@ -16,13 +16,17 @@ scopes = "read_customer_events,write_pixels,write_products"
 
 [auth]
 redirect_urls = [
-  "https://intl-liz-salt-packing.trycloudflare.com/auth/callback",
-  "https://intl-liz-salt-packing.trycloudflare.com/auth/shopify/callback",
-  "https://intl-liz-salt-packing.trycloudflare.com/api/auth/callback"
+  "https://heard-safer-incoming-fm.trycloudflare.com/auth/callback",
+  "https://heard-safer-incoming-fm.trycloudflare.com/auth/shopify/callback",
+  "https://heard-safer-incoming-fm.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
-api_version = "2024-01"
+api_version = "2024-07"
+
+  [[webhooks.subscriptions]]
+  topics = [ "products/update" ]
+  uri = "pubsub://active-road-428415-i1:shopify_webhooks"
 
 [pos]
 embedded = false

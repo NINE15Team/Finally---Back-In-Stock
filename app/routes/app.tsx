@@ -8,6 +8,7 @@ import "@shopify/polaris/build/esm/styles.css";
 import { authenticate } from "../shopify.server";
 import { isInitilized } from "~/services/store-info.service";
 import { I18nContext, I18nManager } from '@shopify/react-i18n';
+import Nine15Context from "~/context/nin15.context";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { admin } = await authenticate.admin(request);
@@ -26,25 +27,25 @@ export default function App() {
   });
 
   return (
-    <I18nContext.Provider value={i18nManager}>
-      <AppProvider isEmbeddedApp apiKey={apiKey} >
-        <ui-nav-menu>
-          <Link to="/app" rel="home">
-            Home
-          </Link>
-          <Link to="/app/reports">
-            Reports
-          </Link>
-          <Link to="/app/email" >
-            Preferences
-          </Link>
-          <Link to="/app/instructions">
-            Support
-          </Link>
-        </ui-nav-menu>
-        <Outlet />
-      </AppProvider>
-    </I18nContext.Provider>
+      <I18nContext.Provider value={i18nManager}>
+        <AppProvider isEmbeddedApp apiKey={apiKey} >
+          <ui-nav-menu>
+            <Link to="/app" rel="home">
+              Home
+            </Link>
+            <Link to="/app/reports">
+              Reports
+            </Link>
+            <Link to="/app/email" >
+              Preferences
+            </Link>
+            <Link to="/app/instructions">
+              Installation
+            </Link>
+          </ui-nav-menu>
+          <Outlet />
+        </AppProvider>
+      </I18nContext.Provider>
   );
 }
 

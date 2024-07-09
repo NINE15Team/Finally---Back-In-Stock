@@ -5,6 +5,7 @@ import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import { findEmailConfigByStoreURL, sendEmail } from "./email.service";
 import { randomUUID } from "crypto";
 import { saveNotificationHistory } from "./notification-history.service";
+import { httpGet } from "~/utils/api.util";
 
 const findById = async (params: CustomerSubscriptionDTO) => {
     return await prisma.customerSubscription.findFirst({
@@ -43,44 +44,8 @@ const findByEmailAndProductInfo = async (params: CustomerSubscriptionDTO) => {
     });
 };
 
-const findAll = async (params: CustomerSubscriptionDTO) => {
-    let clause = {} as Partial<CustomerSubscription>;
-    if (params.isNotified !== undefined) {
-        clause.isNotified = params.isNotified
-    }
-    let count = await prisma.customerSubscription.count({
-        where: {
-            productInfo: {
-                store: {
-                    shopifyURL: params.shopifyURL
-                }
-            },
-            ...clause
-        }
-    })
-    let items = await prisma.customerSubscription.findMany({
-        skip: params.skip || 0,
-        take: params.take || 5,
-        where: {
-            productInfo: {
-                store: {
-                    shopifyURL: params.shopifyURL
-                }
-            },
-            ...clause
-        },
-        include: {
-            productInfo: {
-                include: {
-                    store: true
-                }
-            },
-        },
-        orderBy: {
-            updatedAt: 'desc',
-        }
-    });
-    return { items, count }
+const findPendingSubscribers = async ({ shopifyURL, take, skip }: { shopifyURL: string, take: any, skip: any }) => {
+    return httpGet(`subscribe/pending/${skip}/${take}`, shopifyURL);
 };
 
 const subscribeProduct = async (subscribeItem: CustomerSubscriptionDTO) => {
@@ -146,20 +111,8 @@ const findTotalPotentialRevenue = async (storeURL: string): Promise<{ potentialR
 };
 
 const countOfSubscribers = async (storeURL: string) => {
-    const count = await prisma.customerSubscription.count({
-        where: {
-            productInfo: {
-                store: {
-                    shopifyURL: storeURL
-                }
-            },
-            AND: [
-                { isSubscribed: true },
-                { isNotified: false },
-            ],
-        },
-    });
-    return count;
+    let response = await httpGet(`subscribe/count`, storeURL);
+    return response.count
 };
 
 const notifyToCustomers = async (subscriberList: CustomerSubscriptionDTO[]) => {
@@ -219,7 +172,7 @@ const updateSubscribtionStatus = async (ids: number[], isSubscribed: boolean) =>
 
 export {
     findById,
-    findAll as findAllSubscribers,
+    findPendingSubscribers,
     subscribeProduct,
     setCustomerNotified,
     findTotalPotentialRevenue,

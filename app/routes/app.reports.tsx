@@ -4,9 +4,9 @@ import { Layout, Page, Text, Link, Box, InlineStack, BlockStack } from "@shopify
 import { authenticate } from "../shopify.server";
 
 import { getStoreInfoShopify } from "~/services/store-info.service";
-import { findAllSubscribers, findByEmailAndProductInfo, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
+import { findPendingSubscribers, findByEmailAndProductInfo, notifyToCustomers, updateSubscribtionStatus } from "~/services/customer-subscriber.service";
 import { findAllActivities } from "~/services/customer-activity.service";
-import { useLoaderData, useOutletContext } from "@remix-run/react";
+import { useLoaderData} from "@remix-run/react";
 import { CustomerActivityDTO } from "~/dto/customer-activity.dto";
 import { CustomerSubscriptionDTO } from "~/dto/customer-subscription.dto";
 import PendingRequest from "~/components/pending-request";
@@ -28,10 +28,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   if (isNaN(sentPage) || sentPage < 0) {
     sentPage = 1;
   }
-  const pendingSubscrbers = await findAllSubscribers({ shopifyURL: myshopify_domain, isNotified: false, take: offset, skip: pendingPage * offset });
-  const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: offset, skip: sentPage * offset });
+  const pendingSubscrbers = await findPendingSubscribers({ shopifyURL: myshopify_domain, take: offset, skip: pendingPage * offset });
+  const customerActivities = await findAllActivities({ shopifyURL: myshopify_domain, take: offset, skip: sentPage });
   const totalNotifications = await sumNoOfNotifications(myshopify_domain);
-
   return { pendingSubscrbers, customerActivities, totalNotifications, shopifyURL: myshopify_domain };
 };
 
@@ -93,28 +92,28 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
 export default function Index() {
   let { pendingSubscrbers, customerActivities, totalNotifications } = useLoaderData<any>();
-  const myValue = useOutletContext();
+  console.log(pendingSubscrbers);
 
   return (
     <Page>
       <Layout>
         <Layout.Section>
-          <Box>
+          <Box paddingBlockEnd="800">
             <InlineStack align='space-between'>
-              <Text variant="heading2xl" as="h1">Reports</Text>
+              <Text variant="headingXl" as="h1">Reports</Text>
               <div style={{ color: '#005BD3' }}>
                 <Link removeUnderline monochrome url="/app/instructions">View installation guide</Link>
               </div>
             </InlineStack>
           </Box>
-          <Box paddingBlockEnd="2000" paddingBlockStart="1000">
+          <Box paddingBlockEnd="2000">
             <BlockStack gap="300">
-              {pendingSubscrbers.count > 0 || totalNotifications ?
-                <PendingRequest data={pendingSubscrbers.items} count={pendingSubscrbers.count} />
+              {pendingSubscrbers && pendingSubscrbers.count > 0 || totalNotifications ?
+                <PendingRequest data={pendingSubscrbers.data} count={pendingSubscrbers.count} />
                 :
                 <CountRequest countPending={pendingSubscrbers.count} countSentNotification={totalNotifications} />
               }
-              <SentRequest data={customerActivities.items} count={customerActivities.count} />
+              <SentRequest data={customerActivities.data} count={customerActivities.count} />
             </BlockStack>
           </Box>
         </Layout.Section>

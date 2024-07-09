@@ -102,5 +102,75 @@ const activateWebPixel = async (admin: any) => {
     return data;
 };
 
+const activateWebhookForPubSub = async (admin: any) => {
+    const response = await admin.graphql(
+        `#graphql
+      mutation pubSubWebhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: PubSubWebhookSubscriptionInput!) {
+        pubSubWebhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+          webhookSubscription {
+            id
+            topic
+            format
+            endpoint {
+              __typename
+              ... on WebhookPubSubEndpoint {
+                pubSubProject
+                pubSubTopic
+              }
+            }
+          }
+        }
+      }`,
+        {
+            variables: {
+                "topic": "PRODUCTS_UPDATE",
+                "webhookSubscription": {
+                    "pubSubProject": "active-road-428415-i1",
+                    "pubSubTopic": "shopify_webhooks",
+                    "format": "JSON"
+                }
+            },
+        },
+    );
 
-export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo, getStoreInfoShopify, activateWebPixel, isInitilized }
+    return  await response.json();
+
+};
+
+
+const deleteWebhookForPubSub = async (admin: any) => {
+    const response = await admin.graphql(
+        `#graphql
+      mutation pubSubWebhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: PubSubWebhookSubscriptionInput!) {
+        pubSubWebhookSubscriptionCreate(topic: $topic, webhookSubscription: $webhookSubscription) {
+          webhookSubscription {
+            id
+            topic
+            format
+            endpoint {
+              __typename
+              ... on WebhookPubSubEndpoint {
+                pubSubProject
+                pubSubTopic
+              }
+            }
+          }
+        }
+      }`,
+        {
+            variables: {
+                "topic": "PRODUCTS_UPDATE",
+                "webhookSubscription": {
+                    "pubSubProject": "teak-instrument-425512-f4",
+                    "pubSubTopic": "finally-bis",
+                    "format": "JSON"
+                }
+            },
+        },
+    );
+
+    return  await response.json();
+
+};
+
+export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo, getStoreInfoShopify, activateWebPixel, isInitilized, activateWebhookForPubSub }
