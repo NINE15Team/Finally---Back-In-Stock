@@ -24,7 +24,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
       break;
     case "PRODUCTS_UPDATE":
-      console.log("_______________-PRODUCTS_UPDATE______________");
+      console.log("_______________-PRODUCTS_UPDATE maderchod______________");
       break;
     case "CUSTOMERS_DATA_REQUEST":
       console.log("CUSTOMERS_DATA_REQUEST", payload);
