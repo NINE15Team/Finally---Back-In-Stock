@@ -1,4 +1,4 @@
-const API_URL = "https://finally-back-in-stock-backend-d0ae88a21a21.herokuapp.com";
+const API_URL = " https://5c9e-2407-aa80-314-baf9-8146-4270-1c0e-cc70.ngrok-free.app";
 class BackInStock extends HTMLElement {
   constructor() {
     super();
@@ -51,20 +51,32 @@ class BackInStock extends HTMLElement {
         image = this.productInstance.image.src;
       }
       try {
-        const response = await fetch(`${API_URL}/api/subscriber`, {
+        const response = await fetch(`${API_URL}/api/subscribe`, {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Shopify-Url": Shopify.shop
+          },
           body: JSON.stringify({
             shopifyURL: this.shopifyURL,
-            productHandle: this.productHandle,
-            productId: this.productId,
-            productTitle: this.productTitle,
-            variantId: variantId,
-            imageURL: image,
-            vendor: this.vendor,
-            price: Number(this.getVariant(variantId).price) / 100,
-            variantTitle: this.getVariant(variantId).title,
-            email: formData.get("email"),
-            customerPhone: formData.get('telephone')
+            customerEmail: formData.get("email"),
+            customerPhone: formData.get('telephone'),
+            status: false,
+            isNotified: false,
+            isSubscribed: false,
+            isActive: false,
+            productInfo: {
+              productHandle: this.productHandle,
+              productId: this.productId,
+              productTitle: this.productTitle,
+              variantId: variantId,
+              price: Number(this.getVariant(variantId).price) / 100,
+              variantTitle: this.getVariant(variantId).title,
+              imageURL: image,
+              status: true,
+              inStock: false,
+              vendor: this.vendor
+            }
           }),
         }).then(r => r.json());
 
