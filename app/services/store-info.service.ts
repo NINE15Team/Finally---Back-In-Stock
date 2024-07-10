@@ -133,7 +133,10 @@ const activateWebhookForPubSubProductUpdate = async (admin: any) => {
         },
     );
 
-    return await response.json();
+    let data = await response.json();
+    console.log("***************************Pub Sub Create For Product Update**************************", data);
+    return data;
+
 
 };
 
