@@ -3,7 +3,7 @@ import { authenticate } from "../shopify.server";
 import { countOfSubscribers, } from "../services/customer-subscriber.service";
 import { findSubscribedProducts } from "../services/product-info.service";
 import { upsertEmail } from "../services/email.service";
-import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel, activateWebhookForPubSub } from "../services/store-info.service";
+import { updateStoreInfo, isInitilized, getStoreInfoShopify, activateWebPixel, activateWebhookForPubSubProductUpdate } from "../services/store-info.service";
 import { Box, InlineStack, Layout, Link, Page, Text } from "@shopify/polaris";
 import { sumNoOfNotifications } from "~/services/notification-history.service";
 import { useLoaderData } from "@remix-run/react";
@@ -17,6 +17,8 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let initilized = await isInitilized(admin);
   let { id, myshopify_domain, name, email, domain }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
+    await activateWebPixel(admin);
+    await activateWebhookForPubSubProductUpdate(admin);
     await updateStoreInfo(admin);
     await upsertEmail({
       headerContent: 'Great News',

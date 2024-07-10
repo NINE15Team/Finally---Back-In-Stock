@@ -18,6 +18,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   switch (topic) {
     case "APP_UNINSTALLED":
       if (session) {
+        console.log("_______________-App Uninstalled______________");
         await db.session.deleteMany({ where: { shop } });
       }
 

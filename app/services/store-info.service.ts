@@ -102,7 +102,7 @@ const activateWebPixel = async (admin: any) => {
     return data;
 };
 
-const activateWebhookForPubSub = async (admin: any) => {
+const activateWebhookForPubSubProductUpdate = async (admin: any) => {
     const response = await admin.graphql(
         `#graphql
       mutation pubSubWebhookSubscriptionCreate($topic: WebhookSubscriptionTopic!, $webhookSubscription: PubSubWebhookSubscriptionInput!) {
@@ -125,15 +125,15 @@ const activateWebhookForPubSub = async (admin: any) => {
             variables: {
                 "topic": "PRODUCTS_UPDATE",
                 "webhookSubscription": {
-                    "pubSubProject": "active-road-428415-i1",
-                    "pubSubTopic": "shopify_webhooks",
+                    "pubSubProject": "finally-topic-sub",
+                    "pubSubTopic": "finally-topic",
                     "format": "JSON"
                 }
             },
         },
     );
 
-    return  await response.json();
+    return await response.json();
 
 };
 
@@ -169,8 +169,17 @@ const deleteWebhookForPubSub = async (admin: any) => {
         },
     );
 
-    return  await response.json();
+    return await response.json();
 
 };
 
-export { saveStoreInfo, findStoreByURL, deleteStoreByURL, updateStoreInfo, getStoreInfoShopify, activateWebPixel, isInitilized, activateWebhookForPubSub }
+export {
+    saveStoreInfo,
+    findStoreByURL,
+    deleteStoreByURL,
+    updateStoreInfo,
+    getStoreInfoShopify,
+    activateWebPixel,
+    isInitilized,
+    activateWebhookForPubSubProductUpdate
+}
