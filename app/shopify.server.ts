@@ -21,24 +21,24 @@ const shopify = shopifyApp({
   restResources,
   webhooks: {
     APP_UNINSTALLED: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      deliveryMethod: DeliveryMethod.PubSub,
+      callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
     PRODUCTS_UPDATE: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      deliveryMethod: DeliveryMethod.PubSub,
+      callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
     CUSTOMERS_DATA_REQUEST: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      deliveryMethod: DeliveryMethod.PubSub,
+      callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
     CUSTOMERS_REDACT: {
-      deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      deliveryMethod: DeliveryMethod.PubSub,
+      callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
     SHOP_REDACT: {
       deliveryMethod: DeliveryMethod.Http,
-      callbackUrl: "/webhooks",
+      callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
 
   },
