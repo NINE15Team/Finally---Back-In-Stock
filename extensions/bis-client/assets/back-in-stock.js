@@ -1,4 +1,4 @@
-const API_URL = " https://5c9e-2407-aa80-314-baf9-8146-4270-1c0e-cc70.ngrok-free.app";
+const API_URL = "https://finally-back-in-stock-backend-d0ae88a21a21.herokuapp.com";
 class BackInStock extends HTMLElement {
   constructor() {
     super();

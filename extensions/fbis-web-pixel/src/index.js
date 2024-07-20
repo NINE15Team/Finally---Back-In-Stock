@@ -14,7 +14,7 @@ register(({ configuration, analytics, browser, init }) => {
       if (!cookieStatus) {
         let variantId = event.data.productVariant.id;
         let productId = event.data.productVariant.product.id;
-        const response = await fetch(`${API_URL}/api/customer_activity`, {
+        const response = await fetch(`${API_URL}/api/customer-activity`, {
           method: "POST",
           body: JSON.stringify([{
             productId: productId,
@@ -52,7 +52,7 @@ register(({ configuration, analytics, browser, init }) => {
     let cookieStatus = await isCookieExist(`${uuid}_cart`);
     console.log(uuid, targetVariant, email, !cookieStatus, variantId, targetVariant == variantId);
     if (uuid && !cookieStatus && targetVariant == variantId) {
-      const response = await fetch(`${API_URL}/api/customer_activity`, {
+      const response = await fetch(`${API_URL}/api/customer-activity`, {
         method: "POST",
         body: JSON.stringify([{
           productId: productId,
@@ -95,7 +95,7 @@ register(({ configuration, analytics, browser, init }) => {
           activity: 'completed'
         })
       })
-      const response = await fetch(`${API_URL}/api/customer_activity`, {
+      const response = await fetch(`${API_URL}/api/customer-activity`, {
         method: "POST",
         body: JSON.stringify(data),
       }).then(r => r.json());
