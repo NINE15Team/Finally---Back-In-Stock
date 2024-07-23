@@ -21,8 +21,8 @@ const shopify = shopifyApp({
   restResources,
   webhooks: {
     APP_UNINSTALLED: {
-      deliveryMethod: DeliveryMethod.PubSub,
-      callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/webhooks",
     },
     PRODUCTS_UPDATE: {
       deliveryMethod: DeliveryMethod.PubSub,
