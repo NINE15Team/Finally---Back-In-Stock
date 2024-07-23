@@ -34,13 +34,18 @@ class BackInStock extends HTMLElement {
 
     this.form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      console.log("I am leaving");
-      this.messageEl.querySelectorAll('*').forEach(el => el.classList.add('hide'))
+      if (this.messageEl) {
+        this.messageEl.querySelectorAll('*').forEach(el => el.classList.add('hide'))
+      }
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
       if (!this.isValidEmail(formData.get("email"))) {
         alert('Invalid Email');
+        return false;
+      }
+      if (!this.isValidPhone(formData.get("telephone"))) {
+        alert('Invalid phone format');
         return false;
       }
       let image = "";
@@ -114,6 +119,11 @@ class BackInStock extends HTMLElement {
   isValidEmail(email) {
     const regex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return regex.test(email);
+  }
+
+  isValidPhone(phone) {
+    const regex = /^1\s?(?:\([2-9]\d{2}\)|[2-9]\d{2})[\s.-]?[2-9]\d{2}[\s.-]?\d{4}$/;
+    return regex.test(phone);
   }
 
   hasClass(elm, className) {

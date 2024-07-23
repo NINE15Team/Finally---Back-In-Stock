@@ -41,7 +41,7 @@ const shopify = shopifyApp({
       callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
     SHOP_REDACT: {
-      deliveryMethod: DeliveryMethod.Http,
+      deliveryMethod: DeliveryMethod.PubSub,
       callbackUrl: "https://us-central1-teak-instrument-425512-f4.cloudfunctions.net/function-1",
     },
 
