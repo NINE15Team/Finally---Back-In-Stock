@@ -44,7 +44,8 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-      if (!this.isValidPhone(formData.get("telephone"))) {
+      
+      if (Boolean(formData.get("telephone")) && !this.isValidPhone(formData.get("telephone"))) {
         alert('Invalid phone format');
         return false;
       }
