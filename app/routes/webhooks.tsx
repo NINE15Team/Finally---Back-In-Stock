@@ -21,22 +21,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         console.log("_______________-App Uninstalled______________");
         await db.session.deleteMany({ where: { shop } });
       }
-
-      break;
-    case "PRODUCTS_UPDATE":
-      console.log("_______________-PRODUCTS_UPDATE maderchod______________");
-      break;
-    case "CUSTOMERS_DATA_REQUEST":
-      console.log("CUSTOMERS_DATA_REQUEST", payload);
-      break;
-    case "CUSTOMERS_REDACT":
-      console.log("CUSTOMERS_DATA_REQUEST", payload);
-      break;
-    case "SHOP_REDACT":
-      console.log("Starting shop data delete......");
-      await deleteStoreByURL(payload.shop_domain);
-      console.log("End shop data delete......");
-      break;
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });
   }
