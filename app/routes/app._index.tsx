@@ -18,7 +18,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { id, myshopify_domain, name, email, domain }: any = await getStoreInfoShopify(admin);
   if (!initilized) {
     await activateWebPixel(admin);
-    await activateWebhookForPubSubProductUpdate(admin);
+    // await activateWebhookForPubSubProductUpdate(admin);
     await updateStoreInfo(admin);
     await upsertEmail({
       headerContent: 'Great News',
