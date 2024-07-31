@@ -125,7 +125,7 @@ const activateWebhookForPubSubProductUpdate = async (admin: any) => {
             variables: {
                 "topic": "PRODUCTS_UPDATE",
                 "webhookSubscription": {
-                    "pubSubProject": "finally-topic-sub",
+                    "pubSubProject": "teak-instrument-425512-f4",
                     "pubSubTopic": "finally-topic",
                     "format": "JSON"
                 }
