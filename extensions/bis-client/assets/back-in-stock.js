@@ -40,11 +40,18 @@ class BackInStock extends HTMLElement {
       const formData = new FormData(e.target);
       const urlParams = new URL(document.location).searchParams;
       const variantId = urlParams.get("variant") ?? this.defaultVariantId;
+
+
+      if (!document.querySelector("#subscribeNews").checked) {
+        alert('Please accept the privacy policy');
+        return false;
+      }
+
       if (!this.isValidEmail(formData.get("email"))) {
         alert('Invalid Email');
         return false;
       }
-      
+
       if (Boolean(formData.get("telephone")) && !this.isValidPhone(formData.get("telephone"))) {
         alert('Invalid phone format');
         return false;
@@ -66,7 +73,7 @@ class BackInStock extends HTMLElement {
           body: JSON.stringify({
             shopifyURL: this.shopifyURL,
             customerEmail: formData.get("email"),
-            customerPhone: formData.get('telephone'),
+            customerPhone: "1" + formData.get('telephone'),
             status: false,
             isNotified: false,
             isSubscribed: false,
