@@ -43,7 +43,7 @@ class BackInStock extends HTMLElement {
 
 
       if (!document.querySelector("#subscribeNews").checked) {
-        alert('Please accept the privacy policy');
+        alert('Please check for opt-in');
         return false;
       }
 
@@ -51,7 +51,6 @@ class BackInStock extends HTMLElement {
         alert('Invalid Email');
         return false;
       }
-
       if (Boolean(formData.get("telephone")) && !this.isValidPhone(formData.get("telephone"))) {
         alert('Invalid phone format');
         return false;
@@ -130,6 +129,7 @@ class BackInStock extends HTMLElement {
   }
 
   isValidPhone(phone) {
+    phone = "1" + phone
     const regex = /^1\s?(?:\([2-9]\d{2}\)|[2-9]\d{2})[\s.-]?[2-9]\d{2}[\s.-]?\d{4}$/;
     return regex.test(phone);
   }

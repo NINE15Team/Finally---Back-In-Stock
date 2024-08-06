@@ -32,6 +32,7 @@ model ShopifyStoreInfo {
   EmailConfiguartion EmailConfiguartion?
   productInfo        ProductInfo[]
   CustomerActivity   CustomerActivity[]
+  StorePricingPlan   StorePricingPlan[]
 
   @@map("store_info")
 }
@@ -124,4 +125,33 @@ model CustomerActivity {
   productInfo           ProductInfo         @relation(fields: [productInfoId], references: [id], onDelete: Cascade)
 
   @@map("customer_activity")
+}
+
+model PricingPlan {
+  id            Int      @id @default(autoincrement())
+  planName      String   @default("") @map("plan_name") @db.VarChar(30)
+  description   String   @default("") @map("description") @db.VarChar(200)
+  frequency     Int      @map("frequency")
+  trailPeriod   Int      @map("trail_period")
+  perSmsPrice   Float    @map("per_sms_price")
+  perEmailPrice Float    @map("per_email_price")
+  price         Float    @map("price")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("pricing_plan")
+}
+
+model StorePricingPlan {
+  id            Int              @id @default(autoincrement())
+  pricingPlanId Int              @map("pricing_plan_id")
+  storeId       Int              @map("store_id")
+  smsCount      Int              @map("sms_count")
+  startedAt     BigInt           @default(0)@map("started_at")
+  endAt         BigInt           @default(0)@map("end_at")
+  createdAt     DateTime         @default(now()) @map("created_at")
+  updatedAt     DateTime         @default(now()) @updatedAt @map("updated_at")
+  store         ShopifyStoreInfo @relation(fields: [storeId], references: [id], onDelete: Cascade)
+
+  @@map("store_pricing_plan")
 }

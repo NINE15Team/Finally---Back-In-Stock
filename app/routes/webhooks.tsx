@@ -21,6 +21,13 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         console.log("_______________-App Uninstalled______________");
         await db.session.deleteMany({ where: { shop } });
       }
+      break;
+    case "APP_SUBSCRIPTIONS_UPDATE":
+      console.log("APP_SUBSCRIPTIONS_UPDATE", request);
+      break;
+    case "APP_PURCHASES_ONE_TIME_UPDATE":
+      console.log("APP_PURCHASES_ONE_TIME_UPDATE", request);
+      break;
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });
   }

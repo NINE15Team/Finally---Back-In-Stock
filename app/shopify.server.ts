@@ -9,6 +9,7 @@ import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prism
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-01";
 import prisma from "./db.server";
 import { saveStoreInfo } from "../app/services/store-info.service";
+import { features } from "process";
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
@@ -18,6 +19,9 @@ const shopify = shopifyApp({
   authPathPrefix: "/auth",
   sessionStorage: new PrismaSessionStorage(prisma),
   distribution: AppDistribution.AppStore,
+  features: {
+    v3_lineItemBilling: true
+  },
   restResources,
   webhooks: {
     APP_UNINSTALLED: {
@@ -34,6 +38,15 @@ const shopify = shopifyApp({
       pubSubProject: "teak-instrument-425512-f4",
       pubSubTopic: "finally-topic",
     },
+    APP_SUBSCRIPTIONS_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/webhooks",
+    },
+    APP_PURCHASES_ONE_TIME_UPDATE: {
+      deliveryMethod: DeliveryMethod.Http,
+      callbackUrl: "/webhooks",
+    },
+    
     CUSTOMERS_DATA_REQUEST: {
       deliveryMethod: DeliveryMethod.PubSub,
       pubSubProject: "teak-instrument-425512-f4",
