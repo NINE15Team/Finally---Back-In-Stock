@@ -30,12 +30,12 @@ const shopify = shopifyApp({
     },
     PRODUCTS_UPDATE: {
       deliveryMethod: DeliveryMethod.PubSub,
-      pubSubProject: "teak-instrument-425512-f4",
+      pubSubProject: "hazel-sky-431216-d5",
       pubSubTopic: "finally-topic",
     },
     PRODUCTS_DELETE: {
       deliveryMethod: DeliveryMethod.PubSub,
-      pubSubProject: "teak-instrument-425512-f4",
+      pubSubProject: "hazel-sky-431216-d5",
       pubSubTopic: "finally-topic",
     },
     APP_SUBSCRIPTIONS_UPDATE: {
@@ -49,17 +49,17 @@ const shopify = shopifyApp({
     
     CUSTOMERS_DATA_REQUEST: {
       deliveryMethod: DeliveryMethod.PubSub,
-      pubSubProject: "teak-instrument-425512-f4",
+      pubSubProject: "hazel-sky-431216-d5",
       pubSubTopic: "finally-topic",
     },
     CUSTOMERS_REDACT: {
       deliveryMethod: DeliveryMethod.PubSub,
-      pubSubProject: "teak-instrument-425512-f4",
+      pubSubProject: "hazel-sky-431216-d5",
       pubSubTopic: "finally-topic",
     },
     SHOP_REDACT: {
       deliveryMethod: DeliveryMethod.PubSub,
-      pubSubProject: "teak-instrument-425512-f4",
+      pubSubProject: "hazel-sky-431216-d5",
       pubSubTopic: "finally-topic",
     },
 
